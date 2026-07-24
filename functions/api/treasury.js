@@ -64,8 +64,8 @@ export async function onRequestGet(context) {
                 price: 150.00,
                 value_usd: solBalance * 150.00,
                 allocation_pct: totalNetWorth > 0 ? Math.round(((solBalance * 150) / totalNetWorth) * 100) : 0,
-                icon: '⚡',
-                color: 'from-purple-500 to-indigo-500'
+                logo_url: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
+                color: 'from-purple-500/20 to-indigo-500/20'
             },
             {
                 symbol: 'USDC',
@@ -74,8 +74,8 @@ export async function onRequestGet(context) {
                 price: 1.00,
                 value_usd: usdcBalance,
                 allocation_pct: totalNetWorth > 0 ? Math.round((usdcBalance / totalNetWorth) * 100) : 0,
-                icon: '💵',
-                color: 'from-emerald-500 to-teal-500'
+                logo_url: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png',
+                color: 'from-blue-500/20 to-cyan-500/20'
             }
         ];
 

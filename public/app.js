@@ -814,8 +814,8 @@ async function loadTreasury() {
             card.innerHTML = `
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr ${ast.color} flex items-center justify-center text-lg shadow-md">
-                            ${ast.icon}
+                        <div class="w-10 h-10 rounded-2xl bg-[#140e28] border border-[#251c3a] p-1.5 flex items-center justify-center shadow-md">
+                            <img src="${ast.logo_url || 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'}" class="w-full h-full rounded-full object-contain" alt="${ast.symbol}">
                         </div>
                         <div>
                             <div class="font-bold text-white text-sm">${ast.name}</div>
