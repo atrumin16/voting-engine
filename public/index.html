@@ -1082,52 +1082,61 @@
                     </button>
                 </div>
 
-                <!-- Step-by-Step Guide Card -->
-                <div class="glass-panel p-6 rounded-2xl space-y-4 border border-[#251c3a]">
-                    <h3 class="font-display text-base font-bold text-white flex items-center gap-2">
-                        <span>📘</span> How & Where to Create Your Solana Token
-                    </h3>
+                <!-- Active Institutional DAO Monetization Suite -->
+                <div class="glass-panel p-6 rounded-2xl space-y-6 border border-emerald-500/30 bg-gradient-to-br from-[#0a1811] via-[#0d2117] to-[#07140e]">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+                                <span>💰</span> Active DAO Monetization & Revenue Suite
+                            </h3>
+                            <p class="text-gray-400 text-xs mt-0.5">Configure live protocol revenue mechanisms and anti-spam treasury deposit parameters.</p>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-300 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">Protocol Revenue Active</span>
+                    </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                        <div class="bg-[#0b0817] p-4 rounded-xl border border-[#1f1730] space-y-2">
-                            <div class="font-bold text-purple-300 text-sm">Option 1: No-Code Token Creators (Instant 1-Click)</div>
-                            <p class="text-gray-400 leading-relaxed">Create a token directly from your Phantom wallet in 1 minute using official Solana tools:</p>
-                            <ul class="space-y-1 text-gray-300 list-disc list-inside">
-                                <li><a href="https://fluxbeam.xyz" target="_blank" class="text-amber-300 underline font-semibold">FluxBeam Token Mint Creator</a></li>
-                                <li><a href="https://pump.fun" target="_blank" class="text-amber-300 underline font-semibold">Pump.fun Token Creator</a></li>
-                                <li><a href="https://oriontools.io" target="_blank" class="text-amber-300 underline font-semibold">Orion Solana Tools</a></li>
-                            </ul>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Mechanism 1: Proposal Submission Fee -->
+                        <div class="bg-[#08140e] p-5 rounded-2xl border border-emerald-500/20 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="font-bold text-emerald-300 text-sm flex items-center gap-2">
+                                    <span>📝</span> Proposal Deposit Fee (SOL)
+                                </div>
+                                <span class="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-md">Anti-Spam</span>
+                            </div>
+                            <p class="text-gray-400 text-xs leading-relaxed">
+                                Requires users to deposit SOL to create a new governance proposal. All collected deposits route directly to the DAO Treasury Vault.
+                            </p>
+                            <div class="flex items-center gap-2 pt-1">
+                                <input type="number" step="0.01" id="cfgProposalFee" value="0.05" class="w-full bg-[#040a07] border border-emerald-500/30 p-2.5 rounded-xl text-xs text-emerald-200 font-bold focus:outline-none focus:border-emerald-400">
+                                <span class="text-xs font-bold text-emerald-400">SOL</span>
+                            </div>
                         </div>
 
-                        <div class="bg-[#0b0817] p-4 rounded-xl border border-[#1f1730] space-y-2">
-                            <div class="font-bold text-emerald-300 text-sm">Option 2: Solana CLI Command (Developers)</div>
-                            <p class="text-gray-400 leading-relaxed">Run on terminal with Solana CLI installed:</p>
-                            <pre class="bg-[#07050e] p-2.5 rounded-lg border border-[#251c3a] text-purple-300 font-mono text-[11px] overflow-x-auto">spl-token create-token
-spl-token create-account &lt;MINT_ADDRESS&gt;
-spl-token mint &lt;MINT_ADDRESS&gt; 1000000000</pre>
+                        <!-- Mechanism 2: Council Membership Dues -->
+                        <div class="bg-[#08140e] p-5 rounded-2xl border border-emerald-500/20 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="font-bold text-amber-300 text-sm flex items-center gap-2">
+                                    <span>👑</span> VIP Council Badge Dues (SOL)
+                                </div>
+                                <span class="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-md">2.0x Weight</span>
+                            </div>
+                            <p class="text-gray-400 text-xs leading-relaxed">
+                                Grants members verified Council Badges with 2.0x voting multiplier in exchange for annual treasury contributions.
+                            </p>
+                            <div class="flex items-center gap-2 pt-1">
+                                <input type="number" step="0.1" id="cfgCouncilFee" value="0.5" class="w-full bg-[#040a07] border border-amber-500/30 p-2.5 rounded-xl text-xs text-amber-200 font-bold focus:outline-none focus:border-amber-400">
+                                <span class="text-xs font-bold text-amber-400">SOL</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Monetization Blueprint Card -->
-                <div class="glass-panel p-6 rounded-2xl space-y-4 border border-emerald-500/30 bg-gradient-to-r from-[#0a1811] via-[#0d2117] to-[#07140e]">
-                    <h3 class="font-display text-base font-bold text-white flex items-center gap-2">
-                        <span>💰</span> Institutional DAO Monetization Playbook
-                    </h3>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                        <div class="bg-[#08140e] p-3.5 rounded-xl border border-emerald-500/20 space-y-1">
-                            <div class="font-bold text-emerald-300">1. Proposal Submission Deposit</div>
-                            <p class="text-gray-400 text-[11px] leading-relaxed">Charge 0.05 SOL to submit a PIP proposal. Anti-spam fee auto-credits the Squads DAO Treasury Vault.</p>
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-2 border-t border-emerald-500/20">
+                        <div class="text-xs text-gray-400">
+                            Vault Recipient: <span class="font-mono text-emerald-300 font-bold">8NHPU8LZ...TofhV</span> (Treasury Reserve)
                         </div>
-                        <div class="bg-[#08140e] p-3.5 rounded-xl border border-emerald-500/20 space-y-1">
-                            <div class="font-bold text-amber-300">2. Council Badge Subscriptions</div>
-                            <p class="text-gray-400 text-[11px] leading-relaxed">Offer verified member council badges with higher voting multipliers in exchange for annual treasury dues.</p>
-                        </div>
-                        <div class="bg-[#08140e] p-3.5 rounded-xl border border-emerald-500/20 space-y-1">
-                            <div class="font-bold text-purple-300">3. Protocol Liquidity & Grants</div>
-                            <p class="text-gray-400 text-[11px] leading-relaxed">Route 0.5% of ecosystem transaction fees directly to the Squads Multisig Reserve.</p>
-                        </div>
+                        <button onclick="saveAdminConfig()" class="w-full md:w-auto px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20">
+                            💾 Save Monetization Settings
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1423,7 +1432,7 @@ spl-token mint &lt;MINT_ADDRESS&gt; 1000000000</pre>
         </div>
     </footer>
 
-    <!-- Core Application Logic (Cache-busted v2.0.0) -->
-    <script src="app.js?v=2.0.0"></script>
+    <!-- Core Application Logic (Cache-busted v2.1.0) -->
+    <script src="app.js?v=2.1.0"></script>
 </body>
 </html>

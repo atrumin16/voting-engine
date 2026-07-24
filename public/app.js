@@ -1599,21 +1599,25 @@ async function createTokenOnChainPhantom() {
 // Save DAO Settings & Custom Branding
 async function saveDaoConfig() {
     const configs = {
-        dao_name: document.getElementById('cfgDaoName').value.trim(),
-        dao_logo_url: document.getElementById('cfgDaoLogo').value.trim(),
-        dao_description: document.getElementById('cfgDaoDesc').value.trim(),
-        quorum_percentage: document.getElementById('cfgQuorum').value,
-        announcement_banner: document.getElementById('cfgBanner').value.trim(),
-        link_twitter: document.getElementById('cfgTwitter').value.trim(),
-        link_github: document.getElementById('cfgGithub').value.trim(),
-        link_docs: document.getElementById('cfgDocs').value.trim(),
-        link_discord: document.getElementById('cfgDiscord').value.trim(),
-        footer_text: document.getElementById('cfgFooterText').value.trim(),
-        maintenance_mode: document.getElementById('cfgMaintenance').checked ? 'true' : 'false'
+        dao_name: document.getElementById('cfgDaoName') ? document.getElementById('cfgDaoName').value.trim() : 'Attestto Governance',
+        dao_logo_url: document.getElementById('cfgDaoLogo') ? document.getElementById('cfgDaoLogo').value.trim() : '',
+        dao_description: document.getElementById('cfgDaoDesc') ? document.getElementById('cfgDaoDesc').value.trim() : '',
+        quorum_percentage: document.getElementById('cfgQuorum') ? document.getElementById('cfgQuorum').value : '10',
+        announcement_banner: document.getElementById('cfgBanner') ? document.getElementById('cfgBanner').value.trim() : '',
+        link_twitter: document.getElementById('cfgTwitter') ? document.getElementById('cfgTwitter').value.trim() : '',
+        link_github: document.getElementById('cfgGithub') ? document.getElementById('cfgGithub').value.trim() : '',
+        link_docs: document.getElementById('cfgDocs') ? document.getElementById('cfgDocs').value.trim() : '',
+        link_discord: document.getElementById('cfgDiscord') ? document.getElementById('cfgDiscord').value.trim() : '',
+        footer_text: document.getElementById('cfgFooterText') ? document.getElementById('cfgFooterText').value.trim() : '',
+        maintenance_mode: document.getElementById('cfgMaintenance') && document.getElementById('cfgMaintenance').checked ? 'true' : 'false',
+        proposal_deposit_fee: document.getElementById('cfgProposalFee') ? document.getElementById('cfgProposalFee').value : '0.05',
+        council_fee: document.getElementById('cfgCouncilFee') ? document.getElementById('cfgCouncilFee').value : '0.5'
     };
 
     await sendAdminAction('update_config', { configs });
 }
+
+window.saveAdminConfig = saveDaoConfig;
 
 // Add Treasury Transaction Admin
 async function addTreasuryTxAdmin() {
