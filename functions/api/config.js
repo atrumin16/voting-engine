@@ -24,7 +24,8 @@ export async function onRequestGet(context) {
         // Check if userWallet is admin
         let isAdmin = false;
         if (userWallet) {
-            isAdmin = adminWallets.includes(userWallet);
+            const cleanWallet = userWallet.trim();
+            isAdmin = adminWallets.some(w => w.trim() === cleanWallet);
         }
 
         return new Response(JSON.stringify({

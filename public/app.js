@@ -235,6 +235,7 @@ async function fetchDaoConfig() {
 
         // Admin check
         isUserAdmin = !!daoConfig.is_user_admin;
+        console.log("[Attestto DAO] Connected Wallet:", userWallet, "| Is Admin:", isUserAdmin, "| Admin List:", daoConfig.admin_wallets);
         updateAdminViewAccess();
     } catch (err) {
         console.error("Config fetch error:", err);
