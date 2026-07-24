@@ -84,6 +84,7 @@ export async function initDb(env) {
             // Tokenomics Configuration Seeds
             env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('governance_token_mint', 'ATTESTTo111111111111111111111111111111111')"),
             env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('governance_token_symbol', '$ATTEST')"),
+            env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('governance_token_logo', 'https://avatars.githubusercontent.com/u/108633374?s=200&v=4')"),
             env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('governance_token_supply', '1000000')"),
             env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('governance_token_decimals', '9')"),
             // Founder Whitelist & 100k ATTEST Multiplier (10.0x)
