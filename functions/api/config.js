@@ -1,6 +1,5 @@
 // functions/api/config.js
 import { initDb } from './_db.js';
-import { checkIsAdmin } from './_auth.js';
 
 export async function onRequestGet(context) {
     const { request, env } = context;
@@ -31,6 +30,8 @@ export async function onRequestGet(context) {
         return new Response(JSON.stringify({
             dao_name: configMap.dao_name || "Attestto Governance",
             dao_description: configMap.dao_description || "Decentralized Decision-Making & Reputation Governance Protocol",
+            dao_logo_url: configMap.dao_logo_url || "https://avatars.githubusercontent.com/u/108633374?s=200&v=4",
+            theme_accent: configMap.theme_accent || "purple",
             announcement_banner: configMap.announcement_banner || "",
             min_proposal_power: parseFloat(configMap.min_proposal_power || "1.0"),
             quorum_percentage: parseFloat(configMap.quorum_percentage || "10"),
@@ -40,6 +41,10 @@ export async function onRequestGet(context) {
             link_twitter: configMap.link_twitter || "https://x.com/attesttoID",
             link_github: configMap.link_github || "https://github.com/Attestto-com",
             link_docs: configMap.link_docs || "https://attestto.com",
+            link_discord: configMap.link_discord || "",
+            link_telegram: configMap.link_telegram || "",
+            link_forum: configMap.link_forum || "",
+            footer_text: configMap.footer_text || "© 2026 Attestto Governance. Powered by Cloudflare Pages & Solana.",
             admin_wallets: adminWallets,
             is_user_admin: isAdmin
         }), {

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attestto DAO Governance Protocol</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/108633374?s=200&v=4">
+    <link id="daoFavicon" rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/108633374?s=200&v=4">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +39,14 @@
             }
         }
     </script>
-    <style>
+    <style id="themeDynamicStyles">
+        :root {
+            --accent-primary: #8b5cf6;
+            --accent-gradient-from: #8b5cf6;
+            --accent-gradient-to: #6d28d9;
+            --accent-glow: rgba(139, 92, 246, 0.35);
+            --accent-border: rgba(139, 92, 246, 0.2);
+        }
         body { 
             background-color: #08070f; 
             color: #f3f4f6; 
@@ -52,31 +59,31 @@
         .glass-panel { 
             background: rgba(19, 15, 33, 0.85); 
             backdrop-filter: blur(16px); 
-            border: 1px solid rgba(139, 92, 246, 0.2); 
+            border: 1px solid var(--accent-border); 
         }
         .glass-card {
             background: linear-gradient(180deg, rgba(25, 19, 44, 0.75) 0%, rgba(14, 10, 26, 0.9) 100%);
-            border: 1px solid rgba(139, 92, 246, 0.18);
+            border: 1px solid var(--accent-border);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .glass-card:hover {
             border-color: rgba(168, 85, 247, 0.45);
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px -10px rgba(139, 92, 246, 0.25);
+            box-shadow: 0 12px 32px -10px var(--accent-glow);
         }
         .btn-glow { 
-            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); 
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+            background: linear-gradient(135deg, var(--accent-gradient-from) 0%, var(--accent-gradient-to) 100%); 
+            box-shadow: 0 4px 15px var(--accent-glow);
             transition: all 0.2s ease; 
         }
         .btn-glow:hover { 
-            box-shadow: 0 6px 22px rgba(139, 92, 246, 0.55); 
+            box-shadow: 0 6px 22px var(--accent-glow); 
             transform: translateY(-1px);
         }
         .icon-btn {
             transition: all 0.2s ease;
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(139, 92, 246, 0.2);
+            border: 1px solid var(--accent-border);
         }
         .icon-btn:hover {
             background: rgba(139, 92, 246, 0.2);
@@ -98,14 +105,13 @@
         <button onclick="dismissAnnouncement()" class="absolute right-4 top-2.5 text-purple-400 hover:text-white">&times;</button>
     </div>
 
-    <!-- Navigation Header (Realms.today Style) -->
+    <!-- Navigation Header -->
     <nav class="sticky top-0 z-40 border-b border-[#251c3a] glass-panel px-4 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
-        <!-- Logo & Branding -->
+        <!-- Logo & Title (Clean, relief removed) -->
         <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('proposals')">
-            <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="Attestto Logo" class="w-9 h-9 rounded-xl shadow-lg shadow-purple-500/30 border border-purple-500/40">
+            <img id="daoLogoImg" src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="Attestto Logo" class="w-9 h-9 rounded-xl border border-purple-500/30">
             <div>
                 <span id="daoTitleNav" class="font-display text-xl font-extrabold tracking-tight text-white">ATTESTTO</span>
-                <span class="text-xs px-2 py-0.5 ml-1.5 font-bold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">DAO</span>
             </div>
         </div>
 
@@ -128,24 +134,45 @@
             </button>
         </div>
 
-        <!-- Social Icons Group & Wallet Connection -->
+        <!-- Social Icons & Wallet Connection -->
         <div class="flex items-center gap-3">
-            <!-- Social SVG Buttons Header -->
+            <!-- Theme Accent Selector & Social Icons -->
             <div class="hidden sm:flex items-center gap-1.5">
+                <!-- Theme Accent Picker Dropdown -->
+                <div class="relative group">
+                    <button title="Change Accent Theme" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                        🎨
+                    </button>
+                    <div class="absolute right-0 top-full mt-2 hidden group-hover:flex flex-col gap-1 p-2 rounded-2xl glass-panel border border-[#251c3a] shadow-2xl z-50 min-w-max">
+                        <button onclick="setAppTheme('purple')" class="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-purple-500/20 text-purple-300">
+                            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Electric Purple
+                        </button>
+                        <button onclick="setAppTheme('cyan')" class="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-cyan-500/20 text-cyan-300">
+                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> Cyber Cyan
+                        </button>
+                        <button onclick="setAppTheme('emerald')" class="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-emerald-500/20 text-emerald-300">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Emerald Green
+                        </button>
+                        <button onclick="setAppTheme('gold')" class="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-amber-500/20 text-amber-300">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Solar Gold
+                        </button>
+                    </div>
+                </div>
+
                 <!-- X (Twitter) Logo -->
-                <a id="headerX" href="https://x.com/attesttoID" target="_blank" title="Follow on X (Twitter)" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                <a id="headerX" href="https://x.com/attesttoID" target="_blank" title="X (Twitter)" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
                 </a>
                 <!-- GitHub Logo -->
-                <a id="headerGithub" href="https://github.com/Attestto-com" target="_blank" title="View Source on GitHub" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                <a id="headerGithub" href="https://github.com/Attestto-com" target="_blank" title="GitHub" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
                     </svg>
                 </a>
-                <!-- Documentation Logo -->
-                <a id="headerDocs" href="https://attestto.com" target="_blank" title="Read Documentation" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                <!-- Docs Logo -->
+                <a id="headerDocs" href="https://attestto.com" target="_blank" title="Documentation" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
@@ -487,7 +514,7 @@
                         <span>👑</span> Admin Control Center
                     </h2>
                     <p class="text-gray-400 text-xs md:text-sm mt-1">
-                        Configure DAO rules, manage proposal states, record treasury operations, assign member aliases, and register admins.
+                        Configure DAO rules, customize logos, themes, social channels, manage proposals, and record treasury operations.
                     </p>
                 </div>
                 <div class="text-xs text-amber-300/80 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono">
@@ -498,7 +525,7 @@
             <!-- Admin Sub-Navigation Tabs -->
             <div class="flex flex-wrap gap-2 border-b border-[#251c3a] pb-3">
                 <button onclick="switchAdminSubTab('general')" id="subTabGeneral" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                    ⚙️ DAO Config
+                    ⚙️ DAO Config & Branding
                 </button>
                 <button onclick="switchAdminSubTab('treasury')" id="subTabTreasury" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white">
                     🏦 Treasury & Multisig
@@ -523,14 +550,19 @@
                 </button>
             </div>
 
-            <!-- ADMIN SUB-PANEL 1: GENERAL DAO CONFIG -->
+            <!-- ADMIN SUB-PANEL 1: GENERAL DAO CONFIG & BRANDING -->
             <div id="adminPanelGeneral" class="admin-panel space-y-6 max-w-4xl">
                 <div class="glass-panel p-6 rounded-2xl space-y-4 border border-[#251c3a]">
-                    <h3 class="font-display text-lg font-bold text-white">General DAO Settings</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <h3 class="font-display text-lg font-bold text-white">General DAO Branding & System Settings</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">DAO Title</label>
                             <input type="text" id="cfgDaoName" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Custom Logo URL</label>
+                            <input type="url" id="cfgDaoLogo" placeholder="https://..." class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Default Quorum Required (% power)</label>
@@ -539,7 +571,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-gray-300 mb-1">DAO Subtitle / Description</label>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">DAO Subtitle / Protocol Rationale</label>
                         <textarea id="cfgDaoDesc" rows="2" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
                     </div>
 
@@ -563,13 +595,24 @@
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Discord / Community URL (Optional)</label>
+                            <input type="text" id="cfgDiscord" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="https://discord.gg/attestto">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Footer Copyright Text</label>
+                            <input type="text" id="cfgFooterText" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="© 2026 Attestto Governance. Powered by Cloudflare Pages & Solana.">
+                        </div>
+                    </div>
+
                     <div class="pt-2 flex items-center justify-between">
                         <label class="flex items-center gap-2 text-xs font-semibold text-red-400 cursor-pointer">
                             <input type="checkbox" id="cfgMaintenance" class="w-4 h-4 rounded border-red-500 text-red-600 focus:ring-red-500 bg-[#0b0817]">
                             <span>Pause DAO Voting (Emergency Maintenance Mode)</span>
                         </label>
                         <button onclick="saveDaoConfig()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
-                            Save Configs (Sign)
+                            Save Configs & Branding (Sign)
                         </button>
                     </div>
                 </div>
@@ -868,37 +911,33 @@
     <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- FOOTER (Realms.today Style) -->
+    <!-- FOOTER (Clean Icons Only, No Bottom-Left Logo) -->
     <footer class="mt-auto border-t border-[#251c3a] py-6 px-4 text-center text-xs text-gray-500 glass-panel">
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" class="w-5 h-5 rounded-md opacity-80" alt="Attestto Logo">
-                <span>© 2026 Attestto Governance. Powered by Cloudflare Pages & Solana.</span>
+            <div>
+                <span id="footerText">© 2026 Attestto Governance. Powered by Cloudflare Pages & Solana.</span>
             </div>
-            <!-- Social SVG Links Footer -->
-            <div class="flex items-center gap-3 text-gray-400">
+            <!-- Social SVG Links Footer (Icon-only buttons) -->
+            <div class="flex items-center gap-2 text-gray-400">
                 <!-- X (Twitter) Link -->
-                <a id="footerX" href="https://x.com/attesttoID" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#251c3a] hover:border-purple-500/50 hover:bg-purple-500/10 hover:text-white transition-all text-xs font-medium">
-                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <a id="footerX" href="https://x.com/attesttoID" target="_blank" title="X (Twitter)" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
-                    <span>𝕏 X (Twitter)</span>
                 </a>
 
                 <!-- GitHub Link -->
-                <a id="footerGithub" href="https://github.com/Attestto-com" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#251c3a] hover:border-purple-500/50 hover:bg-purple-500/10 hover:text-white transition-all text-xs font-medium">
-                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <a id="footerGithub" href="https://github.com/Attestto-com" target="_blank" title="GitHub" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
                     </svg>
-                    <span>GitHub</span>
                 </a>
 
                 <!-- Docs Link -->
-                <a id="footerDocs" href="https://attestto.com" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#251c3a] hover:border-purple-500/50 hover:bg-purple-500/10 hover:text-white transition-all text-xs font-medium">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a id="footerDocs" href="https://attestto.com" target="_blank" title="Documentation" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    <span>Documentation</span>
                 </a>
             </div>
         </div>

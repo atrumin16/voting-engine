@@ -55,8 +55,109 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
+// Theme Customizer Engine (Expandable Color Accent Palettes)
+function setAppTheme(themeName) {
+    const themes = {
+        purple: {
+            primary: '#8b5cf6',
+            from: '#8b5cf6',
+            to: '#6d28d9',
+            glow: 'rgba(139, 92, 246, 0.35)',
+            border: 'rgba(139, 92, 246, 0.2)'
+        },
+        cyan: {
+            primary: '#06b6d4',
+            from: '#06b6d4',
+            to: '#0284c7',
+            glow: 'rgba(6, 182, 212, 0.35)',
+            border: 'rgba(6, 182, 212, 0.25)'
+        },
+        emerald: {
+            primary: '#10b981',
+            from: '#10b981',
+            to: '#047857',
+            glow: 'rgba(16, 185, 129, 0.35)',
+            border: 'rgba(16, 185, 129, 0.25)'
+        },
+        gold: {
+            primary: '#f59e0b',
+            from: '#f59e0b',
+            to: '#d97706',
+            glow: 'rgba(245, 158, 11, 0.35)',
+            border: 'rgba(245, 158, 11, 0.25)'
+        }
+    };
+
+    const t = themes[themeName] || themes.purple;
+    const styleEl = document.getElementById('themeDynamicStyles');
+    if (styleEl) {
+        styleEl.textContent = `
+            :root {
+                --accent-primary: ${t.primary};
+                --accent-gradient-from: ${t.from};
+                --accent-gradient-to: ${t.to};
+                --accent-glow: ${t.glow};
+                --accent-border: ${t.border};
+            }
+            body { 
+                background-color: #08070f; 
+                color: #f3f4f6; 
+                font-family: 'Inter', sans-serif; 
+                background-image: 
+                    radial-gradient(at 0% 0%, ${t.glow} 0px, transparent 50%),
+                    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+                background-attachment: fixed;
+            }
+            .glass-panel { 
+                background: rgba(19, 15, 33, 0.85); 
+                backdrop-filter: blur(16px); 
+                border: 1px solid var(--accent-border); 
+            }
+            .glass-card {
+                background: linear-gradient(180deg, rgba(25, 19, 44, 0.75) 0%, rgba(14, 10, 26, 0.9) 100%);
+                border: 1px solid var(--accent-border);
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .glass-card:hover {
+                border-color: ${t.primary};
+                transform: translateY(-2px);
+                box-shadow: 0 12px 32px -10px ${t.glow};
+            }
+            .btn-glow { 
+                background: linear-gradient(135deg, ${t.from} 0%, ${t.to} 100%); 
+                box-shadow: 0 4px 15px ${t.glow};
+                transition: all 0.2s ease; 
+            }
+            .btn-glow:hover { 
+                box-shadow: 0 6px 22px ${t.glow}; 
+                transform: translateY(-1px);
+            }
+            .icon-btn {
+                transition: all 0.2s ease;
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid var(--accent-border);
+            }
+            .icon-btn:hover {
+                background: ${t.glow};
+                border-color: ${t.primary};
+                color: #ffffff;
+                transform: translateY(-1px);
+            }
+            .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+            .custom-scrollbar::-webkit-scrollbar-track { background: #0c0918; }
+            .custom-scrollbar::-webkit-scrollbar-thumb { background: #2e2347; border-radius: 4px; }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: ${t.primary}; }
+        `;
+    }
+    localStorage.setItem('attestto_theme_accent', themeName);
+}
+
 // Initialize Application
 document.addEventListener('DOMContentLoaded', async () => {
+    // Restore saved accent theme
+    const savedTheme = localStorage.getItem('attestto_theme_accent');
+    if (savedTheme) setAppTheme(savedTheme);
+
     await fetchDaoConfig();
     await loadProposals();
     await loadMembers();
@@ -71,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (e) {}
     }
 
-    // Check hash URL for direct section access (e.g. #admin, #members, #treasury)
+    // Check hash URL for direct section access
     const hash = window.location.hash.replace('#', '');
     if (['proposals', 'members', 'treasury', 'analytics', 'admin'].includes(hash)) {
         switchTab(hash);
@@ -85,26 +186,39 @@ async function fetchDaoConfig() {
         const res = await fetch(url);
         daoConfig = await res.json();
 
-        // Update Nav & Main Titles
+        // Update Logo & Nav Titles
+        if (daoConfig.dao_logo_url) {
+            const logoImg = document.getElementById('daoLogoImg');
+            if (logoImg) logoImg.src = daoConfig.dao_logo_url;
+            const favEl = document.getElementById('daoFavicon');
+            if (favEl) favEl.href = daoConfig.dao_logo_url;
+            const cfgLogo = document.getElementById('cfgDaoLogo');
+            if (cfgLogo) cfgLogo.value = daoConfig.dao_logo_url;
+        }
+
         if (daoConfig.dao_name) {
             document.getElementById('daoTitleNav').textContent = daoConfig.dao_name.toUpperCase();
             document.getElementById('daoMainTitle').textContent = daoConfig.dao_name;
+            if (document.getElementById('cfgDaoName')) document.getElementById('cfgDaoName').value = daoConfig.dao_name;
         }
         if (daoConfig.dao_description) {
             document.getElementById('daoSubTitle').textContent = daoConfig.dao_description;
-            document.getElementById('cfgDaoDesc').value = daoConfig.dao_description;
+            if (document.getElementById('cfgDaoDesc')) document.getElementById('cfgDaoDesc').value = daoConfig.dao_description;
         }
 
-        if (daoConfig.dao_name) document.getElementById('cfgDaoName').value = daoConfig.dao_name;
-        if (daoConfig.quorum_percentage) document.getElementById('cfgQuorum').value = daoConfig.quorum_percentage;
+        if (daoConfig.quorum_percentage && document.getElementById('cfgQuorum')) {
+            document.getElementById('cfgQuorum').value = daoConfig.quorum_percentage;
+        }
+
         if (daoConfig.announcement_banner) {
-            document.getElementById('cfgBanner').value = daoConfig.announcement_banner;
+            if (document.getElementById('cfgBanner')) document.getElementById('cfgBanner').value = daoConfig.announcement_banner;
             document.getElementById('announcementText').textContent = daoConfig.announcement_banner;
             document.getElementById('announcementBanner').classList.remove('hidden');
         } else {
             document.getElementById('announcementBanner').classList.add('hidden');
         }
 
+        // Social Links Binding
         if (daoConfig.link_twitter) {
             if (document.getElementById('cfgTwitter')) document.getElementById('cfgTwitter').value = daoConfig.link_twitter;
             if (document.getElementById('footerX')) document.getElementById('footerX').href = daoConfig.link_twitter;
@@ -121,7 +235,24 @@ async function fetchDaoConfig() {
             if (document.getElementById('headerDocs')) document.getElementById('headerDocs').href = daoConfig.link_docs;
         }
 
-        document.getElementById('cfgMaintenance').checked = !!daoConfig.maintenance_mode;
+        if (daoConfig.link_discord && document.getElementById('cfgDiscord')) {
+            document.getElementById('cfgDiscord').value = daoConfig.link_discord;
+        }
+
+        if (daoConfig.footer_text) {
+            const ft = document.getElementById('footerText');
+            if (ft) ft.textContent = daoConfig.footer_text;
+            const cfgFt = document.getElementById('cfgFooterText');
+            if (cfgFt) cfgFt.value = daoConfig.footer_text;
+        }
+
+        if (daoConfig.theme_accent && !localStorage.getItem('attestto_theme_accent')) {
+            setAppTheme(daoConfig.theme_accent);
+        }
+
+        if (document.getElementById('cfgMaintenance')) {
+            document.getElementById('cfgMaintenance').checked = !!daoConfig.maintenance_mode;
+        }
 
         // Admin check
         isUserAdmin = !!daoConfig.is_user_admin;
@@ -588,7 +719,7 @@ async function submitVote(choice) {
     }
 }
 
-// LOAD LOS MIEMBROS TAB
+// LOAD MEMBERS TAB
 async function loadMembers() {
     const loading = document.getElementById('membersLoading');
     const empty = document.getElementById('membersEmptyState');
@@ -703,7 +834,7 @@ function renderMembersList() {
     });
 }
 
-// LOAD TESORERÍA AMPLIADA TAB
+// LOAD TREASURY TAB
 async function loadTreasury() {
     try {
         const res = await fetch('/api/treasury');
@@ -904,16 +1035,19 @@ async function sendAdminAction(action, payload = {}) {
     }
 }
 
-// Save DAO Settings
+// Save DAO Settings & Custom Branding
 async function saveDaoConfig() {
     const configs = {
         dao_name: document.getElementById('cfgDaoName').value.trim(),
+        dao_logo_url: document.getElementById('cfgDaoLogo').value.trim(),
         dao_description: document.getElementById('cfgDaoDesc').value.trim(),
         quorum_percentage: document.getElementById('cfgQuorum').value,
         announcement_banner: document.getElementById('cfgBanner').value.trim(),
         link_twitter: document.getElementById('cfgTwitter').value.trim(),
         link_github: document.getElementById('cfgGithub').value.trim(),
         link_docs: document.getElementById('cfgDocs').value.trim(),
+        link_discord: document.getElementById('cfgDiscord').value.trim(),
+        footer_text: document.getElementById('cfgFooterText').value.trim(),
         maintenance_mode: document.getElementById('cfgMaintenance').checked ? 'true' : 'false'
     };
 
