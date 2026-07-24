@@ -51,9 +51,9 @@ export async function onRequestGet(context) {
 
         const results = await Promise.all(proposals.map(async (proposal) => {
             const votesRes = await env.DB.prepare(`
-                SELECT v.voter_address, v.choice, v.vote_power, v.reason, v.timestamp, u.display_name as voter_alias
+                SELECT v.wallet_address as voter_address, v.choice, v.vote_power, v.reason, v.timestamp, u.display_name as voter_alias
                 FROM votes v
-                LEFT JOIN user_profiles u ON v.voter_address = u.wallet_address
+                LEFT JOIN user_profiles u ON v.wallet_address = u.wallet_address
                 WHERE v.proposal_id = ?
                 ORDER BY v.timestamp DESC
             `).bind(proposal.id).all();
