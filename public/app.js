@@ -97,28 +97,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadTreasury();
     await loadAnalytics();
 
-    // Wait up to 2s for Phantom to inject itself into the page
-    const waitForPhantom = (ms = 2000) => new Promise(resolve => {
+    // Wait up to 3s for Phantom extension to inject itself
+    const waitForPhantom = (ms = 3000) => new Promise(resolve => {
         const start = Date.now();
         const check = () => {
-            const provider = window.phantom?.solana || window.solana;
-            if (provider && provider.isPhantom) return resolve(provider);
+            const p = window.phantom?.solana || window.solana;
+            if (p && p.isPhantom) return resolve(p);
             if (Date.now() - start > ms) return resolve(null);
-            setTimeout(check, 100);
+            setTimeout(check, 50);
         };
         check();
     });
 
     const provider = await waitForPhantom();
-    if (provider && provider.isConnected && provider.publicKey) {
+
+    if (provider) {
+        // Listen to Phantom events so admin badge always updates correctly
+        provider.on('connect', async (publicKey) => {
+            userWallet = publicKey.toString();
+            await updateWalletUI(); // internally calls fetchDaoConfig → shows admin panel
+        });
+
+        provider.on('disconnect', () => {
+            disconnectWallet();
+        });
+
+        provider.on('accountChanged', async (publicKey) => {
+            if (publicKey) {
+                userWallet = publicKey.toString();
+                await updateWalletUI();
+            } else {
+                disconnectWallet();
+            }
+        });
+
+        // Try silent reconnect (no popup — only works if user previously authorized this domain)
         try {
-            userWallet = provider.publicKey.toString();
-            await updateWalletUI(); // internally calls fetchDaoConfig with wallet → admin check
+            const resp = await provider.connect({ onlyIfTrusted: true });
+            userWallet = (resp.publicKey || provider.publicKey).toString();
+            await updateWalletUI(); // calls fetchDaoConfig with wallet → admin check
         } catch (e) {
-            await fetchDaoConfig(); // fallback without wallet
+            // User hasn't authorized this domain yet — show Connect button, fetch public config
+            await fetchDaoConfig();
         }
     } else {
-        await fetchDaoConfig(); // no wallet connected, fetch public config
+        // Phantom not installed — fetch public config without wallet
+        await fetchDaoConfig();
     }
 
     // Check hash URL for direct section access
@@ -127,6 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         switchTab(hash);
     }
 });
+
 
 // Fetch DAO Public Configuration
 async function fetchDaoConfig() {
