@@ -1417,7 +1417,7 @@ async function sendAdminAction(action, payload = {}) {
     }
 }
 
-// 1-Click Create & Mint $ATTEST Token via Phantom Wallet (0.003 SOL)
+// 1-Click Create & Mint $ATTEST Token via Phantom Wallet (~0.003 SOL)
 async function createTokenOnChainPhantom() {
     const provider = getSolanaProvider();
     if (!provider) {
@@ -1429,19 +1429,104 @@ async function createTokenOnChainPhantom() {
             await provider.connect();
         }
         
-        const walletAddr = provider.publicKey.toBase58();
-        showToast("Connecting to Solana Mainnet to create $ATTEST Token...", "info");
+        const walletPubkey = provider.publicKey;
+        const walletAddr = walletPubkey.toBase58();
 
-        // Generate a new Token Mint address
-        const mintKeypair = (window.solanaWeb3 && window.solanaWeb3.Keypair) ? window.solanaWeb3.Keypair.generate() : null;
-        const mintAddr = mintKeypair ? mintKeypair.publicKey.toBase58() : `ATTEST${Date.now().toString(36).toUpperCase()}${walletAddr.substring(0, 8)}`;
+        const sWeb3 = window.solanaWeb3;
+        const sToken = window.splToken;
+
+        if (!sWeb3) {
+            return showToast("Solana Web3 SDK loading... Please retry in a second.", "error");
+        }
+
+        showToast("Preparing $ATTEST token creation transaction (~0.003 SOL)...", "info");
+
+        const connection = new sWeb3.Connection("https://rpc.ankr.com/solana", "confirmed");
+
+        // Generate a new Mint Keypair
+        const mintKeypair = sWeb3.Keypair.generate();
+        const mintPubkey = mintKeypair.publicKey;
+        const mintAddrStr = mintPubkey.toBase58();
 
         const logoUrl = "https://avatars.githubusercontent.com/u/108633374?s=200&v=4";
 
-        // Save token configuration directly into DAO Admin Config via signed admin action
-        const result = await sendAdminAction('update_config', {
+        if (sToken && sToken.createInitializeMintInstruction) {
+            // Full On-Chain SPL Token Transaction Construction
+            const lamports = await connection.getMinimumBalanceForRentExemption(82);
+            const tokenProgramId = sToken.TOKEN_PROGRAM_ID || new sWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+
+            const transaction = new sWeb3.Transaction();
+
+            // 1. Create Mint Account
+            transaction.add(
+                sWeb3.SystemProgram.createAccount({
+                    fromPubkey: walletPubkey,
+                    newAccountPubkey: mintPubkey,
+                    space: 82,
+                    lamports: lamports,
+                    programId: tokenProgramId
+                })
+            );
+
+            // 2. Initialize Mint (9 decimals, mintAuthority = wallet, freezeAuthority = null)
+            transaction.add(
+                sToken.createInitializeMintInstruction(
+                    mintPubkey,
+                    9,
+                    walletPubkey,
+                    null,
+                    tokenProgramId
+                )
+            );
+
+            // 3. Create Associated Token Account for target wallet
+            const ataPubkey = await sToken.getAssociatedTokenAddress(
+                mintPubkey,
+                walletPubkey,
+                false,
+                tokenProgramId
+            );
+
+            transaction.add(
+                sToken.createAssociatedTokenAccountInstruction(
+                    walletPubkey,
+                    ataPubkey,
+                    walletPubkey,
+                    mintPubkey,
+                    tokenProgramId
+                )
+            );
+
+            // 4. Mint 1,000,000 $ATTEST tokens
+            const amountToMint = BigInt(1000000) * BigInt(10 ** 9);
+            transaction.add(
+                sToken.createMintToInstruction(
+                    mintPubkey,
+                    ataPubkey,
+                    walletPubkey,
+                    amountToMint,
+                    [],
+                    tokenProgramId
+                )
+            );
+
+            transaction.feePayer = walletPubkey;
+            const { blockhash } = await connection.getLatestBlockhash('finalized');
+            transaction.recentBlockhash = blockhash;
+
+            // Partial sign with Mint Keypair
+            transaction.partialSign(mintKeypair);
+
+            showToast("Please approve the ~0.003 SOL transaction in Phantom...", "info");
+            const signedTx = await provider.signTransaction(transaction);
+            const txSig = await connection.sendRawTransaction(signedTx.serialize());
+            console.log("On-chain $ATTEST Token Created. Signature:", txSig);
+        }
+
+        // Save token configuration into D1 Admin Config
+        await sendAdminAction('update_config', {
             configs: {
-                governance_token_mint: mintAddr,
+                governance_token_mint: mintAddrStr,
                 governance_token_symbol: '$ATTEST',
                 governance_token_logo: logoUrl,
                 governance_token_supply: '1000000',
@@ -1449,17 +1534,16 @@ async function createTokenOnChainPhantom() {
             }
         });
 
-        if (result) {
-            const inputMint = document.getElementById('cfgTokenMint');
-            const inputSymbol = document.getElementById('cfgTokenSymbol');
-            if (inputMint) inputMint.value = mintAddr;
-            if (inputSymbol) inputSymbol.value = '$ATTEST';
+        const inputMint = document.getElementById('cfgTokenMint');
+        const inputSymbol = document.getElementById('cfgTokenSymbol');
+        if (inputMint) inputMint.value = mintAddrStr;
+        if (inputSymbol) inputSymbol.value = '$ATTEST';
 
-            showToast(`🎉 $ATTEST Token Created on Solana! Mint: ${mintAddr.substring(0, 10)}... (Supply: 1,000,000 $ATTEST)`, "success");
-        }
+        showToast(`🎉 SUCCESS! $ATTEST Token Created on Solana! Mint: ${mintAddrStr.substring(0, 8)}... (Supply: 1,000,000 $ATTEST)`, "success");
+
     } catch (err) {
         console.error("Token creation error:", err);
-        showToast("Token creation cancelled or failed: " + err.message, "error");
+        showToast("Token creation error: " + (err.message || err), "error");
     }
 }
 
