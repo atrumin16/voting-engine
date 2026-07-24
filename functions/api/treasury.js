@@ -58,24 +58,12 @@ export async function onRequestGet(context) {
 
         const assets = [
             {
-                symbol: '$ATTEST',
-                name: 'Attestto Governance Token',
-                balance: 900000,
-                price: 1.00,
-                value_usd: 900000.00,
-                allocation_pct: 90,
-                logo_url: 'https://avatars.githubusercontent.com/u/108633374?s=200&v=4',
-                color: 'from-amber-500/20 to-purple-500/20',
-                mint_address: 'ATTESTTo111111111111111111111111111111111',
-                holder_distribution: '900k Treasury Vault (90%) | 100k Founder Alberto (10%)'
-            },
-            {
                 symbol: 'SOL',
                 name: 'Solana Native',
                 balance: solBalance,
                 price: 150.00,
                 value_usd: solBalance * 150.00,
-                allocation_pct: totalNetWorth > 0 ? Math.round(((solBalance * 150) / totalNetWorth) * 100) : 0,
+                allocation_pct: totalNetWorth > 0 ? Math.round(((solBalance * 150) / totalNetWorth) * 100) : 100,
                 logo_url: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
                 color: 'from-purple-500/20 to-indigo-500/20'
             },
@@ -91,6 +79,18 @@ export async function onRequestGet(context) {
             }
         ];
 
+        const tokenReserve = {
+            symbol: '$ATTEST',
+            name: 'Attestto Governance Token',
+            mint_address: '91Zh1Nh5Leuktcn878HACDGtTnEwXXpTdDXEMp18rMbU',
+            treasury_reserve_tokens: 900000,
+            founder_tokens: 100000,
+            total_supply: 1000000,
+            reserve_pct: 90,
+            logo_url: 'https://avatars.githubusercontent.com/u/108633374?s=200&v=4',
+            holder_distribution: '900k Treasury Vault (90%) | 100k Founder Alberto (10%)'
+        };
+
         const multisig = {
             vault_address: "8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV",
             threshold: `${adminWallets.length > 1 ? Math.ceil(adminWallets.length * 0.6) : 1} of ${adminWallets.length || 1} Signers`,
@@ -103,6 +103,7 @@ export async function onRequestGet(context) {
         return new Response(JSON.stringify({
             total_net_worth_usd: totalNetWorth,
             assets,
+            token_reserve: tokenReserve,
             multisig,
             transactions
         }), {

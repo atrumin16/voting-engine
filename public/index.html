@@ -195,11 +195,9 @@
 
     <!-- Navigation Header -->
     <nav class="sticky top-0 z-40 border-b border-[#251c3a] glass-panel px-4 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
-        <!-- Logo & Title (Bank-Grade Institutional Branding) -->
+        <!-- Logo & Title (Clean Institutional Branding) -->
         <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('proposals')">
-            <div class="w-10 h-10 rounded-2xl border border-purple-500/40 shadow-lg shadow-purple-500/10 overflow-hidden flex-shrink-0 bg-[#0d091a] p-0.5">
-                <img id="daoLogoImg" src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="Attestto Logo" class="w-full h-full object-cover rounded-xl">
-            </div>
+            <img id="daoLogoImg" src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="Attestto Logo" class="w-9 h-9 rounded-xl">
             <div>
                 <div class="flex items-center gap-2">
                     <span id="daoTitleNav" class="font-display text-lg md:text-xl font-black tracking-tight text-white">ATTESTTO</span>
@@ -531,6 +529,46 @@
                             <span>🛡️</span> Verified Multisig Governance
                         </div>
                         <p class="text-gray-400 text-[11px] leading-relaxed">All treasury outflows are cryptographically signed and audited by authorized council wallets before execution.</p>
+                </div>
+            </div>
+
+            <!-- EXCLUSIVE TOKEN RESERVE & GOVERNANCE ALLOCATION SECTION -->
+            <div id="treasuryTokenReserveCard" class="glass-panel p-6 rounded-3xl border border-amber-500/30 bg-gradient-to-br from-[#181106] via-[#1c1508] to-[#0d0a03] space-y-4 shadow-xl">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-12 h-12 rounded-2xl border-2 border-amber-500/40 shadow-xl overflow-hidden flex-shrink-0">
+                            <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="$ATTEST Token" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-display text-lg font-black text-amber-300">$ATTEST Protocol Token Reserve</h3>
+                                <span class="text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded-full">● GOVERNANCE RESERVE</span>
+                            </div>
+                            <p class="text-gray-400 text-xs mt-0.5">Exclusive protocol treasury reserve & tokenomics supply distribution. Separated from liquid USD net worth.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <a href="https://solscan.io/token/91Zh1Nh5Leuktcn878HACDGtTnEwXXpTdDXEMp18rMbU" target="_blank"
+                           class="flex items-center gap-1.5 px-3.5 py-2 bg-[#1a1400] hover:bg-amber-500/20 border border-amber-500/30 rounded-xl text-amber-300 text-xs font-bold transition-all">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 6v2H5v11h11v-5h2v7H3V6h7zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.585 5H13V3h8z"/></svg>
+                            Solscan Explorer
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-amber-500/20 text-xs">
+                    <div class="bg-[#0d0900] p-4 rounded-2xl border border-amber-500/10 space-y-1">
+                        <div class="text-amber-300 font-black text-xl font-display">900,000 $ATTEST</div>
+                        <div class="text-gray-400 text-[11px] font-semibold">Treasury Vault Reserve (90%)</div>
+                    </div>
+                    <div class="bg-[#0d0900] p-4 rounded-2xl border border-amber-500/10 space-y-1">
+                        <div class="text-amber-200 font-black text-xl font-display">100,000 $ATTEST</div>
+                        <div class="text-gray-400 text-[11px] font-semibold">Founder & Core Team (10%)</div>
+                    </div>
+                    <div class="bg-[#0d0900] p-4 rounded-2xl border border-amber-500/10 space-y-1">
+                        <div class="text-emerald-400 font-black text-xl font-display">1,000,000 $ATTEST</div>
+                        <div class="text-gray-400 text-[11px] font-semibold">Total On-Chain Max Supply</div>
                     </div>
                 </div>
             </div>
@@ -1512,7 +1550,7 @@
         </div>
     </footer>
 
-    <!-- Core Application Logic (Cache-busted v2.8.0) -->
-    <script src="app.js?v=2.8.0"></script>
+    <!-- Core Application Logic (Cache-busted v2.9.0) -->
+    <script src="app.js?v=2.9.0"></script>
 </body>
 </html>

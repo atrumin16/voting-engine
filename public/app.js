@@ -1346,41 +1346,48 @@ async function loadTreasury() {
             });
         }
 
-        // Render Asset Allocation Cards
+        // Render Asset Allocation Cards (Liquid Assets ONLY: SOL, USDC)
         const assetsGrid = document.getElementById('treasuryAssetsGrid');
-        assetsGrid.innerHTML = '';
-        (data.assets || []).forEach(ast => {
-            const card = document.createElement('div');
-            card.className = 'bg-[#0a0716] p-4 rounded-2xl border border-[#1f1730] flex flex-col justify-between space-y-3';
-            card.innerHTML = `
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-10 h-10 rounded-2xl bg-[#140e28] border border-[#251c3a] p-1.5 flex items-center justify-center shadow-md">
-                            <img src="${ast.logo_url || 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'}" class="w-full h-full rounded-full object-contain" alt="${ast.symbol}">
+        if (assetsGrid) {
+            assetsGrid.innerHTML = '';
+            const liquidAssets = (data.assets || []).filter(ast => ast.symbol !== '$ATTEST');
+            if (liquidAssets.length === 0) {
+                assetsGrid.innerHTML = `
+                    <div class="bg-[#0a0716] p-4 rounded-2xl border border-[#1f1730] flex items-center justify-between col-span-2">
+                        <div class="flex items-center gap-3">
+                            <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" class="w-8 h-8 rounded-full">
+                            <div>
+                                <div class="font-bold text-white text-sm">SOL (Solana Native)</div>
+                                <div class="text-gray-400 text-xs">0.00 SOL</div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="font-bold text-white text-sm">${ast.name}</div>
-                            <div class="text-xs text-gray-400 font-mono">${ast.symbol}</div>
+                        <div class="text-right">
+                            <div class="font-bold text-emerald-400">$0.00 USD</div>
+                            <div class="text-gray-500 text-[11px]">Liquid Treasury</div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div class="font-bold text-white text-sm">$${(ast.value_usd || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
-                        <div class="text-xs text-purple-300 font-semibold">${ast.balance} ${ast.symbol}</div>
-                    </div>
-                </div>
-
-                <div class="space-y-1">
-                    <div class="flex justify-between text-[10px] text-gray-400 font-medium">
-                        <span>Vault Allocation</span>
-                        <span>${ast.allocation_pct || 0}%</span>
-                    </div>
-                    <div class="w-full bg-[#140e28] rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-gradient-to-r ${ast.color} h-full transition-all" style="width: ${ast.allocation_pct || 0}%"></div>
-                    </div>
-                </div>
-            `;
-            assetsGrid.appendChild(card);
-        });
+                `;
+            } else {
+                liquidAssets.forEach(ast => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-[#0a0716] p-4 rounded-2xl border border-[#1f1730] flex items-center justify-between';
+                    card.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <img src="${ast.logo_url}" class="w-8 h-8 rounded-full">
+                            <div>
+                                <div class="font-bold text-white text-sm">${ast.symbol} (${ast.name})</div>
+                                <div class="text-gray-400 text-xs">${ast.balance} ${ast.symbol}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-emerald-400">$${(ast.value_usd || 0).toFixed(2)} USD</div>
+                            <div class="text-gray-500 text-[11px]">Allocation: ${ast.allocation_pct}%</div>
+                        </div>
+                    `;
+                    assetsGrid.appendChild(card);
+                });
+            }
+        }
 
         // Render Transaction History Table
         const txTable = document.getElementById('treasuryTxTable');
