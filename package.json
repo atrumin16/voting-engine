@@ -2,18 +2,14 @@
   "name": "attestto-governance",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev public",
+    "deploy": "wrangler pages deploy public"
+  },
   "dependencies": {
     "@noble/ed25519": "^3.1.0",
     "bs58": "^6.0.0",
     "buffer": "^6.0.3"
-  },
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  }
 }
