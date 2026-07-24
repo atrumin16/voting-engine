@@ -7,6 +7,57 @@ let currentProposalId = null;
 let currentProposalsData = [];
 let currentMembersData = [];
 let daoConfig = {};
+let currentSolPriceUsd = 150.00;
+
+// Fetch Live SOL/USD Exchange Rate from Public Oracles (Binance & Coinbase)
+async function fetchLiveSolPrice() {
+    try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDT');
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.price) {
+                currentSolPriceUsd = parseFloat(data.price);
+                updateSolFeeLabels();
+                return currentSolPriceUsd;
+            }
+        }
+    } catch (e) {}
+
+    try {
+        const res = await fetch('https://api.coinbase.com/v2/prices/SOL-USD/spot');
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.data && data.data.amount) {
+                currentSolPriceUsd = parseFloat(data.data.amount);
+                updateSolFeeLabels();
+                return currentSolPriceUsd;
+            }
+        }
+    } catch (e) {}
+
+    return currentSolPriceUsd;
+}
+
+function updateSolFeeLabels() {
+    const propInput = document.getElementById('cfgProposalFee');
+    const propLabel = document.getElementById('cfgProposalFeeUsd');
+    if (propInput && propLabel) {
+        const solVal = parseFloat(propInput.value || 0);
+        const usdVal = (solVal * currentSolPriceUsd).toFixed(2);
+        propLabel.textContent = `SOL (~$${usdVal} USD)`;
+    }
+
+    const councilInput = document.getElementById('cfgCouncilFee');
+    const councilLabel = document.getElementById('cfgCouncilFeeUsd');
+    if (councilInput && councilLabel) {
+        const solVal = parseFloat(councilInput.value || 0);
+        const usdVal = (solVal * currentSolPriceUsd).toFixed(2);
+        councilLabel.textContent = `SOL (~$${usdVal} USD)`;
+    }
+}
+
+window.fetchLiveSolPrice = fetchLiveSolPrice;
+window.updateSolFeeLabels = updateSolFeeLabels;
 
 // Robust Base58 Encoder for Uint8Array signatures
 function toBase58(buffer) {
@@ -91,6 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Restore saved theme mode (Dark / Light)
     const savedMode = localStorage.getItem('attestto_theme_mode') || 'dark';
     setThemeMode(savedMode);
+    fetchLiveSolPrice();
 
     await loadProposals();
     await loadMembers();
@@ -440,7 +492,7 @@ async function executeOnChainDeposit() {
     }
 
     const vaultAddress = "8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV";
-    const solPriceEst = 150;
+    const solPriceEst = currentSolPriceUsd;
     const usdVal = amountVal * solPriceEst;
 
     try {
