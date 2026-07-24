@@ -39,15 +39,9 @@
             }
         }
     </script>
-    <style id="themeDynamicStyles">
-        :root {
-            --accent-primary: #8b5cf6;
-            --accent-gradient-from: #8b5cf6;
-            --accent-gradient-to: #6d28d9;
-            --accent-glow: rgba(139, 92, 246, 0.35);
-            --accent-border: rgba(139, 92, 246, 0.2);
-        }
-        body { 
+    <style>
+        /* Dark Theme Default */
+        body.dark-mode, body:not(.light-mode) { 
             background-color: #08070f; 
             color: #f3f4f6; 
             font-family: 'Inter', sans-serif; 
@@ -56,34 +50,82 @@
                 radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
             background-attachment: fixed;
         }
-        .glass-panel { 
+        body.dark-mode .glass-panel, body:not(.light-mode) .glass-panel { 
             background: rgba(19, 15, 33, 0.85); 
             backdrop-filter: blur(16px); 
-            border: 1px solid var(--accent-border); 
+            border: 1px solid rgba(139, 92, 246, 0.2); 
         }
-        .glass-card {
+        body.dark-mode .glass-card, body:not(.light-mode) .glass-card {
             background: linear-gradient(180deg, rgba(25, 19, 44, 0.75) 0%, rgba(14, 10, 26, 0.9) 100%);
-            border: 1px solid var(--accent-border);
+            border: 1px solid rgba(139, 92, 246, 0.18);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .glass-card:hover {
+        body.dark-mode .glass-card:hover, body:not(.light-mode) .glass-card:hover {
             border-color: rgba(168, 85, 247, 0.45);
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px -10px var(--accent-glow);
+            box-shadow: 0 12px 32px -10px rgba(139, 92, 246, 0.25);
         }
+
+        /* Enterprise Light Theme */
+        body.light-mode {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-family: 'Inter', sans-serif;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.04) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.04) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        body.light-mode .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+            color: #0f172a;
+        }
+        body.light-mode .glass-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+            color: #0f172a;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body.light-mode .glass-card:hover {
+            border-color: #7c3aed;
+            box-shadow: 0 8px 24px -4px rgba(124, 58, 237, 0.12);
+            transform: translateY(-2px);
+        }
+        body.light-mode .text-white { color: #0f172a !important; }
+        body.light-mode .text-gray-400 { color: #64748b !important; }
+        body.light-mode .text-gray-300 { color: #475569 !important; }
+        body.light-mode .bg-\[\#120d24\], body.light-mode .bg-\[\#0b0817\], body.light-mode .bg-\[\#0c0819\], body.light-mode .bg-\[\#0d091a\], body.light-mode .bg-\[\#0a0716\] {
+            background-color: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-mode input, body.light-mode select, body.light-mode textarea {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
         .btn-glow { 
-            background: linear-gradient(135deg, var(--accent-gradient-from) 0%, var(--accent-gradient-to) 100%); 
-            box-shadow: 0 4px 15px var(--accent-glow);
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); 
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
             transition: all 0.2s ease; 
         }
         .btn-glow:hover { 
-            box-shadow: 0 6px 22px var(--accent-glow); 
+            box-shadow: 0 6px 22px rgba(139, 92, 246, 0.55); 
             transform: translateY(-1px);
         }
         .icon-btn {
             transition: all 0.2s ease;
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--accent-border);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        body.light-mode .icon-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #334155;
         }
         .icon-btn:hover {
             background: rgba(139, 92, 246, 0.2);
@@ -91,13 +133,17 @@
             color: #ffffff;
             transform: translateY(-1px);
         }
+        body.light-mode .icon-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #0c0918; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #2e2347; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #8b5cf6; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col custom-scrollbar text-gray-100">
+<body class="min-h-screen flex flex-col custom-scrollbar dark-mode text-gray-100">
 
     <!-- Top Announcement Banner -->
     <div id="announcementBanner" class="hidden bg-gradient-to-r from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-b border-purple-500/20 text-purple-200 text-xs md:text-sm py-2.5 px-4 text-center relative font-medium">
@@ -107,7 +153,7 @@
 
     <!-- Navigation Header -->
     <nav class="sticky top-0 z-40 border-b border-[#251c3a] glass-panel px-4 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
-        <!-- Logo & Title (Clean, relief removed) -->
+        <!-- Logo & Title -->
         <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('proposals')">
             <img id="daoLogoImg" src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="Attestto Logo" class="w-9 h-9 rounded-xl border border-purple-500/30">
             <div>
@@ -134,30 +180,13 @@
             </button>
         </div>
 
-        <!-- Social Icons & Wallet Connection -->
+        <!-- Theme Toggle (Moon / Sun) & Social Icons & Wallet Connection -->
         <div class="flex items-center gap-3">
-            <!-- Theme Accent Selector & Social Icons -->
             <div class="hidden sm:flex items-center gap-1.5">
-                <!-- Theme Accent Picker Dropdown -->
-                <div class="relative group">
-                    <button title="Change Accent Theme" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
-                        🎨
-                    </button>
-                    <div class="absolute right-0 top-full mt-2 hidden group-hover:flex flex-col gap-1 p-2 rounded-2xl glass-panel border border-[#251c3a] shadow-2xl z-50 min-w-max">
-                        <button onclick="setAppTheme('purple')" class="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-purple-500/20 text-purple-300">
-                            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Electric Purple
-                        </button>
-                        <button onclick="setAppTheme('cyan')" class="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-cyan-500/20 text-cyan-300">
-                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> Cyber Cyan
-                        </button>
-                        <button onclick="setAppTheme('emerald')" class="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-emerald-500/20 text-emerald-300">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Emerald Green
-                        </button>
-                        <button onclick="setAppTheme('gold')" class="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-amber-500/20 text-amber-300">
-                            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Solar Gold
-                        </button>
-                    </div>
-                </div>
+                <!-- Dark / Light Theme Toggle Button -->
+                <button id="themeToggleBtn" onclick="toggleDarkLightMode()" title="Toggle Dark/Light Mode" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center text-sm">
+                    <span id="themeToggleIcon">🌙</span>
+                </button>
 
                 <!-- X (Twitter) Logo -->
                 <a id="headerX" href="https://x.com/attesttoID" target="_blank" title="X (Twitter)" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
@@ -514,7 +543,7 @@
                         <span>👑</span> Admin Control Center
                     </h2>
                     <p class="text-gray-400 text-xs md:text-sm mt-1">
-                        Configure DAO rules, customize logos, themes, social channels, manage proposals, and record treasury operations.
+                        Configure DAO rules, customize logos, social channels, manage proposals, and record treasury operations.
                     </p>
                 </div>
                 <div class="text-xs text-amber-300/80 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono">
@@ -911,7 +940,7 @@
     <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- FOOTER (Clean Icons Only, No Bottom-Left Logo) -->
+    <!-- FOOTER -->
     <footer class="mt-auto border-t border-[#251c3a] py-6 px-4 text-center text-xs text-gray-500 glass-panel">
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
