@@ -872,29 +872,39 @@ function renderProposalsGrid(proposals) {
 async function openProposalDetailModal(proposalId) {
     currentProposalId = proposalId;
     try {
-        const res = await fetch(`/api/proposals?id=${proposalId}`);
-        const p = await res.json();
+        let p = (currentProposalsData || []).find(item => item.id == proposalId);
+        
+        try {
+            const res = await fetch(`/api/proposals?id=${proposalId}`);
+            const fetched = await res.json();
+            if (fetched) {
+                p = Array.isArray(fetched) ? (fetched.find(item => item.id == proposalId) || fetched[0]) : fetched;
+            }
+        } catch (e) {
+            console.warn("API fetch error, fallback to cached proposal data:", e);
+        }
+
         if (!p) return showToast("Proposal details not found", "error");
 
         document.getElementById('detailCategory').textContent = p.category || 'Governance';
-        document.getElementById('detailStatus').textContent = p.status.toUpperCase();
+        document.getElementById('detailStatus').textContent = (p.status || 'ACTIVE').toUpperCase();
         document.getElementById('detailId').textContent = `PIP-${p.id}`;
-        document.getElementById('detailTitle').textContent = p.title;
-        document.getElementById('detailDescription').textContent = p.description;
+        document.getElementById('detailTitle').textContent = p.title || 'Untitled Proposal';
+        document.getElementById('detailDescription').textContent = p.description || 'No description provided.';
         document.getElementById('detailAuthor').textContent = p.created_by ? `${p.created_by.substring(0, 6)}...${p.created_by.substring(p.created_by.length - 4)}` : 'DAO Member';
-        document.getElementById('detailCreated').textContent = new Date(p.start_time).toLocaleString();
-        document.getElementById('detailEnds').textContent = new Date(p.end_time).toLocaleString();
+        document.getElementById('detailCreated').textContent = p.start_time ? new Date(p.start_time).toLocaleString() : 'N/A';
+        document.getElementById('detailEnds').textContent = p.end_time ? new Date(p.end_time).toLocaleString() : 'N/A';
 
-        document.getElementById('detailYesPct').textContent = `${p.yes_pct}%`;
+        document.getElementById('detailYesPct').textContent = `${p.yes_pct || 0}%`;
         document.getElementById('detailYesPower').textContent = p.yes_power || 0;
-        document.getElementById('detailNoPct').textContent = `${p.no_pct}%`;
+        document.getElementById('detailNoPct').textContent = `${p.no_pct || 0}%`;
         document.getElementById('detailNoPower').textContent = p.no_power || 0;
-        document.getElementById('detailAbstainPct').textContent = `${p.abstain_pct}%`;
+        document.getElementById('detailAbstainPct').textContent = `${p.abstain_pct || 0}%`;
         document.getElementById('detailAbstainPower').textContent = p.abstain_power || 0;
 
-        document.getElementById('detailBarYes').style.width = `${p.yes_pct}%`;
-        document.getElementById('detailBarNo').style.width = `${p.no_pct}%`;
-        document.getElementById('detailBarAbstain').style.width = `${p.abstain_pct}%`;
+        document.getElementById('detailBarYes').style.width = `${p.yes_pct || 0}%`;
+        document.getElementById('detailBarNo').style.width = `${p.no_pct || 0}%`;
+        document.getElementById('detailBarAbstain').style.width = `${p.abstain_pct || 0}%`;
 
         // Render full voting audit ledger table of all members who voted
         const votersTable = document.getElementById('detailVotersTable');

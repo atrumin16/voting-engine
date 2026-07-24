@@ -7,6 +7,7 @@ export async function onRequestGet(context) {
 
     try {
         const url = new URL(request.url);
+        const idFilter = url.searchParams.get('id');
         const statusFilter = url.searchParams.get('status');
         const categoryFilter = url.searchParams.get('category');
         const search = url.searchParams.get('search');
@@ -19,6 +20,11 @@ export async function onRequestGet(context) {
 
         let query = "SELECT * FROM proposals WHERE 1=1";
         const params = [];
+
+        if (idFilter) {
+            query += " AND id = ?";
+            params.push(idFilter);
+        }
 
         if (statusFilter && statusFilter !== 'all') {
             query += " AND status = ?";
@@ -44,9 +50,13 @@ export async function onRequestGet(context) {
         const now = new Date();
 
         const results = await Promise.all(proposals.map(async (proposal) => {
-            const votesRes = await env.DB.prepare(
-                "SELECT choice, vote_power FROM votes WHERE proposal_id = ?"
-            ).bind(proposal.id).all();
+            const votesRes = await env.DB.prepare(`
+                SELECT v.voter_address, v.choice, v.vote_power, v.reason, v.timestamp, u.display_name as voter_alias
+                FROM votes v
+                LEFT JOIN user_profiles u ON v.voter_address = u.wallet_address
+                WHERE v.proposal_id = ?
+                ORDER BY v.timestamp DESC
+            `).bind(proposal.id).all();
 
             const votes = votesRes.results || [];
             let yesPower = 0;
@@ -72,7 +82,6 @@ export async function onRequestGet(context) {
 
             let currentStatus = proposal.status;
             if (currentStatus === 'active' && isExpired) {
-                // Auto-evaluate finished proposals
                 if (yesPower > noPower && totalPower > 0) {
                     currentStatus = 'passed';
                 } else {
@@ -93,16 +102,21 @@ export async function onRequestGet(context) {
                 no_pct: Math.round(noPct * 10) / 10,
                 abstain_pct: Math.round(abstainPct * 10) / 10,
                 quorum_required_power: quorumPct,
-                quorum_met: totalPower >= quorumPct
+                quorum_met: totalPower >= quorumPct,
+                votes
             };
         }));
 
+        if (idFilter && results.length > 0) {
+            return new Response(JSON.stringify(results[0]), {
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
         return new Response(JSON.stringify(results), {
-            headers: { 
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache'
-            }
+            headers: { 'Content-Type': 'application/json' }
         });
+
     } catch (error) {
         return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
