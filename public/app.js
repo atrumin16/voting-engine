@@ -1745,17 +1745,147 @@ function setDurationPreset(days) {
     endInput.value = new Date(future.getTime() - future.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 }
 
-// Primary Create Proposal Action Button Handler
-function handleNewProposalClick() {
+// Open & Close Community Proposal Creation Modal
+function openCreateProposalModal() {
     if (!userWallet) {
         showToast("Please connect your Phantom wallet first.", "info");
         connectWallet();
         return;
     }
-    switchTab('admin');
-    switchAdminSubTab('create');
+
+    const feeSol = parseFloat(daoConfig.proposal_deposit_fee || '0.001');
+    const feeUsd = (feeSol * currentSolPriceUsd).toFixed(2);
+
+    const feeSolEl = document.getElementById('modalProposalFeeSol');
+    const feeUsdEl = document.getElementById('modalProposalFeeUsd');
+    if (feeSolEl) feeSolEl.textContent = `${feeSol} SOL`;
+    if (feeUsdEl) feeUsdEl.textContent = `~$${feeUsd} USD`;
+
+    const modal = document.getElementById('createProposalModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
 }
-window.handleNewProposalClick = handleNewProposalClick;
+
+function closeCreateProposalModal() {
+    const modal = document.getElementById('createProposalModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+
+async function submitCommunityProposal() {
+    if (!userWallet) return showToast("Please connect your Phantom wallet first.", "error");
+
+    const title = document.getElementById('userPTitle').value.trim();
+    const category = document.getElementById('userPCategory').value;
+    const discussionUrl = document.getElementById('userPDiscussion').value.trim();
+    const description = document.getElementById('userPDesc').value.trim();
+
+    if (!title || !description) {
+        return showToast("Please fill in both Proposal Title and Description.", "error");
+    }
+
+    const feeSol = parseFloat(daoConfig.proposal_deposit_fee || '0.001');
+
+    try {
+        const btn = document.getElementById('btnSubmitCommunityProposal');
+        if (btn) btn.disabled = true;
+
+        // If anti-spam fee > 0 and user is not admin, execute 1-click SOL transfer to Treasury
+        if (feeSol > 0 && !isUserAdmin) {
+            showToast(`Initiating ${feeSol} SOL anti-spam deposit to DAO Treasury...`, "info");
+            const provider = getSolanaProvider();
+            if (provider && window.solanaWeb3 && provider.signAndSendTransaction) {
+                const rpcs = [
+                    'https://rpc.ankr.com/solana',
+                    'https://api.mainnet-beta.solana.com'
+                ];
+                let blockhash = null, connection = null;
+                for (const rpcUrl of rpcs) {
+                    try {
+                        const conn = new solanaWeb3.Connection(rpcUrl, 'confirmed');
+                        const bh = await conn.getLatestBlockhash('confirmed');
+                        if (bh && bh.blockhash) {
+                            blockhash = bh.blockhash;
+                            connection = conn;
+                            break;
+                        }
+                    } catch (e) {}
+                }
+
+                if (blockhash && connection) {
+                    const fromPubkey = new solanaWeb3.PublicKey(userWallet);
+                    const toPubkey = new solanaWeb3.PublicKey("8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV");
+                    const lamports = Math.round(feeSol * solanaWeb3.LAMPORTS_PER_SOL);
+
+                    const transaction = new solanaWeb3.Transaction().add(
+                        solanaWeb3.SystemProgram.transfer({
+                            fromPubkey,
+                            toPubkey,
+                            lamports
+                        })
+                    );
+                    transaction.feePayer = fromPubkey;
+                    transaction.recentBlockhash = blockhash;
+
+                    const signedTx = await provider.signTransaction(transaction);
+                    const txSig = await connection.sendRawTransaction(signedTx.serialize());
+                    await connection.confirmTransaction(txSig, 'confirmed');
+                    console.log("Proposal fee deposit signature:", txSig);
+                }
+            }
+        }
+
+        // Cryptographically sign proposal submission
+        const provider = getSolanaProvider();
+        const timestamp = Date.now();
+        const message = `Attestto Create Proposal: ${title} | Ts: ${timestamp}`;
+        const encoded = new TextEncoder().encode(message);
+        const signed = await provider.signMessage(encoded, "utf8");
+        const signatureBytes = signed.signature || signed;
+        const signatureBs58 = toBase58(signatureBytes);
+
+        const res = await fetch('/api/proposals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                wallet: userWallet,
+                signature: signatureBs58,
+                timestamp,
+                title,
+                description,
+                category,
+                discussionUrl
+            })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+            showToast("🎉 Proposal submitted successfully to Attestto DAO!", "success");
+            closeCreateProposalModal();
+            document.getElementById('userPTitle').value = '';
+            document.getElementById('userPDesc').value = '';
+            document.getElementById('userPDiscussion').value = '';
+            await loadProposals();
+        } else {
+            showToast(data.error || "Failed to submit proposal", "error");
+        }
+    } catch (err) {
+        console.error("Proposal submission error:", err);
+        showToast("Proposal creation cancelled or failed: " + (err.message || err), "error");
+    } finally {
+        const btn = document.getElementById('btnSubmitCommunityProposal');
+        if (btn) btn.disabled = false;
+    }
+}
+
+window.handleNewProposalClick = openCreateProposalModal;
+window.openCreateProposalModal = openCreateProposalModal;
+window.closeCreateProposalModal = closeCreateProposalModal;
+window.submitCommunityProposal = submitCommunityProposal;
 
 // Create Proposal Admin
 async function createProposalAdmin() {

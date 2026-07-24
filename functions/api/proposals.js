@@ -121,3 +121,50 @@ export async function onRequestGet(context) {
         return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
 }
+
+// Community Proposal Submission Endpoint
+export async function onRequestPost(context) {
+    const { request, env } = context;
+    await initDb(env);
+
+    try {
+        const body = await request.json();
+        const { wallet, signature, timestamp, title, description, category, startTime, endTime, discussionUrl } = body;
+
+        if (!wallet || !signature || !timestamp || !title || !description) {
+            return new Response(JSON.stringify({ error: "Missing required proposal fields: wallet, signature, timestamp, title, description" }), { status: 400 });
+        }
+
+        // Prevent replay attacks (2 min window)
+        if (Math.abs(Date.now() - timestamp) > 120000) {
+            return new Response(JSON.stringify({ error: "Proposal request expired or timestamp out of sync" }), { status: 400 });
+        }
+
+        // Verify cryptographic signature of the proposal creation action
+        const { verifySignature } = await import('./_auth.js');
+        const message = `Attestto Create Proposal: ${title} | Ts: ${timestamp}`;
+        await verifySignature(wallet, signature, message);
+
+        const start = startTime || new Date().toISOString();
+        const end = endTime || new Date(Date.now() + 7 * 86400000).toISOString();
+
+        await env.DB.prepare(`
+            INSERT INTO proposals (title, description, category, status, start_time, end_time, created_by, is_pinned, discussion_url)
+            VALUES (?, ?, ?, 'active', ?, ?, ?, 0, ?)
+        `).bind(
+            title, 
+            description, 
+            category || 'Governance', 
+            start, 
+            end, 
+            wallet, 
+            discussionUrl || ''
+        ).run();
+
+        return new Response(JSON.stringify({ success: true, message: "Proposal created successfully!" }), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } catch (error) {
+        return new Response(JSON.stringify({ error: error.message }), { status: 400 });
+    }
+}

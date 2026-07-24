@@ -1276,7 +1276,74 @@
         </div>
     </div>
 
+    <!-- COMMUNITY / OPEN CREATE PROPOSAL MODAL -->
+    <div id="createProposalModal" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 backdrop-blur-md p-4 overflow-y-auto custom-scrollbar">
+        <div class="glass-panel p-6 md:p-8 rounded-3xl max-w-2xl w-full border border-purple-500/30 space-y-6 relative shadow-2xl my-8">
+            <button onclick="closeCreateProposalModal()" class="absolute top-5 right-5 p-2 text-gray-400 hover:text-white rounded-xl bg-purple-500/10 hover:bg-purple-500/20 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
 
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">📝</span>
+                    <h2 class="font-display text-2xl font-black text-white">Create Governance Proposal</h2>
+                </div>
+                <p class="text-gray-400 text-xs mt-1">Submit a new initiative for community voting. Anyone with $ATTEST tokens can participate.</p>
+            </div>
+
+            <!-- Fee Notice Banner -->
+            <div id="proposalFeeBanner" class="bg-[#0e1813] border border-emerald-500/30 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-lg">🛡️</span>
+                    <div>
+                        <div class="font-bold text-emerald-300">Anti-Spam Proposal Deposit Required</div>
+                        <div class="text-gray-400 text-[11px]">Deposit routes directly to the DAO Treasury Vault</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div id="modalProposalFeeSol" class="font-bold text-emerald-300 font-mono">0.001 SOL</div>
+                    <div id="modalProposalFeeUsd" class="text-[10px] text-gray-400">~$0.15 USD</div>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Proposal Title *</label>
+                    <input type="text" id="userPTitle" placeholder="e.g. PIP-2: Add Liquidity Reserve & Partner Program" class="w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 p-3 rounded-xl text-sm text-white focus:outline-none transition-colors">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Category</label>
+                        <select id="userPCategory" class="w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 p-3 rounded-xl text-xs text-purple-200 focus:outline-none transition-colors">
+                            <option value="Governance">Governance</option>
+                            <option value="Treasury">Treasury</option>
+                            <option value="Technical">Technical</option>
+                            <option value="Community">Community</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Discussion Link (Optional)</label>
+                        <input type="url" id="userPDiscussion" placeholder="https://forum.attestto.com/t/pip-2" class="w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 p-3 rounded-xl text-xs text-white focus:outline-none transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Description & Rationale * (Markdown Supported)</label>
+                    <textarea id="userPDesc" rows="5" placeholder="Detail the objectives, technical implementation, budget requested, and expected ROI for Attestto DAO..." class="w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 p-3 rounded-xl text-xs text-white focus:outline-none transition-colors custom-scrollbar"></textarea>
+                </div>
+            </div>
+
+            <div class="pt-2 flex items-center gap-3">
+                <button onclick="closeCreateProposalModal()" class="w-1/3 py-3 bg-[#120d24] hover:bg-[#1a142e] text-gray-400 hover:text-white font-bold rounded-2xl text-xs border border-[#251c3a] transition-all">
+                    Cancel
+                </button>
+                <button onclick="submitCommunityProposal()" id="btnSubmitCommunityProposal" class="w-2/3 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl text-xs shadow-xl shadow-purple-600/30 transition-all flex items-center justify-center gap-2">
+                    <span>🚀 Submit Proposal & Deposit</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- 1-CLICK TREASURY DEPOSIT MODAL -->
     <div id="depositModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 overflow-y-auto custom-scrollbar">
@@ -1403,7 +1470,7 @@
         </div>
     </footer>
 
-    <!-- Core Application Logic (Cache-busted v2.5.0) -->
-    <script src="app.js?v=2.5.0"></script>
+    <!-- Core Application Logic (Cache-busted v2.6.0) -->
+    <script src="app.js?v=2.6.0"></script>
 </body>
 </html>
