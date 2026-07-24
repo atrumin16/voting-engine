@@ -1745,6 +1745,18 @@ function setDurationPreset(days) {
     endInput.value = new Date(future.getTime() - future.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 }
 
+// Primary Create Proposal Action Button Handler
+function handleNewProposalClick() {
+    if (!userWallet) {
+        showToast("Please connect your Phantom wallet first.", "info");
+        connectWallet();
+        return;
+    }
+    switchTab('admin');
+    switchAdminSubTab('create');
+}
+window.handleNewProposalClick = handleNewProposalClick;
+
 // Create Proposal Admin
 async function createProposalAdmin() {
     const title = document.getElementById('newPTitle').value.trim();

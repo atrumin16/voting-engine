@@ -311,6 +311,12 @@
                     <button onclick="loadProposals()" title="Refresh Proposals" class="p-2 bg-[#0d091a] border border-[#251c3a] hover:border-purple-500 text-gray-300 hover:text-white rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
+
+                    <!-- Create Proposal Primary Action Button -->
+                    <button onclick="handleNewProposalClick()" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs md:text-sm rounded-xl flex items-center gap-2 shadow-lg shadow-purple-600/30 transition-all transform hover:scale-105 active:scale-95">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span>Create Proposal</span>
+                    </button>
                 </div>
             </div>
 
@@ -1397,7 +1403,7 @@
         </div>
     </footer>
 
-    <!-- Core Application Logic (Cache-busted v2.4.0) -->
-    <script src="app.js?v=2.4.0"></script>
+    <!-- Core Application Logic (Cache-busted v2.5.0) -->
+    <script src="app.js?v=2.5.0"></script>
 </body>
 </html>
