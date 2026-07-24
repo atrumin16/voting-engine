@@ -271,44 +271,7 @@
                 <p id="daoSubTitle" class="text-gray-400 text-sm md:text-base leading-relaxed">
                     Shape the future of Attestto DAO. Vote on technical, treasury, and governance parameters using your Solana reputation.
                 </p>
-            </div>
-
-            <!-- Governance Pipeline Stage Banner -->
-            <div class="glass-panel p-4 rounded-2xl border border-purple-500/20 bg-gradient-to-r from-[#120a24] via-[#0e081c] to-[#0a0614] overflow-x-auto custom-scrollbar">
-                <div class="flex items-center justify-between min-w-[650px] text-xs">
-                    <div class="flex items-center gap-2 text-purple-300 font-bold">
-                        <span class="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center text-[10px] border border-purple-500/40">1</span>
-                        <span>Motion Draft</span>
-                    </div>
-                    <span class="text-gray-600">➔</span>
-                    <div class="flex items-center gap-2 text-purple-300 font-bold">
-                        <span class="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center text-[10px] border border-purple-500/40">2</span>
-                        <span>Forum Review</span>
-                    </div>
-                    <span class="text-gray-600">➔</span>
-                    <div class="flex items-center gap-2 text-emerald-400 font-bold">
-                        <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px] border border-emerald-500/40">3</span>
-                        <span>Voting Active</span>
-                    </div>
-                    <span class="text-gray-600">➔</span>
-                    <div class="flex items-center gap-2 text-cyan-400 font-bold">
-                        <span class="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center text-[10px] border border-cyan-500/40">4</span>
-                        <span>Quorum Check</span>
-                    </div>
-                    <span class="text-gray-600">➔</span>
-                    <div class="flex items-center gap-2 text-amber-300 font-bold">
-                        <span class="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center text-[10px] border border-amber-500/40">5</span>
-                        <span>48h Timelock</span>
-                    </div>
-                    <span class="text-gray-600">➔</span>
-                    <div class="flex items-center gap-2 text-emerald-300 font-bold">
-                        <span class="w-6 h-6 rounded-full bg-emerald-500/30 flex items-center justify-center text-[10px] border border-emerald-500/50">6</span>
-                        <span>On-Chain Execution</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Filters & Search Toolbar -->
+                 <!-- Filters & Search Toolbar -->
             <div class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 border border-[#251c3a]">
                 <!-- Search Input -->
                 <div class="relative w-full md:w-80">
@@ -316,7 +279,7 @@
                     <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search proposals..." class="w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 rounded-xl pl-10 pr-4 py-2 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none transition-colors">
                 </div>
 
-                <!-- Status & Category Filters & Delegation -->
+                <!-- Status & Category Filters -->
                 <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
                     <select id="statusFilter" onchange="applyFilters()" class="bg-[#0d091a] border border-[#251c3a] text-xs md:text-sm rounded-xl px-3 py-2 text-purple-300 focus:outline-none focus:border-purple-500">
                         <option value="all">All Statuses</option>
@@ -334,11 +297,6 @@
                         <option value="Technical">Technical</option>
                         <option value="Community">Community</option>
                     </select>
-
-                    <button onclick="openDelegationModal()" class="px-3.5 py-2 bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white rounded-xl border border-purple-500/30 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm">
-                        <span>🤝</span>
-                        <span>Delegate Vote</span>
-                    </button>
 
                     <button onclick="loadProposals()" title="Refresh Proposals" class="p-2 bg-[#0d091a] border border-[#251c3a] hover:border-purple-500 text-gray-300 hover:text-white rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -1098,43 +1056,7 @@
         </div>
     </div>
 
-    <!-- VOTE DELEGATION MODAL -->
-    <div id="delegationModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 overflow-y-auto custom-scrollbar">
-        <div class="glass-panel p-6 md:p-8 rounded-3xl max-w-lg w-full relative space-y-5 border border-purple-500/30 shadow-2xl my-8">
-            <button onclick="closeDelegationModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white p-2 rounded-xl bg-[#0b0817] hover:bg-purple-500/20 transition-colors">&times;</button>
-            
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xl text-purple-300 font-bold">
-                    🤝
-                </div>
-                <div>
-                    <h2 class="font-display text-xl font-extrabold text-white">Delegate Governance Voting Power</h2>
-                    <p class="text-gray-400 text-xs">Authorize a trusted council member or proxy wallet to vote on your behalf.</p>
-                </div>
-            </div>
 
-            <div class="space-y-4 pt-2">
-                <div class="bg-[#0c0819] p-3.5 rounded-2xl border border-[#251c3a] space-y-1 text-xs">
-                    <div class="text-gray-400">Your Current Active Delegate:</div>
-                    <div id="currentDelegateDisplay" class="font-mono text-amber-300 font-semibold">Self-Delegated (Direct Voting)</div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-gray-300 mb-1">Delegate Wallet Address or Member Alias</label>
-                    <input type="text" id="delegateWalletInput" placeholder="Solana Address or Member Alias" class="w-full bg-[#0c0819] border border-[#251c3a] focus:border-purple-500 p-3 rounded-xl text-xs text-white focus:outline-none font-mono">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="saveVoteDelegation()" class="btn-glow py-3 text-white font-extrabold text-xs rounded-xl transition-all shadow-lg">
-                        Confirm Delegation
-                    </button>
-                    <button onclick="revokeVoteDelegation()" class="py-3 bg-red-500/15 hover:bg-red-500/30 text-red-300 border border-red-500/30 font-bold text-xs rounded-xl transition-all">
-                        Reset / Self-Delegate
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- 1-CLICK TREASURY DEPOSIT MODAL -->
     <div id="depositModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 overflow-y-auto custom-scrollbar">
