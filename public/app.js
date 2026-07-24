@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             userWallet = window.solana.publicKey.toString();
             await updateWalletUI();
+            await fetchDaoConfig(); // Re-fetch with wallet so admin check works
         } catch (e) {}
     }
 
@@ -1441,7 +1442,7 @@ async function createTokenOnChainPhantom() {
 
         showToast("Preparing $ATTEST token creation transaction (~0.003 SOL)...", "info");
 
-        const connection = new sWeb3.Connection("https://rpc.ankr.com/solana", "confirmed");
+        const connection = new sWeb3.Connection("https://api.mainnet-beta.solana.com", "confirmed");
 
         // Generate a new Mint Keypair
         const mintKeypair = sWeb3.Keypair.generate();
