@@ -68,23 +68,21 @@ export async function onRequestPost(context) {
             const { configs } = body;
             if (!configs || typeof configs !== 'object') throw new Error("configs object required");
 
-            const statements = [];
             for (const [type, value] of Object.entries(configs)) {
-                statements.push(
-                    env.DB.prepare(`
-                        INSERT INTO admin_config (type, value, is_active)
-                        VALUES (?, ?, 1)
-                        ON CONFLICT(type, value) DO UPDATE SET is_active = 1
-                    `).bind(type, String(value))
-                );
-                // If setting single key value for config like dao_name, deactivate old values of that type
-                statements.push(
-                    env.DB.prepare("UPDATE admin_config SET value = ? WHERE type = ?").bind(String(value), type)
-                );
-            }
+                const strValue = String(value);
+                const existing = await env.DB.prepare(
+                    "SELECT id FROM admin_config WHERE type = ?"
+                ).bind(type).first();
 
-            if (statements.length > 0) {
-                await env.DB.batch(statements);
+                if (existing) {
+                    await env.DB.prepare(
+                        "UPDATE admin_config SET value = ?, is_active = 1 WHERE type = ?"
+                    ).bind(strValue, type).run();
+                } else {
+                    await env.DB.prepare(
+                        "INSERT INTO admin_config (type, value, is_active) VALUES (?, ?, 1)"
+                    ).bind(type, strValue).run();
+                }
             }
 
             await logAudit('update_config', configs);
