@@ -1648,27 +1648,40 @@ async function createTokenOnChainPhantom() {
     }
 }
 
-// Save DAO Settings & Custom Branding
+// Save DAO Settings & Custom Branding (Bulletproof & Reliable)
 async function saveDaoConfig() {
-    const configs = {
-        dao_name: document.getElementById('cfgDaoName') ? document.getElementById('cfgDaoName').value.trim() : 'Attestto Governance',
-        dao_logo_url: document.getElementById('cfgDaoLogo') ? document.getElementById('cfgDaoLogo').value.trim() : '',
-        dao_description: document.getElementById('cfgDaoDesc') ? document.getElementById('cfgDaoDesc').value.trim() : '',
-        quorum_percentage: document.getElementById('cfgQuorum') ? document.getElementById('cfgQuorum').value : '10',
-        announcement_banner: document.getElementById('cfgBanner') ? document.getElementById('cfgBanner').value.trim() : '',
-        link_twitter: document.getElementById('cfgTwitter') ? document.getElementById('cfgTwitter').value.trim() : '',
-        link_github: document.getElementById('cfgGithub') ? document.getElementById('cfgGithub').value.trim() : '',
-        link_docs: document.getElementById('cfgDocs') ? document.getElementById('cfgDocs').value.trim() : '',
-        link_discord: document.getElementById('cfgDiscord') ? document.getElementById('cfgDiscord').value.trim() : '',
-        footer_text: document.getElementById('cfgFooterText') ? document.getElementById('cfgFooterText').value.trim() : '',
-        maintenance_mode: document.getElementById('cfgMaintenance') && document.getElementById('cfgMaintenance').checked ? 'true' : 'false',
-        proposal_deposit_fee: document.getElementById('cfgProposalFee') ? document.getElementById('cfgProposalFee').value : '0.05',
-        council_fee: document.getElementById('cfgCouncilFee') ? document.getElementById('cfgCouncilFee').value : '0.5'
+    const getVal = (id, fallback = '') => {
+        const el = document.getElementById(id);
+        if (!el) return fallback;
+        if (el.type === 'checkbox') return el.checked ? 'true' : 'false';
+        return el.value !== undefined ? el.value.trim() : fallback;
     };
 
-    await sendAdminAction('update_config', { configs });
+    const configs = {
+        dao_name: getVal('cfgDaoName', 'Attestto DAO Governance'),
+        dao_logo_url: getVal('cfgDaoLogo', 'https://avatars.githubusercontent.com/u/108633374?s=200&v=4'),
+        dao_description: getVal('cfgDaoDesc', 'Decentralized Decision-Making & Reputation Governance Protocol'),
+        quorum_percentage: getVal('cfgQuorum', '10'),
+        announcement_banner: getVal('cfgBanner', ''),
+        link_twitter: getVal('cfgTwitter', 'https://x.com/attesttoID'),
+        link_github: getVal('cfgGithub', 'https://github.com/Attestto-com'),
+        link_docs: getVal('cfgDocs', 'https://attestto.com'),
+        link_discord: getVal('cfgDiscord', ''),
+        link_linkedin: getVal('cfgLinkedin', 'https://www.linkedin.com/company/attestto-inc/'),
+        footer_text: getVal('cfgFooterText', '© 2026 Attestto Governance. Powered by Cloudflare Pages & Solana.'),
+        maintenance_mode: getVal('cfgMaintenance', 'false'),
+        proposal_deposit_fee: getVal('cfgProposalFee', '0.001'),
+        council_fee: getVal('cfgCouncilFee', '0.5')
+    };
+
+    const res = await sendAdminAction('update_config', { configs });
+    if (res && res.success) {
+        showToast("DAO Configuration saved successfully!", "success");
+        await fetchDaoConfig();
+    }
 }
 
+window.saveDaoConfig = saveDaoConfig;
 window.saveAdminConfig = saveDaoConfig;
 
 // Add Treasury Transaction Admin
