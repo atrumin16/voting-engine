@@ -15,6 +15,10 @@
     <!-- Solana Web3.js & SPL Token SDKs -->
     <script src="https://unpkg.com/@solana/web3.js@1.95.8/lib/index.iife.min.js"></script>
     <script src="https://unpkg.com/@solana/spl-token@0.4.8/lib/index.iife.min.js"></script>
+    <!-- Flatpickr Interactive Calendar Picker (Dark Theme) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -1330,7 +1334,36 @@
 
                 <div>
                     <label class="block font-semibold text-gray-300 mb-1">Description & Rationale * (Markdown Supported)</label>
-                    <textarea id="userPDesc" rows="5" placeholder="Detail the objectives, technical implementation, budget requested, and expected ROI for Attestto DAO..." class="w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 p-3 rounded-xl text-xs text-white focus:outline-none transition-colors custom-scrollbar"></textarea>
+                    <textarea id="userPDesc" rows="4" placeholder="Detail the objectives, technical implementation, budget requested, and expected ROI for Attestto DAO..." class="w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 p-3 rounded-xl text-xs text-white focus:outline-none transition-colors custom-scrollbar"></textarea>
+                </div>
+
+                <!-- Interactive Calendar Date & Time Selection -->
+                <div class="space-y-2">
+                    <label class="block font-semibold text-gray-300">Voting Duration Calendar & Schedule</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="relative">
+                            <label class="block text-[11px] text-gray-400 mb-1">Start Date & Time</label>
+                            <div class="relative">
+                                <input type="text" id="userPStartTime" placeholder="Select Start Date..." class="flatpickr-calendar-input w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 p-2.5 pl-9 rounded-xl text-xs text-white focus:outline-none cursor-pointer">
+                                <svg class="w-4 h-4 absolute left-3 top-2.5 text-purple-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <label class="block text-[11px] text-gray-400 mb-1">End Date & Time</label>
+                            <div class="relative">
+                                <input type="text" id="userPEndTime" placeholder="Select End Date..." class="flatpickr-calendar-input w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 p-2.5 pl-9 rounded-xl text-xs text-white focus:outline-none cursor-pointer">
+                                <svg class="w-4 h-4 absolute left-3 top-2.5 text-purple-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Presets -->
+                    <div class="flex items-center gap-2 pt-1">
+                        <span class="text-[11px] text-gray-400">Quick Duration:</span>
+                        <button type="button" onclick="setUserDurationPreset(3)" class="px-2.5 py-1 bg-[#1a142e] hover:bg-purple-500/20 border border-purple-500/30 text-[11px] rounded-lg text-purple-300 font-bold transition-all">3 Days</button>
+                        <button type="button" onclick="setUserDurationPreset(7)" class="px-2.5 py-1 bg-[#1a142e] hover:bg-purple-500/20 border border-purple-500/30 text-[11px] rounded-lg text-purple-300 font-bold transition-all">7 Days</button>
+                        <button type="button" onclick="setUserDurationPreset(14)" class="px-2.5 py-1 bg-[#1a142e] hover:bg-purple-500/20 border border-purple-500/30 text-[11px] rounded-lg text-purple-300 font-bold transition-all">14 Days</button>
+                        <button type="button" onclick="setUserDurationPreset(30)" class="px-2.5 py-1 bg-[#1a142e] hover:bg-purple-500/20 border border-purple-500/30 text-[11px] rounded-lg text-purple-300 font-bold transition-all">30 Days</button>
+                    </div>
                 </div>
             </div>
 
@@ -1470,7 +1503,7 @@
         </div>
     </footer>
 
-    <!-- Core Application Logic (Cache-busted v2.6.0) -->
-    <script src="app.js?v=2.6.0"></script>
+    <!-- Core Application Logic (Cache-busted v2.7.0) -->
+    <script src="app.js?v=2.7.0"></script>
 </body>
 </html>

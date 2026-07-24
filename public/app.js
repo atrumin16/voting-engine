@@ -1745,6 +1745,51 @@ function setDurationPreset(days) {
     endInput.value = new Date(future.getTime() - future.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 }
 
+let fpUserStart = null, fpUserEnd = null;
+
+function initFlatpickrCalendars() {
+    if (typeof flatpickr !== 'function') return;
+
+    if (!fpUserStart && document.getElementById('userPStartTime')) {
+        fpUserStart = flatpickr("#userPStartTime", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            theme: "dark",
+            defaultDate: new Date()
+        });
+    }
+
+    if (!fpUserEnd && document.getElementById('userPEndTime')) {
+        const defaultEnd = new Date(Date.now() + 7 * 86400000);
+        fpUserEnd = flatpickr("#userPEndTime", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            theme: "dark",
+            defaultDate: defaultEnd
+        });
+    }
+}
+
+function setUserDurationPreset(days) {
+    const now = new Date();
+    const future = new Date(now.getTime() + days * 86400000);
+
+    initFlatpickrCalendars();
+
+    if (fpUserStart && fpUserEnd) {
+        fpUserStart.setDate(now);
+        fpUserEnd.setDate(future);
+    } else {
+        const startEl = document.getElementById('userPStartTime');
+        const endEl = document.getElementById('userPEndTime');
+        if (startEl) startEl.value = now.toISOString().slice(0, 16);
+        if (endEl) endEl.value = future.toISOString().slice(0, 16);
+    }
+    showToast(`Voting duration set to ${days} days`, "info");
+}
+
+window.setUserDurationPreset = setUserDurationPreset;
+
 // Open & Close Community Proposal Creation Modal
 function openCreateProposalModal() {
     if (!userWallet) {
@@ -1766,6 +1811,10 @@ function openCreateProposalModal() {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
     }
+
+    setTimeout(() => {
+        initFlatpickrCalendars();
+    }, 100);
 }
 
 function closeCreateProposalModal() {
@@ -1787,6 +1836,9 @@ async function submitCommunityProposal() {
     if (!title || !description) {
         return showToast("Please fill in both Proposal Title and Description.", "error");
     }
+
+    let startTime = (fpUserStart && fpUserStart.selectedDates[0]) ? fpUserStart.selectedDates[0].toISOString() : new Date().toISOString();
+    let endTime = (fpUserEnd && fpUserEnd.selectedDates[0]) ? fpUserEnd.selectedDates[0].toISOString() : new Date(Date.now() + 7 * 86400000).toISOString();
 
     const feeSol = parseFloat(daoConfig.proposal_deposit_fee || '0.001');
 
@@ -1858,7 +1910,9 @@ async function submitCommunityProposal() {
                 title,
                 description,
                 category,
-                discussionUrl
+                discussionUrl,
+                startTime,
+                endTime
             })
         });
 
