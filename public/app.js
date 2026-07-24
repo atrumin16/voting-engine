@@ -523,6 +523,45 @@ async function executeAdminWithdrawal() {
     }
 }
 
+// Export Bank-Grade Financial CSV Statement
+function exportTreasuryCSV() {
+    fetch('/api/treasury')
+        .then(r => r.json())
+        .then(data => {
+            const txs = data.transactions || [];
+            if (txs.length === 0) {
+                return showToast("No transaction history recorded yet to export.", "info");
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,Tx Hash,Type,Description,Recipient,Amount,USD Value,Timestamp\n";
+            txs.forEach(tx => {
+                const row = [
+                    `"${tx.tx_hash}"`,
+                    `"${tx.type}"`,
+                    `"${(tx.description || '').replace(/"/g, '""')}"`,
+                    `"${tx.recipient}"`,
+                    `"${tx.amount}"`,
+                    `"${tx.usd_value}"`,
+                    `"${tx.timestamp}"`
+                ].join(',');
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Attestto_Treasury_Audit_Report_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Financial Audit CSV Report downloaded!", "success");
+        })
+        .catch(err => {
+            console.error("Export CSV error:", err);
+            showToast("Failed to export CSV report.", "error");
+        });
+}
+
 
 
 // Navigation Tabs Switcher
