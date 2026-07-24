@@ -345,13 +345,14 @@ async function saveUserAlias() {
 
 function updateAdminViewAccess() {
     const btnWithdraw = document.getElementById('btnOpenWithdrawModal');
+    const badge = document.getElementById('adminBadge');
     if (isUserAdmin && userWallet) {
-        document.getElementById('adminBadge').classList.remove('hidden');
+        if (badge) badge.classList.remove('hidden');
         document.getElementById('tabBtnAdmin').classList.remove('hidden');
         if (btnWithdraw) btnWithdraw.classList.remove('hidden');
         document.getElementById('adminWalletDisplay').textContent = `${userWallet.substring(0, 6)}...${userWallet.substring(userWallet.length - 4)}`;
     } else {
-        document.getElementById('adminBadge').classList.add('hidden');
+        if (badge) badge.classList.add('hidden');
         document.getElementById('tabBtnAdmin').classList.add('hidden');
         if (btnWithdraw) btnWithdraw.classList.add('hidden');
     }
@@ -560,6 +561,45 @@ function exportTreasuryCSV() {
             console.error("Export CSV error:", err);
             showToast("Failed to export CSV report.", "error");
         });
+}
+
+// Governance Vote Delegation Logic
+let currentDelegate = localStorage.getItem('attestto_user_delegate') || null;
+
+async function openDelegationModal() {
+    if (!userWallet) {
+        showToast("Connecting Phantom Wallet...", "info");
+        await connectWallet();
+        if (!userWallet) return;
+    }
+    const display = document.getElementById('currentDelegateDisplay');
+    if (display) {
+        display.textContent = currentDelegate ? `${currentDelegate}` : "Self-Delegated (Direct Voting)";
+    }
+    document.getElementById('delegationModal').classList.remove('hidden');
+    document.getElementById('delegationModal').classList.add('flex');
+}
+
+function closeDelegationModal() {
+    document.getElementById('delegationModal').classList.add('hidden');
+    document.getElementById('delegationModal').classList.remove('flex');
+}
+
+function saveVoteDelegation() {
+    const val = document.getElementById('delegateWalletInput').value.trim();
+    if (!val) return showToast("Enter a valid delegate address or alias.", "error");
+
+    currentDelegate = val;
+    localStorage.setItem('attestto_user_delegate', val);
+    showToast(`Voting power successfully delegated to ${val}!`, "success");
+    closeDelegationModal();
+}
+
+function revokeVoteDelegation() {
+    currentDelegate = null;
+    localStorage.removeItem('attestto_user_delegate');
+    showToast("Vote delegation reset. You now vote directly.", "info");
+    closeDelegationModal();
 }
 
 
