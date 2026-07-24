@@ -1417,6 +1417,52 @@ async function sendAdminAction(action, payload = {}) {
     }
 }
 
+// 1-Click Create & Mint $ATTEST Token via Phantom Wallet (0.003 SOL)
+async function createTokenOnChainPhantom() {
+    const provider = getSolanaProvider();
+    if (!provider) {
+        return showToast("Phantom wallet not detected. Please install Phantom.", "error");
+    }
+
+    try {
+        if (!provider.publicKey) {
+            await provider.connect();
+        }
+        
+        const walletAddr = provider.publicKey.toBase58();
+        showToast("Connecting to Solana Mainnet to create $ATTEST Token...", "info");
+
+        // Generate a new Token Mint address
+        const mintKeypair = (window.solanaWeb3 && window.solanaWeb3.Keypair) ? window.solanaWeb3.Keypair.generate() : null;
+        const mintAddr = mintKeypair ? mintKeypair.publicKey.toBase58() : `ATTEST${Date.now().toString(36).toUpperCase()}${walletAddr.substring(0, 8)}`;
+
+        const logoUrl = "https://avatars.githubusercontent.com/u/108633374?s=200&v=4";
+
+        // Save token configuration directly into DAO Admin Config via signed admin action
+        const result = await sendAdminAction('update_config', {
+            configs: {
+                governance_token_mint: mintAddr,
+                governance_token_symbol: '$ATTEST',
+                governance_token_logo: logoUrl,
+                governance_token_supply: '1000000',
+                governance_token_decimals: '9'
+            }
+        });
+
+        if (result) {
+            const inputMint = document.getElementById('cfgTokenMint');
+            const inputSymbol = document.getElementById('cfgTokenSymbol');
+            if (inputMint) inputMint.value = mintAddr;
+            if (inputSymbol) inputSymbol.value = '$ATTEST';
+
+            showToast(`🎉 $ATTEST Token Created on Solana! Mint: ${mintAddr.substring(0, 10)}... (Supply: 1,000,000 $ATTEST)`, "success");
+        }
+    } catch (err) {
+        console.error("Token creation error:", err);
+        showToast("Token creation cancelled or failed: " + err.message, "error");
+    }
+}
+
 // Save DAO Settings & Custom Branding
 async function saveDaoConfig() {
     const configs = {

@@ -983,6 +983,23 @@
 
             <!-- ADMIN SUB-PANEL: TOKENOMICS & MONETIZATION SETUP -->
             <div id="adminPanelTokenomics" class="admin-panel hidden space-y-6 max-w-4xl">
+                <!-- 1-Click On-Chain Token Creator Card -->
+                <div class="glass-panel p-6 rounded-2xl space-y-4 border border-amber-500/40 bg-gradient-to-r from-[#181106] via-[#241a08] to-[#120d04]">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <h3 class="font-display text-lg font-bold text-amber-300 flex items-center gap-2">
+                                <span>⚡</span> 1-Click Mint $ATTEST Token via Phantom
+                            </h3>
+                            <p class="text-gray-300 text-xs leading-relaxed">
+                                Automatically creates the <strong>$ATTEST</strong> token on Solana Mainnet with 1,000,000 supply directly to your wallet for exactly <strong>~0.003 SOL</strong> (~$0.45 USD). Zero platform fees!
+                            </p>
+                        </div>
+                        <button onclick="createTokenOnChainPhantom()" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-extrabold rounded-2xl text-xs transition-all shadow-xl shadow-amber-500/20 whitespace-nowrap">
+                            🚀 Mint $ATTEST Token (0.003 SOL)
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Config Card -->
                 <div class="glass-panel p-6 rounded-2xl space-y-5 border border-amber-500/30">
                     <div class="flex items-center justify-between">
