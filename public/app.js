@@ -1450,78 +1450,81 @@ async function createTokenOnChainPhantom() {
 
         const logoUrl = "https://avatars.githubusercontent.com/u/108633374?s=200&v=4";
 
-        if (sToken && sToken.createInitializeMintInstruction) {
-            // Full On-Chain SPL Token Transaction Construction
-            const lamports = await connection.getMinimumBalanceForRentExemption(82);
-            const tokenProgramId = sToken.TOKEN_PROGRAM_ID || new sWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-
-            const transaction = new sWeb3.Transaction();
-
-            // 1. Create Mint Account
-            transaction.add(
-                sWeb3.SystemProgram.createAccount({
-                    fromPubkey: walletPubkey,
-                    newAccountPubkey: mintPubkey,
-                    space: 82,
-                    lamports: lamports,
-                    programId: tokenProgramId
-                })
-            );
-
-            // 2. Initialize Mint (9 decimals, mintAuthority = wallet, freezeAuthority = null)
-            transaction.add(
-                sToken.createInitializeMintInstruction(
-                    mintPubkey,
-                    9,
-                    walletPubkey,
-                    null,
-                    tokenProgramId
-                )
-            );
-
-            // 3. Create Associated Token Account for target wallet
-            const ataPubkey = await sToken.getAssociatedTokenAddress(
-                mintPubkey,
-                walletPubkey,
-                false,
-                tokenProgramId
-            );
-
-            transaction.add(
-                sToken.createAssociatedTokenAccountInstruction(
-                    walletPubkey,
-                    ataPubkey,
-                    walletPubkey,
-                    mintPubkey,
-                    tokenProgramId
-                )
-            );
-
-            // 4. Mint 1,000,000 $ATTEST tokens
-            const amountToMint = BigInt(1000000) * BigInt(10 ** 9);
-            transaction.add(
-                sToken.createMintToInstruction(
-                    mintPubkey,
-                    ataPubkey,
-                    walletPubkey,
-                    amountToMint,
-                    [],
-                    tokenProgramId
-                )
-            );
-
-            transaction.feePayer = walletPubkey;
-            const { blockhash } = await connection.getLatestBlockhash('finalized');
-            transaction.recentBlockhash = blockhash;
-
-            // Partial sign with Mint Keypair
-            transaction.partialSign(mintKeypair);
-
-            showToast("Please approve the ~0.003 SOL transaction in Phantom...", "info");
-            const signedTx = await provider.signTransaction(transaction);
-            const txSig = await connection.sendRawTransaction(signedTx.serialize());
-            console.log("On-chain $ATTEST Token Created. Signature:", txSig);
+        if (!sToken || !sToken.createInitializeMintInstruction) {
+            throw new Error("Solana SPL Token library not loaded in browser. Use node scripts/create_token.mjs to mint directly via CLI.");
         }
+
+        // Full On-Chain SPL Token Transaction Construction
+        const lamports = await connection.getMinimumBalanceForRentExemption(82);
+        const tokenProgramId = sToken.TOKEN_PROGRAM_ID || new sWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+
+        const transaction = new sWeb3.Transaction();
+
+        // 1. Create Mint Account
+        transaction.add(
+            sWeb3.SystemProgram.createAccount({
+                fromPubkey: walletPubkey,
+                newAccountPubkey: mintPubkey,
+                space: 82,
+                lamports: lamports,
+                programId: tokenProgramId
+            })
+        );
+
+        // 2. Initialize Mint (9 decimals, mintAuthority = wallet, freezeAuthority = null)
+        transaction.add(
+            sToken.createInitializeMintInstruction(
+                mintPubkey,
+                9,
+                walletPubkey,
+                null,
+                tokenProgramId
+            )
+        );
+
+        // 3. Create Associated Token Account for target wallet
+        const ataPubkey = await sToken.getAssociatedTokenAddress(
+            mintPubkey,
+            walletPubkey,
+            false,
+            tokenProgramId
+        );
+
+        transaction.add(
+            sToken.createAssociatedTokenAccountInstruction(
+                walletPubkey,
+                ataPubkey,
+                walletPubkey,
+                mintPubkey,
+                tokenProgramId
+            )
+        );
+
+        // 4. Mint 1,000,000 $ATTEST tokens
+        const amountToMint = BigInt(1000000) * BigInt(10 ** 9);
+        transaction.add(
+            sToken.createMintToInstruction(
+                mintPubkey,
+                ataPubkey,
+                walletPubkey,
+                amountToMint,
+                [],
+                tokenProgramId
+            )
+        );
+
+        transaction.feePayer = walletPubkey;
+        const { blockhash } = await connection.getLatestBlockhash('finalized');
+        transaction.recentBlockhash = blockhash;
+
+        // Partial sign with Mint Keypair
+        transaction.partialSign(mintKeypair);
+
+        showToast("Please approve the ~0.003 SOL transaction in Phantom...", "info");
+        const signedTx = await provider.signTransaction(transaction);
+        const txSig = await connection.sendRawTransaction(signedTx.serialize());
+        await connection.confirmTransaction(txSig, 'confirmed');
+        console.log("On-chain $ATTEST Token Created. Signature:", txSig);
 
         // Save token configuration into D1 Admin Config
         await sendAdminAction('update_config', {
