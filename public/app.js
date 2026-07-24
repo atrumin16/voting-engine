@@ -160,6 +160,11 @@ async function fetchDaoConfig() {
         const res = await fetch(url);
         daoConfig = await res.json();
 
+        // Admin check (Perform immediately to ensure admin panel displays)
+        isUserAdmin = !!daoConfig.is_user_admin;
+        console.log("[Attestto DAO] Connected Wallet:", userWallet, "| Is Admin:", isUserAdmin, "| Admin List:", daoConfig.admin_wallets);
+        updateAdminViewAccess();
+
         // Update Logo & Nav Titles
         if (daoConfig.dao_logo_url) {
             const logoImg = document.getElementById('daoLogoImg');
@@ -171,12 +176,15 @@ async function fetchDaoConfig() {
         }
 
         if (daoConfig.dao_name) {
-            document.getElementById('daoTitleNav').textContent = daoConfig.dao_name.toUpperCase();
-            document.getElementById('daoMainTitle').textContent = daoConfig.dao_name;
+            const navTitle = document.getElementById('daoTitleNav');
+            if (navTitle) navTitle.textContent = daoConfig.dao_name.toUpperCase();
+            const mainTitle = document.getElementById('daoMainTitle');
+            if (mainTitle) mainTitle.textContent = daoConfig.dao_name;
             if (document.getElementById('cfgDaoName')) document.getElementById('cfgDaoName').value = daoConfig.dao_name;
         }
         if (daoConfig.dao_description) {
-            document.getElementById('daoSubTitle').textContent = daoConfig.dao_description;
+            const subTitle = document.getElementById('daoSubTitle');
+            if (subTitle) subTitle.textContent = daoConfig.dao_description;
             if (document.getElementById('cfgDaoDesc')) document.getElementById('cfgDaoDesc').value = daoConfig.dao_description;
         }
 
@@ -186,10 +194,13 @@ async function fetchDaoConfig() {
 
         if (daoConfig.announcement_banner) {
             if (document.getElementById('cfgBanner')) document.getElementById('cfgBanner').value = daoConfig.announcement_banner;
-            document.getElementById('announcementText').textContent = daoConfig.announcement_banner;
-            document.getElementById('announcementBanner').classList.remove('hidden');
+            const bannerText = document.getElementById('announcementText');
+            if (bannerText) bannerText.textContent = daoConfig.announcement_banner;
+            const bannerEl = document.getElementById('announcementBanner');
+            if (bannerEl) bannerEl.classList.remove('hidden');
         } else {
-            document.getElementById('announcementBanner').classList.add('hidden');
+            const bannerEl = document.getElementById('announcementBanner');
+            if (bannerEl) bannerEl.classList.add('hidden');
         }
 
         // Social Links Binding
@@ -225,18 +236,9 @@ async function fetchDaoConfig() {
             if (cfgFt) cfgFt.value = daoConfig.footer_text;
         }
 
-        if (daoConfig.theme_accent && !localStorage.getItem('attestto_theme_accent')) {
-            setAppTheme(daoConfig.theme_accent);
-        }
-
         if (document.getElementById('cfgMaintenance')) {
             document.getElementById('cfgMaintenance').checked = !!daoConfig.maintenance_mode;
         }
-
-        // Admin check
-        isUserAdmin = !!daoConfig.is_user_admin;
-        console.log("[Attestto DAO] Connected Wallet:", userWallet, "| Is Admin:", isUserAdmin, "| Admin List:", daoConfig.admin_wallets);
-        updateAdminViewAccess();
     } catch (err) {
         console.error("Config fetch error:", err);
     }
