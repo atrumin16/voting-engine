@@ -41,6 +41,7 @@ export async function onRequestGet(context) {
             link_twitter: configMap.link_twitter || "https://x.com/attesttoID",
             link_github: configMap.link_github || "https://github.com/Attestto-com",
             link_docs: configMap.link_docs || "https://attestto.com",
+            link_linkedin: configMap.link_linkedin || "https://www.linkedin.com/company/attestto-inc/",
             link_discord: configMap.link_discord || "",
             link_telegram: configMap.link_telegram || "",
             link_forum: configMap.link_forum || "",

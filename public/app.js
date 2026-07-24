@@ -168,6 +168,11 @@ async function fetchDaoConfig() {
             if (document.getElementById('footerDocs')) document.getElementById('footerDocs').href = daoConfig.link_docs;
             if (document.getElementById('headerDocs')) document.getElementById('headerDocs').href = daoConfig.link_docs;
         }
+        if (daoConfig.link_linkedin) {
+            if (document.getElementById('cfgLinkedin')) document.getElementById('cfgLinkedin').value = daoConfig.link_linkedin;
+            if (document.getElementById('footerLinkedin')) document.getElementById('footerLinkedin').href = daoConfig.link_linkedin;
+            if (document.getElementById('headerLinkedin')) document.getElementById('headerLinkedin').href = daoConfig.link_linkedin;
+        }
 
         if (daoConfig.link_discord && document.getElementById('cfgDiscord')) {
             document.getElementById('cfgDiscord').value = daoConfig.link_discord;
