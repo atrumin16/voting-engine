@@ -45,32 +45,43 @@
             color: #f3f4f6; 
             font-family: 'Inter', sans-serif; 
             background-image: 
-                radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.05) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
             background-attachment: fixed;
         }
         .glass-panel { 
             background: rgba(19, 15, 33, 0.85); 
             backdrop-filter: blur(16px); 
-            border: 1px solid #251c3a; 
+            border: 1px solid rgba(139, 92, 246, 0.2); 
         }
         .glass-card {
-            background: linear-gradient(180deg, rgba(25, 19, 44, 0.7) 0%, rgba(14, 10, 26, 0.85) 100%);
-            border: 1px solid rgba(139, 92, 246, 0.15);
+            background: linear-gradient(180deg, rgba(25, 19, 44, 0.75) 0%, rgba(14, 10, 26, 0.9) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.18);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .glass-card:hover {
-            border-color: rgba(168, 85, 247, 0.4);
+            border-color: rgba(168, 85, 247, 0.45);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(139, 92, 246, 0.2);
+            box-shadow: 0 12px 32px -10px rgba(139, 92, 246, 0.25);
         }
         .btn-glow { 
             background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); 
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
             transition: all 0.2s ease; 
         }
         .btn-glow:hover { 
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5); 
+            box-shadow: 0 6px 22px rgba(139, 92, 246, 0.55); 
+            transform: translateY(-1px);
+        }
+        .icon-btn {
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        .icon-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(168, 85, 247, 0.5);
+            color: #ffffff;
             transform: translateY(-1px);
         }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -87,26 +98,27 @@
         <button onclick="dismissAnnouncement()" class="absolute right-4 top-2.5 text-purple-400 hover:text-white">&times;</button>
     </div>
 
-    <!-- Navigation Header -->
+    <!-- Navigation Header (Realms.today Style) -->
     <nav class="sticky top-0 z-40 border-b border-[#251c3a] glass-panel px-4 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+        <!-- Logo & Branding -->
         <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('proposals')">
-            <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="Attestto Logo" class="w-9 h-9 rounded-xl shadow-lg shadow-purple-500/20 border border-purple-500/30">
+            <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="Attestto Logo" class="w-9 h-9 rounded-xl shadow-lg shadow-purple-500/30 border border-purple-500/40">
             <div>
                 <span id="daoTitleNav" class="font-display text-xl font-extrabold tracking-tight text-white">ATTESTTO</span>
-                <span class="text-xs px-2 py-0.5 ml-1.5 font-bold rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">DAO</span>
+                <span class="text-xs px-2 py-0.5 ml-1.5 font-bold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">DAO</span>
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
+        <!-- Center Navigation Tabs -->
         <div class="flex items-center gap-1 bg-[#120d24] p-1 rounded-xl border border-[#251c3a]">
             <button onclick="switchTab('proposals')" id="tabBtnProposals" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-purple-600 text-white shadow-md">
                 📋 Proposals
             </button>
             <button onclick="switchTab('members')" id="tabBtnMembers" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white">
-                👥 Miembros
+                👥 Members
             </button>
             <button onclick="switchTab('treasury')" id="tabBtnTreasury" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white">
-                🏦 Tesorería Ampliada
+                🏦 Treasury
             </button>
             <button onclick="switchTab('analytics')" id="tabBtnAnalytics" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white">
                 📊 Analytics
@@ -116,25 +128,50 @@
             </button>
         </div>
 
-        <!-- Wallet Connection & Profile Area -->
+        <!-- Social Icons Group & Wallet Connection -->
         <div class="flex items-center gap-3">
+            <!-- Social SVG Buttons Header -->
+            <div class="hidden sm:flex items-center gap-1.5">
+                <!-- X (Twitter) Logo -->
+                <a id="headerX" href="https://x.com/attesttoID" target="_blank" title="Follow on X (Twitter)" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                </a>
+                <!-- GitHub Logo -->
+                <a id="headerGithub" href="https://github.com/Attestto-com" target="_blank" title="View Source on GitHub" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                    </svg>
+                </a>
+                <!-- Documentation Logo -->
+                <a id="headerDocs" href="https://attestto.com" target="_blank" title="Read Documentation" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Admin Badge -->
             <div id="adminBadge" class="hidden flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm animate-pulse">
                 <span>⚡</span>
                 <span>ADMIN CONNECTED</span>
             </div>
             
+            <!-- Connect Wallet Button -->
             <button id="connectBtn" onclick="connectWallet()" class="btn-glow text-white font-semibold text-xs md:text-sm px-5 py-2 rounded-xl flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 Connect Wallet
             </button>
 
+            <!-- Wallet Info Container -->
             <div id="walletInfoContainer" class="hidden flex items-center gap-2">
                 <div id="walletAddress" class="font-mono text-xs md:text-sm text-purple-300 bg-[#1a142e] px-3.5 py-1.5 rounded-xl border border-purple-500/30 flex items-center gap-2 shadow-inner">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                     <span id="userAliasDisplay" class="font-bold text-amber-300 hidden mr-1"></span>
                     <span id="walletAddressText"></span>
                 </div>
-                <button onclick="disconnectWallet()" title="Disconnect" class="p-2 text-gray-400 hover:text-red-400 bg-[#1a142e] hover:bg-red-500/10 rounded-xl border border-[#251c3a] hover:border-red-500/30 transition-colors">
+                <button onclick="disconnectWallet()" title="Disconnect Wallet" class="p-2 text-gray-400 hover:text-red-400 bg-[#1a142e] hover:bg-red-500/10 rounded-xl border border-[#251c3a] hover:border-red-500/30 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 </button>
             </div>
@@ -183,7 +220,7 @@
                         <option value="Community">Community</option>
                     </select>
 
-                    <button onclick="loadProposals()" title="Refresh" class="p-2 bg-[#0d091a] border border-[#251c3a] hover:border-purple-500 text-gray-300 hover:text-white rounded-xl transition-colors">
+                    <button onclick="loadProposals()" title="Refresh Proposals" class="p-2 bg-[#0d091a] border border-[#251c3a] hover:border-purple-500 text-gray-300 hover:text-white rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                 </div>
@@ -208,7 +245,7 @@
             </div>
         </section>
 
-        <!-- VIEW 2: MEMBERS TAB (LOS MIEMBROS & USER ALIAS) -->
+        <!-- VIEW 2: MEMBERS TAB -->
         <section id="viewMembers" class="hidden space-y-8">
             <div class="text-center max-w-3xl mx-auto space-y-3">
                 <h2 class="font-display text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-purple-400">
@@ -219,7 +256,7 @@
                 </p>
             </div>
 
-            <!-- User Alias / Profile Manager Card (When Wallet Connected) -->
+            <!-- User Alias / Profile Manager Card -->
             <div id="userProfileCard" class="glass-panel p-6 rounded-3xl border border-purple-500/30 space-y-4 shadow-xl">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
@@ -302,11 +339,11 @@
             </div>
         </section>
 
-        <!-- VIEW 3: TESORERÍA AMPLIADA TAB -->
+        <!-- VIEW 3: TREASURY TAB -->
         <section id="viewTreasury" class="hidden space-y-8">
             <div class="text-center max-w-3xl mx-auto space-y-3">
                 <h2 class="font-display text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-purple-400">
-                    DAO Treasury Vault & Extended Finances
+                    DAO Treasury Vault & Financial Operations
                 </h2>
                 <p class="text-gray-400 text-sm md:text-base leading-relaxed">
                     Transparent financial overview of Attestto DAO multisig treasury vault, asset allocations, recipient aliases, and cryptographic transaction history.
@@ -329,7 +366,7 @@
                             <span class="text-gray-400">Threshold:</span>
                             <span id="treasuryMultisigStatus" class="font-bold text-emerald-400 ml-1">1 of 1 Signers</span>
                         </div>
-                        <button onclick="loadTreasury()" class="p-2 bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white rounded-xl border border-purple-500/30 transition-colors">
+                        <button onclick="loadTreasury()" title="Refresh Treasury" class="p-2 bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white rounded-xl border border-purple-500/30 transition-colors">
                             🔄
                         </button>
                     </div>
@@ -464,10 +501,10 @@
                     ⚙️ DAO Config
                 </button>
                 <button onclick="switchAdminSubTab('treasury')" id="subTabTreasury" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white">
-                    🏦 Tesorería & Multisig
+                    🏦 Treasury & Multisig
                 </button>
                 <button onclick="switchAdminSubTab('profiles')" id="subTabProfiles" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white">
-                    👤 Alias & Perfiles
+                    👤 Member Aliases
                 </button>
                 <button onclick="switchAdminSubTab('create')" id="subTabCreate" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white">
                     ➕ Create Proposal
@@ -513,16 +550,16 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Twitter / X URL</label>
-                            <input type="text" id="cfgTwitter" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">X (Twitter) URL</label>
+                            <input type="text" id="cfgTwitter" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="https://x.com/attesttoID">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">GitHub URL</label>
-                            <input type="text" id="cfgGithub" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="cfgGithub" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="https://github.com/Attestto-com">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Docs URL</label>
-                            <input type="text" id="cfgDocs" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Documentation URL</label>
+                            <input type="text" id="cfgDocs" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="https://attestto.com">
                         </div>
                     </div>
 
@@ -831,16 +868,38 @@
     <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- FOOTER -->
+    <!-- FOOTER (Realms.today Style) -->
     <footer class="mt-auto border-t border-[#251c3a] py-6 px-4 text-center text-xs text-gray-500 glass-panel">
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div>
-                © 2026 Attestto Governance. Powered by Cloudflare Pages & Solana.
+            <div class="flex items-center gap-2">
+                <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" class="w-5 h-5 rounded-md opacity-80" alt="Attestto Logo">
+                <span>© 2026 Attestto Governance. Powered by Cloudflare Pages & Solana.</span>
             </div>
-            <div class="flex items-center gap-4 text-purple-400">
-                <a id="footerTwitter" href="#" target="_blank" class="hover:text-white">Twitter</a>
-                <a id="footerGithub" href="#" target="_blank" class="hover:text-white">GitHub</a>
-                <a id="footerDocs" href="#" target="_blank" class="hover:text-white">Docs</a>
+            <!-- Social SVG Links Footer -->
+            <div class="flex items-center gap-3 text-gray-400">
+                <!-- X (Twitter) Link -->
+                <a id="footerX" href="https://x.com/attesttoID" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#251c3a] hover:border-purple-500/50 hover:bg-purple-500/10 hover:text-white transition-all text-xs font-medium">
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    <span>𝕏 X (Twitter)</span>
+                </a>
+
+                <!-- GitHub Link -->
+                <a id="footerGithub" href="https://github.com/Attestto-com" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#251c3a] hover:border-purple-500/50 hover:bg-purple-500/10 hover:text-white transition-all text-xs font-medium">
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                    </svg>
+                    <span>GitHub</span>
+                </a>
+
+                <!-- Docs Link -->
+                <a id="footerDocs" href="https://attestto.com" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#251c3a] hover:border-purple-500/50 hover:bg-purple-500/10 hover:text-white transition-all text-xs font-medium">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>Documentation</span>
+                </a>
             </div>
         </div>
     </footer>

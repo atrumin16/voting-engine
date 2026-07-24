@@ -37,9 +37,9 @@ export async function onRequestGet(context) {
             voting_duration_days: parseInt(configMap.voting_duration_days || "7"),
             voting_strategy: configMap.voting_strategy || "Reputation & Multipliers",
             maintenance_mode: configMap.maintenance_mode === "true",
-            link_twitter: configMap.link_twitter || "",
-            link_github: configMap.link_github || "",
-            link_docs: configMap.link_docs || "",
+            link_twitter: configMap.link_twitter || "https://x.com/attesttoID",
+            link_github: configMap.link_github || "https://github.com/Attestto-com",
+            link_docs: configMap.link_docs || "https://attestto.com",
             admin_wallets: adminWallets,
             is_user_admin: isAdmin
         }), {

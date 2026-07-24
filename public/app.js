@@ -106,16 +106,19 @@ async function fetchDaoConfig() {
         }
 
         if (daoConfig.link_twitter) {
-            document.getElementById('cfgTwitter').value = daoConfig.link_twitter;
-            document.getElementById('footerTwitter').href = daoConfig.link_twitter;
+            if (document.getElementById('cfgTwitter')) document.getElementById('cfgTwitter').value = daoConfig.link_twitter;
+            if (document.getElementById('footerX')) document.getElementById('footerX').href = daoConfig.link_twitter;
+            if (document.getElementById('headerX')) document.getElementById('headerX').href = daoConfig.link_twitter;
         }
         if (daoConfig.link_github) {
-            document.getElementById('cfgGithub').value = daoConfig.link_github;
-            document.getElementById('footerGithub').href = daoConfig.link_github;
+            if (document.getElementById('cfgGithub')) document.getElementById('cfgGithub').value = daoConfig.link_github;
+            if (document.getElementById('footerGithub')) document.getElementById('footerGithub').href = daoConfig.link_github;
+            if (document.getElementById('headerGithub')) document.getElementById('headerGithub').href = daoConfig.link_github;
         }
         if (daoConfig.link_docs) {
-            document.getElementById('cfgDocs').value = daoConfig.link_docs;
-            document.getElementById('footerDocs').href = daoConfig.link_docs;
+            if (document.getElementById('cfgDocs')) document.getElementById('cfgDocs').value = daoConfig.link_docs;
+            if (document.getElementById('footerDocs')) document.getElementById('footerDocs').href = daoConfig.link_docs;
+            if (document.getElementById('headerDocs')) document.getElementById('headerDocs').href = daoConfig.link_docs;
         }
 
         document.getElementById('cfgMaintenance').checked = !!daoConfig.maintenance_mode;
