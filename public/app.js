@@ -343,7 +343,12 @@ function updateAdminViewAccess() {
 }
 
 // 1-Click Treasury On-Chain Deposit Modal & Actions
-function openDepositModal() {
+async function openDepositModal() {
+    if (!userWallet) {
+        showToast("Connecting Phantom Wallet...", "info");
+        await connectWallet();
+        if (!userWallet) return;
+    }
     document.getElementById('depositModal').classList.remove('hidden');
     document.getElementById('depositModal').classList.add('flex');
 }

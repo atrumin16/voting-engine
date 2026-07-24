@@ -80,7 +80,7 @@ export async function onRequestGet(context) {
         ];
 
         const multisig = {
-            vault_address: "Attest5TreasuryVault1111111111111111111111",
+            vault_address: "8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV",
             threshold: `${adminWallets.length > 1 ? Math.ceil(adminWallets.length * 0.6) : 1} of ${adminWallets.length || 1} Signers`,
             protocol: "Squads Protocol v4",
             signers: signers.length > 0 ? signers : [
