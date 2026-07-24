@@ -58,6 +58,18 @@ export async function onRequestGet(context) {
 
         const assets = [
             {
+                symbol: '$ATTEST',
+                name: 'Attestto Governance Token',
+                balance: 900000,
+                price: 1.00,
+                value_usd: 900000.00,
+                allocation_pct: 90,
+                logo_url: 'https://avatars.githubusercontent.com/u/108633374?s=200&v=4',
+                color: 'from-amber-500/20 to-purple-500/20',
+                mint_address: 'ATTESTTo111111111111111111111111111111111',
+                holder_distribution: '900k Treasury Vault (90%) | 100k Founder Alberto (10%)'
+            },
+            {
                 symbol: 'SOL',
                 name: 'Solana Native',
                 balance: solBalance,

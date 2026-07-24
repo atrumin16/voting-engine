@@ -80,7 +80,18 @@ export async function initDb(env) {
             env.DB.prepare("INSERT OR IGNORE INTO admin_config (type, value) VALUES ('quorum_percentage', '10')"),
             env.DB.prepare("INSERT OR IGNORE INTO admin_config (type, value) VALUES ('voting_duration_days', '7')"),
             env.DB.prepare("INSERT OR IGNORE INTO admin_config (type, value) VALUES ('maintenance_mode', 'false')"),
-            env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('link_twitter', 'https://x.com/attesttoID')")
+            env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('link_twitter', 'https://x.com/attesttoID')"),
+            // Tokenomics Configuration Seeds
+            env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('governance_token_mint', 'ATTESTTo111111111111111111111111111111111')"),
+            env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('governance_token_symbol', '$ATTEST')"),
+            env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('governance_token_supply', '1000000')"),
+            env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('governance_token_decimals', '9')"),
+            // Founder Whitelist & 100k ATTEST Multiplier (10.0x)
+            env.DB.prepare(`
+                INSERT INTO whitelist_voters (wallet_address, tier, multiplier, added_by)
+                VALUES ('8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV', 'Founder & Token Holder (100k $ATTEST)', 10.0, 'SYSTEM')
+                ON CONFLICT(wallet_address) DO UPDATE SET tier = excluded.tier, multiplier = excluded.multiplier
+            `)
         ]);
 
         // Seed default institutional proposals if empty
