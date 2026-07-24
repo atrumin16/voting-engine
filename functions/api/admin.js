@@ -133,16 +133,74 @@ export async function onRequestPost(context) {
 
         } else if (action === 'get_audit_logs') {
             const logs = await env.DB.prepare("SELECT * FROM admin_audit_logs ORDER BY timestamp DESC LIMIT 50").all();
-            return new Response(JSON.stringify(logs.results || []));
+            return new Response(JSON.stringify({ success: true, logs: logs.results || [] }), {
+                headers: { 'Content-Type': 'application/json' }
+            });
 
         } else if (action === 'get_whitelists') {
             const whitelists = await env.DB.prepare("SELECT * FROM whitelist_voters ORDER BY added_at DESC").all();
-            return new Response(JSON.stringify(whitelists.results || []));
+            return new Response(JSON.stringify({ success: true, whitelists: whitelists.results || [] }), {
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+        } else if (action === 'add_treasury_tx') {
+            const { txHash, type, description, amount, usdValue, recipient, status } = body;
+            if (!txHash || !amount) throw new Error("Tx Hash and Amount are required");
+
+            await env.DB.prepare(`
+                CREATE TABLE IF NOT EXISTS treasury_transactions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    tx_hash TEXT NOT NULL,
+                    type TEXT NOT NULL,
+                    description TEXT NOT NULL,
+                    amount TEXT NOT NULL,
+                    usd_value REAL NOT NULL,
+                    recipient TEXT NOT NULL,
+                    status TEXT DEFAULT 'Completed',
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            `).run();
+
+            await env.DB.prepare(`
+                INSERT INTO treasury_transactions (tx_hash, type, description, amount, usd_value, recipient, status, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            `).bind(
+                txHash,
+                type || 'Grant',
+                description || 'Treasury Operation',
+                amount,
+                parseFloat(usdValue || 0),
+                recipient || wallet,
+                status || 'Completed'
+            ).run();
+
+            await logAudit('add_treasury_tx', { txHash, amount, usdValue, recipient });
+            return new Response(JSON.stringify({ success: true, message: "Treasury transaction recorded successfully!" }));
+
+        } else if (action === 'set_user_profile') {
+            const { targetWallet, displayName } = body;
+            if (!isValidSolanaAddress(targetWallet)) throw new Error("Invalid Solana wallet address");
+            const trimmed = (displayName || '').trim().slice(0, 32);
+            if (!trimmed) throw new Error("Display name required");
+
+            await env.DB.prepare(`
+                INSERT INTO user_profiles (wallet_address, display_name, updated_at)
+                VALUES (?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(wallet_address) DO UPDATE SET 
+                    display_name = excluded.display_name,
+                    updated_at = CURRENT_TIMESTAMP
+            `).bind(targetWallet, trimmed).run();
+
+            await logAudit('set_user_profile', { targetWallet, displayName: trimmed });
+            return new Response(JSON.stringify({ success: true, message: `Alias updated for ${targetWallet} to "${trimmed}"` }));
 
         } else {
             throw new Error(`Unknown admin action: ${action}`);
         }
     } catch (error) {
-        return new Response(JSON.stringify({ error: error.message }), { status: 400 });
+        return new Response(JSON.stringify({ error: error.message }), { 
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
 }

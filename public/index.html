@@ -73,7 +73,7 @@
             box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5); 
             transform: translateY(-1px);
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #0c0918; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #2e2347; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #8b5cf6; }
@@ -89,7 +89,7 @@
 
     <!-- Navigation Header -->
     <nav class="sticky top-0 z-40 border-b border-[#251c3a] glass-panel px-4 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('proposals')">
             <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="Attestto Logo" class="w-9 h-9 rounded-xl shadow-lg shadow-purple-500/20 border border-purple-500/30">
             <div>
                 <span id="daoTitleNav" class="font-display text-xl font-extrabold tracking-tight text-white">ATTESTTO</span>
@@ -99,18 +99,24 @@
 
         <!-- Navigation Tabs -->
         <div class="flex items-center gap-1 bg-[#120d24] p-1 rounded-xl border border-[#251c3a]">
-            <button onclick="switchTab('proposals')" id="tabBtnProposals" class="tab-btn px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-purple-600 text-white shadow-md">
+            <button onclick="switchTab('proposals')" id="tabBtnProposals" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-purple-600 text-white shadow-md">
                 📋 Proposals
             </button>
-            <button onclick="switchTab('analytics')" id="tabBtnAnalytics" class="tab-btn px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white">
+            <button onclick="switchTab('members')" id="tabBtnMembers" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white">
+                👥 Miembros
+            </button>
+            <button onclick="switchTab('treasury')" id="tabBtnTreasury" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white">
+                🏦 Tesorería Ampliada
+            </button>
+            <button onclick="switchTab('analytics')" id="tabBtnAnalytics" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white">
                 📊 Analytics
             </button>
-            <button onclick="switchTab('admin')" id="tabBtnAdmin" class="tab-btn hidden px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-amber-400 hover:text-amber-300 bg-amber-500/10 border border-amber-500/30">
+            <button onclick="switchTab('admin')" id="tabBtnAdmin" class="tab-btn hidden px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-amber-400 hover:text-amber-300 bg-amber-500/10 border border-amber-500/30">
                 👑 Admin Console
             </button>
         </div>
 
-        <!-- Wallet Connection Area -->
+        <!-- Wallet Connection & Profile Area -->
         <div class="flex items-center gap-3">
             <div id="adminBadge" class="hidden flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm animate-pulse">
                 <span>⚡</span>
@@ -125,6 +131,7 @@
             <div id="walletInfoContainer" class="hidden flex items-center gap-2">
                 <div id="walletAddress" class="font-mono text-xs md:text-sm text-purple-300 bg-[#1a142e] px-3.5 py-1.5 rounded-xl border border-purple-500/30 flex items-center gap-2 shadow-inner">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span id="userAliasDisplay" class="font-bold text-amber-300 hidden mr-1"></span>
                     <span id="walletAddressText"></span>
                 </div>
                 <button onclick="disconnectWallet()" title="Disconnect" class="p-2 text-gray-400 hover:text-red-400 bg-[#1a142e] hover:bg-red-500/10 rounded-xl border border-[#251c3a] hover:border-red-500/30 transition-colors">
@@ -201,7 +208,192 @@
             </div>
         </section>
 
-        <!-- VIEW 2: ANALYTICS TAB -->
+        <!-- VIEW 2: MEMBERS TAB (LOS MIEMBROS & USER ALIAS) -->
+        <section id="viewMembers" class="hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="font-display text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-purple-400">
+                    DAO Members & Reputation Directory
+                </h2>
+                <p class="text-gray-400 text-sm md:text-base leading-relaxed">
+                    Explore registered Attestto DAO council members, VIP whitelisted voters, custom wallet aliases, and voting reputation scores.
+                </p>
+            </div>
+
+            <!-- User Alias / Profile Manager Card (When Wallet Connected) -->
+            <div id="userProfileCard" class="glass-panel p-6 rounded-3xl border border-purple-500/30 space-y-4 shadow-xl">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-xl text-white shadow-lg shadow-purple-500/20 font-bold">
+                            👤
+                        </div>
+                        <div>
+                            <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+                                <span>Your DAO Identity & Alias</span>
+                                <span id="userAliasBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hidden"></span>
+                            </h3>
+                            <p class="text-gray-400 text-xs">Set your custom display name (alias) to personalize your votes and membership profile.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <input type="text" id="userAliasInput" placeholder="Enter your Alias (e.g. Alberto)" class="bg-[#0b0817] border border-[#251c3a] focus:border-purple-500 p-2.5 rounded-xl text-xs md:text-sm text-white focus:outline-none w-full md:w-64">
+                        <button id="saveAliasBtn" onclick="saveUserAlias()" class="btn-glow px-5 py-2.5 text-white font-bold text-xs md:text-sm rounded-xl whitespace-nowrap">
+                            Save Alias (Sign)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Stats Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="glass-panel p-5 rounded-2xl border border-[#251c3a]">
+                    <div class="text-gray-400 text-xs font-medium mb-1">Total Members</div>
+                    <div id="statTotalMembers" class="font-display text-2xl md:text-3xl font-black text-purple-400">-</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-[#251c3a]">
+                    <div class="text-gray-400 text-xs font-medium mb-1">Council Core</div>
+                    <div id="statCouncilMembers" class="font-display text-2xl md:text-3xl font-black text-amber-400">-</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-[#251c3a]">
+                    <div class="text-gray-400 text-xs font-medium mb-1">VIP Whitelisted</div>
+                    <div id="statVipMembers" class="font-display text-2xl md:text-3xl font-black text-emerald-400">-</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-[#251c3a]">
+                    <div class="text-gray-400 text-xs font-medium mb-1">Avg Multiplier</div>
+                    <div id="statAvgMultiplier" class="font-display text-2xl md:text-3xl font-black text-cyan-400">-</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl border border-[#251c3a]">
+                    <div class="text-gray-400 text-xs font-medium mb-1">Total Voting Power</div>
+                    <div id="statTotalMemberPower" class="font-display text-2xl md:text-3xl font-black text-indigo-400">-</div>
+                </div>
+            </div>
+
+            <!-- Search & Filters for Members -->
+            <div class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 border border-[#251c3a]">
+                <div class="relative w-full md:w-80">
+                    <svg class="w-4 h-4 absolute left-3.5 top-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" id="memberSearchInput" oninput="renderMembersList()" placeholder="Search by wallet address or alias..." class="w-full bg-[#0d091a] border border-[#251c3a] focus:border-purple-500 rounded-xl pl-10 pr-4 py-2 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none transition-colors">
+                </div>
+
+                <div class="flex items-center gap-2 w-full md:w-auto">
+                    <select id="memberRoleFilter" onchange="renderMembersList()" class="bg-[#0d091a] border border-[#251c3a] text-xs md:text-sm rounded-xl px-3 py-2 text-purple-300 focus:outline-none focus:border-purple-500">
+                        <option value="all">All Roles & Tiers</option>
+                        <option value="admin">Core DAO Admins</option>
+                        <option value="vip">VIP Whitelisted</option>
+                        <option value="voter">Active Voters</option>
+                    </select>
+                    <button onclick="loadMembers()" title="Refresh Members" class="p-2 bg-[#0d091a] border border-[#251c3a] hover:border-purple-500 text-gray-300 hover:text-white rounded-xl transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Members Directory Grid -->
+            <div id="membersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+            <!-- Loading Spinner -->
+            <div id="membersLoading" class="text-center py-16">
+                <div class="inline-block w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+                <p class="text-gray-400 text-xs mt-3">Loading DAO members & reputation index...</p>
+            </div>
+
+            <div id="membersEmptyState" class="hidden text-center py-16 border border-dashed border-[#251c3a] rounded-3xl bg-[#0f0c1b]/50">
+                <p class="text-gray-400 text-sm">No members found matching your search filter.</p>
+            </div>
+        </section>
+
+        <!-- VIEW 3: TESORERÍA AMPLIADA TAB -->
+        <section id="viewTreasury" class="hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="font-display text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-purple-400">
+                    DAO Treasury Vault & Extended Finances
+                </h2>
+                <p class="text-gray-400 text-sm md:text-base leading-relaxed">
+                    Transparent financial overview of Attestto DAO multisig treasury vault, asset allocations, recipient aliases, and cryptographic transaction history.
+                </p>
+            </div>
+
+            <!-- Treasury Net Worth Overview Banner -->
+            <div class="glass-panel p-6 md:p-8 rounded-3xl border border-purple-500/30 bg-gradient-to-r from-[#170e2e] via-[#120a24] to-[#0c0818] space-y-6 shadow-2xl">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div>
+                        <div class="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1">Total Treasury Net Worth</div>
+                        <div id="treasuryNetWorth" class="font-display text-4xl md:text-5xl font-black text-white">$0.00 USD</div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="bg-[#0b0817] px-4 py-2 rounded-2xl border border-[#251c3a] text-xs">
+                            <span class="text-gray-400">Vault Protocol:</span>
+                            <span id="treasuryProtocol" class="font-bold text-amber-300 ml-1">Squads v4 Multisig</span>
+                        </div>
+                        <div class="bg-[#0b0817] px-4 py-2 rounded-2xl border border-[#251c3a] text-xs">
+                            <span class="text-gray-400">Threshold:</span>
+                            <span id="treasuryMultisigStatus" class="font-bold text-emerald-400 ml-1">1 of 1 Signers</span>
+                        </div>
+                        <button onclick="loadTreasury()" class="p-2 bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white rounded-xl border border-purple-500/30 transition-colors">
+                            🔄
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Asset Breakdown Cards Grid -->
+                <div id="treasuryAssetsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- Multisig Vault Signers & Operations Panel -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Vault Information Card -->
+                <div class="glass-panel p-6 rounded-3xl border border-[#251c3a] space-y-4 lg:col-span-1">
+                    <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+                        <span>🛡️</span> Squads Multisig Vault
+                    </h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="bg-[#0b0817] p-3 rounded-xl border border-[#1f1730]">
+                            <div class="text-gray-400 mb-1">Vault Address</div>
+                            <div id="treasuryVaultAddress" class="font-mono text-purple-300 truncate font-semibold">Attest5TreasuryVault1111111111111111111111</div>
+                        </div>
+                        <div class="bg-[#0b0817] p-3 rounded-xl border border-[#1f1730]">
+                            <div class="text-gray-400 mb-1">Execution Rule</div>
+                            <div id="treasuryThresholdDetail" class="font-semibold text-emerald-400">Required Majority Consensus</div>
+                        </div>
+                    </div>
+
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-2">Authorized Signers</h4>
+                    <div id="treasurySignersList" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"></div>
+                </div>
+
+                <!-- Transaction History Table Card -->
+                <div class="glass-panel p-6 rounded-3xl border border-[#251c3a] space-y-4 lg:col-span-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+                            <span>📜</span> Financial Operations & Grants History
+                        </h3>
+                        <span class="text-xs font-bold text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/30">Verified Ledger</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-[#0b0817] text-gray-400 uppercase font-semibold border-b border-[#251c3a]">
+                                <tr>
+                                    <th class="p-3">Tx Hash</th>
+                                    <th class="p-3">Type</th>
+                                    <th class="p-3">Description</th>
+                                    <th class="p-3">Recipient / Alias</th>
+                                    <th class="p-3">Amount</th>
+                                    <th class="p-3 text-right">USD Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="treasuryTxTable" class="divide-y divide-[#251c3a]"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="treasuryTxEmpty" class="hidden text-center py-8 text-gray-500 text-xs">
+                        No transactions recorded yet in treasury log.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: ANALYTICS TAB -->
         <section id="viewAnalytics" class="hidden space-y-8">
             <div class="text-center max-w-2xl mx-auto space-y-2">
                 <h2 class="font-display text-3xl font-extrabold text-white">DAO Analytics & Performance</h2>
@@ -250,7 +442,7 @@
             </div>
         </section>
 
-        <!-- VIEW 3: ADMIN CONSOLE TAB -->
+        <!-- VIEW 5: ADMIN CONSOLE TAB -->
         <section id="viewAdmin" class="hidden space-y-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#251c3a]">
                 <div>
@@ -258,7 +450,7 @@
                         <span>👑</span> Admin Control Center
                     </h2>
                     <p class="text-gray-400 text-xs md:text-sm mt-1">
-                        Configure DAO rules, manage proposal states, issue voting multipliers, and register admins.
+                        Configure DAO rules, manage proposal states, record treasury operations, assign member aliases, and register admins.
                     </p>
                 </div>
                 <div class="text-xs text-amber-300/80 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono">
@@ -270,6 +462,12 @@
             <div class="flex flex-wrap gap-2 border-b border-[#251c3a] pb-3">
                 <button onclick="switchAdminSubTab('general')" id="subTabGeneral" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40">
                     ⚙️ DAO Config
+                </button>
+                <button onclick="switchAdminSubTab('treasury')" id="subTabTreasury" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white">
+                    🏦 Tesorería & Multisig
+                </button>
+                <button onclick="switchAdminSubTab('profiles')" id="subTabProfiles" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white">
+                    👤 Alias & Perfiles
                 </button>
                 <button onclick="switchAdminSubTab('create')" id="subTabCreate" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white">
                     ➕ Create Proposal
@@ -337,6 +535,77 @@
                             Save Configs (Sign)
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <!-- ADMIN SUB-PANEL: TREASURY CONFIG & LOGGING -->
+            <div id="adminPanelTreasury" class="admin-panel hidden space-y-6 max-w-3xl">
+                <div class="glass-panel p-6 rounded-2xl space-y-4 border border-[#251c3a]">
+                    <h3 class="font-display text-lg font-bold text-white">Record New Treasury Transaction</h3>
+                    <p class="text-gray-400 text-xs">Record incoming grants, deposits, or treasury transfers to update the live financial ledger.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Transaction Hash / ID</label>
+                            <input type="text" id="adminTxHash" placeholder="5K9x...sol" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Transaction Type</label>
+                            <select id="adminTxType" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                                <option value="Grant">Grant Allocation</option>
+                                <option value="Deposit">Deposit / Treasury Fund</option>
+                                <option value="Transfer">Multisig Transfer</option>
+                                <option value="Yield">Staking / Yield</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">Description / Rationale</label>
+                        <input type="text" id="adminTxDesc" placeholder="e.g. Developer Grant for Solana Security Audit" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Amount (e.g. 500 SOL or 1000 USDC)</label>
+                            <input type="text" id="adminTxAmount" placeholder="500 SOL" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">USD Equivalent Value</label>
+                            <input type="number" id="adminTxUsd" placeholder="75000" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Recipient Address or Alias</label>
+                            <input type="text" id="adminTxRecipient" placeholder="Wallet or Alias" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+
+                    <button onclick="addTreasuryTxAdmin()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
+                        Record Treasury Transaction (Sign)
+                    </button>
+                </div>
+            </div>
+
+            <!-- ADMIN SUB-PANEL: ALIAS & MEMBER PROFILES -->
+            <div id="adminPanelProfiles" class="admin-panel hidden space-y-6 max-w-3xl">
+                <div class="glass-panel p-6 rounded-2xl space-y-4 border border-[#251c3a]">
+                    <h3 class="font-display text-lg font-bold text-white">Manage Member Display Names & Aliases</h3>
+                    <p class="text-gray-400 text-xs">Assign or update display names (aliases) for any DAO member or admin wallet address.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Target Wallet Address</label>
+                            <input type="text" id="adminTargetWallet" placeholder="Solana Wallet Base58" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Custom Alias / Display Name</label>
+                            <input type="text" id="adminTargetAlias" placeholder="e.g. Alberto (Founder)" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+
+                    <button onclick="setUserProfileAdmin()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
+                        Set Member Alias (Sign)
+                    </button>
                 </div>
             </div>
 

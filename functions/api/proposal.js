@@ -19,9 +19,13 @@ export async function onRequestGet(context) {
             return new Response(JSON.stringify({ error: "Proposal not found" }), { status: 404 });
         }
 
-        const votesRes = await env.DB.prepare(
-            "SELECT wallet_address, choice, vote_power, reason, timestamp FROM votes WHERE proposal_id = ? ORDER BY timestamp DESC"
-        ).bind(proposalId).all();
+        const votesRes = await env.DB.prepare(`
+            SELECT v.wallet_address, v.choice, v.vote_power, v.reason, v.timestamp, p.display_name
+            FROM votes v
+            LEFT JOIN user_profiles p ON v.wallet_address = p.wallet_address
+            WHERE v.proposal_id = ?
+            ORDER BY v.timestamp DESC
+        `).bind(proposalId).all();
 
         const votes = votesRes.results || [];
         let userVote = null;

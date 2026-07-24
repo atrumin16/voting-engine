@@ -1,9 +1,11 @@
-// public/app.js - Attestto DAO Governance Front-end Client
+// public/app.js - Attestto DAO Governance Front-end Client (Full Extended Edition)
 
 let userWallet = null;
+let userAlias = null;
 let isUserAdmin = false;
 let currentProposalId = null;
 let currentProposalsData = [];
+let currentMembersData = [];
 let daoConfig = {};
 
 // Robust Base58 Encoder for Uint8Array signatures
@@ -57,19 +59,22 @@ function showToast(message, type = 'info') {
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchDaoConfig();
     await loadProposals();
+    await loadMembers();
+    await loadTreasury();
     await loadAnalytics();
 
     // Auto-check if Phantom/Solana wallet is connected
     if (window.solana && window.solana.isPhantom && window.solana.isConnected) {
         try {
             userWallet = window.solana.publicKey.toString();
-            updateWalletUI();
+            await updateWalletUI();
         } catch (e) {}
     }
 
-    // Check hash URL for #admin
-    if (window.location.hash === '#admin') {
-        switchTab('admin');
+    // Check hash URL for direct section access (e.g. #admin, #members, #treasury)
+    const hash = window.location.hash.replace('#', '');
+    if (['proposals', 'members', 'treasury', 'analytics', 'admin'].includes(hash)) {
+        switchTab(hash);
     }
 });
 
@@ -138,7 +143,7 @@ async function connectWallet() {
         const resp = await provider.connect();
         userWallet = resp.publicKey.toString();
         showToast("Wallet connected: " + userWallet.substring(0, 6) + "...", "success");
-        updateWalletUI();
+        await updateWalletUI();
         await fetchDaoConfig();
         await loadProposals();
     } catch (err) {
@@ -149,21 +154,105 @@ async function connectWallet() {
 
 function disconnectWallet() {
     userWallet = null;
+    userAlias = null;
     isUserAdmin = false;
     document.getElementById('connectBtn').classList.remove('hidden');
     document.getElementById('walletInfoContainer').classList.add('hidden');
     document.getElementById('adminBadge').classList.add('hidden');
     document.getElementById('tabBtnAdmin').classList.add('hidden');
+    document.getElementById('userAliasDisplay').classList.add('hidden');
     showToast("Wallet disconnected.", "info");
     loadProposals();
 }
 
-function updateWalletUI() {
+async function updateWalletUI() {
     if (!userWallet) return;
     document.getElementById('connectBtn').classList.add('hidden');
     document.getElementById('walletInfoContainer').classList.remove('hidden');
+    
+    // Fetch profile alias for connected wallet
+    await fetchUserProfile(userWallet);
+
     const shortAddr = `${userWallet.substring(0, 4)}...${userWallet.substring(userWallet.length - 4)}`;
     document.getElementById('walletAddressText').textContent = shortAddr;
+
+    if (userAlias) {
+        const aliasEl = document.getElementById('userAliasDisplay');
+        aliasEl.textContent = `[${userAlias}]`;
+        aliasEl.classList.remove('hidden');
+
+        const aliasInput = document.getElementById('userAliasInput');
+        if (aliasInput) aliasInput.value = userAlias;
+
+        const badgeEl = document.getElementById('userAliasBadge');
+        if (badgeEl) {
+            badgeEl.textContent = `@${userAlias}`;
+            badgeEl.classList.remove('hidden');
+        }
+    }
+}
+
+async function fetchUserProfile(wallet) {
+    try {
+        const res = await fetch(`/api/profile?wallet=${wallet}`);
+        const data = await res.json();
+        if (data && data.display_name) {
+            userAlias = data.display_name;
+        }
+    } catch (err) {
+        console.error("Profile fetch error:", err);
+    }
+}
+
+// User Alias Save Action (Sign Message)
+async function saveUserAlias() {
+    if (!userWallet) {
+        return showToast("Please connect your Phantom / Solana wallet first.", "error");
+    }
+
+    const input = document.getElementById('userAliasInput');
+    const newAlias = input ? input.value.trim() : '';
+    if (!newAlias || newAlias.length < 2) {
+        return showToast("Alias must be at least 2 characters long.", "error");
+    }
+
+    const provider = window.solana || window.solflare;
+    if (!provider) return showToast("Solana wallet extension not found.", "error");
+
+    const timestamp = Date.now();
+    const message = `Attestto Set Display Name: ${newAlias} | Ts: ${timestamp}`;
+
+    try {
+        const encodedMessage = new TextEncoder().encode(message);
+        const signedResult = await provider.signMessage(encodedMessage, "utf8");
+        const signatureBytes = signedResult.signature || signedResult;
+        const signatureBs58 = toBase58(signatureBytes);
+
+        const res = await fetch('/api/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                wallet: userWallet,
+                displayName: newAlias,
+                signature: signatureBs58,
+                timestamp: timestamp
+            })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+            userAlias = data.display_name;
+            showToast(`Alias saved as "${userAlias}"!`, "success");
+            await updateWalletUI();
+            await loadMembers();
+            await loadTreasury();
+        } else {
+            showToast("Failed to save alias: " + (data.error || "Unknown error"), "error");
+        }
+    } catch (err) {
+        console.error("Alias sign error:", err);
+        showToast("Signature signing was rejected or failed.", "error");
+    }
 }
 
 function updateAdminViewAccess() {
@@ -179,26 +268,39 @@ function updateAdminViewAccess() {
 
 // Navigation Tabs Switcher
 function switchTab(tabName) {
-    const tabs = ['proposals', 'analytics', 'admin'];
+    const tabs = ['proposals', 'members', 'treasury', 'analytics', 'admin'];
     tabs.forEach(t => {
         const viewEl = document.getElementById(`view${t.charAt(0).toUpperCase() + t.slice(1)}`);
         const btnEl = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
         
         if (t === tabName) {
-            viewEl.classList.remove('hidden');
-            if (t !== 'admin') {
-                btnEl.className = 'tab-btn px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-purple-600 text-white shadow-md';
+            if (viewEl) viewEl.classList.remove('hidden');
+            if (btnEl) {
+                if (t === 'admin') {
+                    btnEl.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-amber-300 bg-amber-500/20 border border-amber-500/40 shadow-md';
+                } else {
+                    btnEl.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-purple-600 text-white shadow-md';
+                }
             }
         } else {
-            viewEl.classList.add('hidden');
-            if (t !== 'admin') {
-                btnEl.className = 'tab-btn px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white';
+            if (viewEl) viewEl.classList.add('hidden');
+            if (btnEl) {
+                if (t === 'admin') {
+                    btnEl.className = 'tab-btn hidden px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-amber-400 hover:text-amber-300 bg-amber-500/10 border border-amber-500/30';
+                } else {
+                    btnEl.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white';
+                }
             }
         }
     });
 
+    if (tabName === 'members') loadMembers();
+    if (tabName === 'treasury') loadTreasury();
     if (tabName === 'analytics') loadAnalytics();
     if (tabName === 'admin') loadAdminData();
+
+    // Update URL hash safely without reload
+    window.history.replaceState(null, null, `#${tabName}`);
 }
 
 // Load Proposals from API
@@ -207,9 +309,9 @@ async function loadProposals() {
     const grid = document.getElementById('proposalsGrid');
     const empty = document.getElementById('emptyState');
 
-    loading.classList.remove('hidden');
-    grid.innerHTML = '';
-    empty.classList.add('hidden');
+    if (loading) loading.classList.remove('hidden');
+    if (grid) grid.innerHTML = '';
+    if (empty) empty.classList.add('hidden');
 
     try {
         const status = document.getElementById('statusFilter').value;
@@ -224,17 +326,17 @@ async function loadProposals() {
         const res = await fetch(`/api/proposals?${queryParams.toString()}`);
         currentProposalsData = await res.json();
 
-        loading.classList.add('hidden');
+        if (loading) loading.classList.add('hidden');
 
         if (!currentProposalsData || currentProposalsData.length === 0) {
-            empty.classList.remove('hidden');
+            if (empty) empty.classList.remove('hidden');
             return;
         }
 
         renderProposalsGrid(currentProposalsData);
     } catch (err) {
         console.error("Proposals fetch error:", err);
-        loading.classList.add('hidden');
+        if (loading) loading.classList.add('hidden');
         showToast("Error loading proposals", "error");
     }
 }
@@ -245,6 +347,7 @@ function applyFilters() {
 
 function renderProposalsGrid(proposals) {
     const grid = document.getElementById('proposalsGrid');
+    if (!grid) return;
     grid.innerHTML = '';
 
     proposals.forEach(p => {
@@ -269,7 +372,6 @@ function renderProposalsGrid(proposals) {
             timeString = days > 0 ? `${days}d ${hours % 24}h remaining` : `${hours}h remaining`;
         }
 
-        // Admin controls overlay if admin is connected
         let adminActionButtons = '';
         if (isUserAdmin) {
             adminActionButtons = `
@@ -354,7 +456,7 @@ function escapeHtml(str) {
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
-// Proposal Vote Modal Operations
+// Proposals Vote Modal Operations
 async function openVoteModal(proposalId) {
     currentProposalId = proposalId;
     try {
@@ -483,6 +585,230 @@ async function submitVote(choice) {
     }
 }
 
+// LOAD LOS MIEMBROS TAB
+async function loadMembers() {
+    const loading = document.getElementById('membersLoading');
+    const empty = document.getElementById('membersEmptyState');
+    if (loading) loading.classList.remove('hidden');
+    if (empty) empty.classList.add('hidden');
+
+    try {
+        const res = await fetch('/api/members');
+        const data = await res.json();
+        currentMembersData = data.members || [];
+
+        const stats = data.stats || {};
+        document.getElementById('statTotalMembers').textContent = stats.total_members || 0;
+        document.getElementById('statCouncilMembers').textContent = stats.council_count || 0;
+        document.getElementById('statVipMembers').textContent = stats.vip_count || 0;
+        document.getElementById('statAvgMultiplier').textContent = `${stats.avg_multiplier || "1.00"}x`;
+        document.getElementById('statTotalMemberPower').textContent = stats.total_power || 0;
+
+        if (loading) loading.classList.add('hidden');
+        renderMembersList();
+    } catch (err) {
+        console.error("Members fetch error:", err);
+        if (loading) loading.classList.add('hidden');
+        showToast("Failed to load DAO members data.", "error");
+    }
+}
+
+function renderMembersList() {
+    const grid = document.getElementById('membersGrid');
+    const empty = document.getElementById('membersEmptyState');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const search = (document.getElementById('memberSearchInput')?.value || '').toLowerCase();
+    const roleFilter = document.getElementById('memberRoleFilter')?.value || 'all';
+
+    const filtered = currentMembersData.filter(m => {
+        const matchesSearch = !search || 
+            (m.wallet_address && m.wallet_address.toLowerCase().includes(search)) ||
+            (m.display_name && m.display_name.toLowerCase().includes(search)) ||
+            (m.tier && m.tier.toLowerCase().includes(search));
+
+        let matchesRole = true;
+        if (roleFilter === 'admin') matchesRole = m.role.includes('Admin');
+        if (roleFilter === 'vip') matchesRole = m.multiplier > 1.0 || m.tier.includes('VIP');
+        if (roleFilter === 'voter') matchesRole = m.votes_cast > 0;
+
+        return matchesSearch && matchesRole;
+    });
+
+    if (filtered.length === 0) {
+        if (empty) empty.classList.remove('hidden');
+        return;
+    }
+    if (empty) empty.classList.add('hidden');
+
+    filtered.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'glass-card p-6 rounded-3xl space-y-4 relative flex flex-col justify-between';
+
+        const roleBadges = {
+            'Core DAO Admin': 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+            'Whitelisted Voter': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+            'Active Voter': 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30'
+        };
+
+        const shortAddr = `${m.wallet_address.substring(0, 6)}...${m.wallet_address.substring(m.wallet_address.length - 4)}`;
+        const displayNameText = m.display_name ? `@${m.display_name}` : shortAddr;
+
+        card.innerHTML = `
+            <div class="space-y-3">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${roleBadges[m.role] || roleBadges['Active Voter']}">
+                        ${m.role}
+                    </span>
+                    <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                        ${m.multiplier}x Multiplier
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-3 pt-1">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500/30 to-indigo-500/30 border border-purple-500/40 flex items-center justify-center font-bold text-lg text-purple-200">
+                        ${m.display_name ? m.display_name.charAt(0).toUpperCase() : '⚡'}
+                    </div>
+                    <div>
+                        <h4 class="font-display text-lg font-bold text-white flex items-center gap-1.5">
+                            <span>${escapeHtml(displayNameText)}</span>
+                            ${m.display_name ? '<span class="text-xs text-emerald-400" title="Verified Alias">✓</span>' : ''}
+                        </h4>
+                        <p class="font-mono text-[11px] text-gray-400">${m.wallet_address}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 pt-3 border-t border-[#251c3a] text-center">
+                <div class="bg-[#0b0817] p-2 rounded-xl border border-[#1f1730]">
+                    <div class="text-gray-400 text-[10px]">Reputation</div>
+                    <div class="font-bold text-purple-300 text-xs mt-0.5">${m.reputation} PTS</div>
+                </div>
+                <div class="bg-[#0b0817] p-2 rounded-xl border border-[#1f1730]">
+                    <div class="text-gray-400 text-[10px]">Votes Cast</div>
+                    <div class="font-bold text-emerald-400 text-xs mt-0.5">${m.votes_cast}</div>
+                </div>
+                <div class="bg-[#0b0817] p-2 rounded-xl border border-[#1f1730]">
+                    <div class="text-gray-400 text-[10px]">Power Score</div>
+                    <div class="font-bold text-amber-300 text-xs mt-0.5">${m.power_score}</div>
+                </div>
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+}
+
+// LOAD TESORERÍA AMPLIADA TAB
+async function loadTreasury() {
+    try {
+        const res = await fetch('/api/treasury');
+        const data = await res.json();
+
+        // Total Net Worth
+        document.getElementById('treasuryNetWorth').textContent = `$${(data.total_net_worth_usd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`;
+
+        // Multisig Info
+        if (data.multisig) {
+            document.getElementById('treasuryProtocol').textContent = data.multisig.protocol || "Squads v4";
+            document.getElementById('treasuryMultisigStatus').textContent = data.multisig.threshold || "1 of 1 Signers";
+            document.getElementById('treasuryVaultAddress').textContent = data.multisig.vault_address || "Attest5TreasuryVault1111111111111111111111";
+
+            const signersList = document.getElementById('treasurySignersList');
+            signersList.innerHTML = '';
+            (data.multisig.signers || []).forEach(s => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-2.5 bg-[#0b0817] rounded-xl border border-[#1f1730] text-xs font-mono';
+                item.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span class="text-purple-300 font-bold">${s.name}</span>
+                        <span class="text-gray-500">(${s.address})</span>
+                    </div>
+                    <span class="text-emerald-400 font-semibold">${s.status}</span>
+                `;
+                signersList.appendChild(item);
+            });
+        }
+
+        // Render Asset Allocation Cards
+        const assetsGrid = document.getElementById('treasuryAssetsGrid');
+        assetsGrid.innerHTML = '';
+        (data.assets || []).forEach(ast => {
+            const card = document.createElement('div');
+            card.className = 'bg-[#0a0716] p-4 rounded-2xl border border-[#1f1730] flex flex-col justify-between space-y-3';
+            card.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr ${ast.color} flex items-center justify-center text-lg shadow-md">
+                            ${ast.icon}
+                        </div>
+                        <div>
+                            <div class="font-bold text-white text-sm">${ast.name}</div>
+                            <div class="text-xs text-gray-400 font-mono">${ast.symbol}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-white text-sm">$${(ast.value_usd || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+                        <div class="text-xs text-purple-300 font-semibold">${ast.balance} ${ast.symbol}</div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex justify-between text-[10px] text-gray-400 font-medium">
+                        <span>Vault Allocation</span>
+                        <span>${ast.allocation_pct || 0}%</span>
+                    </div>
+                    <div class="w-full bg-[#140e28] rounded-full h-1.5 overflow-hidden">
+                        <div class="bg-gradient-to-r ${ast.color} h-full transition-all" style="width: ${ast.allocation_pct || 0}%"></div>
+                    </div>
+                </div>
+            `;
+            assetsGrid.appendChild(card);
+        });
+
+        // Render Transaction History Table
+        const txTable = document.getElementById('treasuryTxTable');
+        const txEmpty = document.getElementById('treasuryTxEmpty');
+        txTable.innerHTML = '';
+
+        if (!data.transactions || data.transactions.length === 0) {
+            if (txEmpty) txEmpty.classList.remove('hidden');
+        } else {
+            if (txEmpty) txEmpty.classList.add('hidden');
+            data.transactions.forEach(tx => {
+                const tr = document.createElement('tr');
+                const typeBadges = {
+                    'Grant': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+                    'Deposit': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+                    'Transfer': 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+                    'Yield': 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                };
+
+                const shortHash = `${tx.tx_hash.substring(0, 6)}...${tx.tx_hash.substring(tx.tx_hash.length - 4)}`;
+
+                tr.innerHTML = `
+                    <td class="p-3 font-mono text-purple-300 font-medium">${shortHash}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${typeBadges[tx.type] || typeBadges['Grant']}">
+                            ${tx.type}
+                        </span>
+                    </td>
+                    <td class="p-3 text-gray-200">${escapeHtml(tx.description)}</td>
+                    <td class="p-3 font-mono text-gray-300">${escapeHtml(tx.recipient)}</td>
+                    <td class="p-3 font-bold text-amber-300">${tx.amount}</td>
+                    <td class="p-3 text-right font-bold text-white">$${(tx.usd_value || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                `;
+                txTable.appendChild(tr);
+            });
+        }
+    } catch (err) {
+        console.error("Treasury fetch error:", err);
+        showToast("Error fetching treasury data.", "error");
+    }
+}
+
 // Load DAO Analytics
 async function loadAnalytics() {
     try {
@@ -504,16 +830,16 @@ async function loadAnalytics() {
 
 // ADMIN CONSOLE ACTIONS
 function switchAdminSubTab(subTabName) {
-    const subTabs = ['general', 'create', 'proposals', 'admins', 'whitelist', 'audit'];
+    const subTabs = ['general', 'treasury', 'profiles', 'create', 'proposals', 'admins', 'whitelist', 'audit'];
     subTabs.forEach(st => {
         const panel = document.getElementById(`adminPanel${st.charAt(0).toUpperCase() + st.slice(1)}`);
         const btn = document.getElementById(`subTab${st.charAt(0).toUpperCase() + st.slice(1)}`);
         if (st === subTabName) {
-            panel.classList.remove('hidden');
-            btn.className = 'admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40';
+            if (panel) panel.classList.remove('hidden');
+            if (btn) btn.className = 'admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40';
         } else {
-            panel.classList.add('hidden');
-            btn.className = 'admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white';
+            if (panel) panel.classList.add('hidden');
+            if (btn) btn.className = 'admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white';
         }
     });
 
@@ -591,6 +917,55 @@ async function saveDaoConfig() {
     await sendAdminAction('update_config', { configs });
 }
 
+// Add Treasury Transaction Admin
+async function addTreasuryTxAdmin() {
+    const txHash = document.getElementById('adminTxHash').value.trim();
+    const type = document.getElementById('adminTxType').value;
+    const description = document.getElementById('adminTxDesc').value.trim();
+    const amount = document.getElementById('adminTxAmount').value.trim();
+    const usdValue = document.getElementById('adminTxUsd').value;
+    const recipient = document.getElementById('adminTxRecipient').value.trim();
+
+    if (!txHash || !amount) {
+        return showToast("Transaction Hash and Amount are required.", "error");
+    }
+
+    const res = await sendAdminAction('add_treasury_tx', {
+        txHash,
+        type,
+        description,
+        amount,
+        usdValue,
+        recipient
+    });
+
+    if (res && res.success) {
+        document.getElementById('adminTxHash').value = '';
+        document.getElementById('adminTxDesc').value = '';
+        document.getElementById('adminTxAmount').value = '';
+        document.getElementById('adminTxUsd').value = '';
+        document.getElementById('adminTxRecipient').value = '';
+        await loadTreasury();
+    }
+}
+
+// Set Member Profile / Alias Admin
+async function setUserProfileAdmin() {
+    const targetWallet = document.getElementById('adminTargetWallet').value.trim();
+    const displayName = document.getElementById('adminTargetAlias').value.trim();
+
+    if (!targetWallet || !displayName) {
+        return showToast("Both Wallet Address and Alias are required.", "error");
+    }
+
+    const res = await sendAdminAction('set_user_profile', { targetWallet, displayName });
+    if (res && res.success) {
+        document.getElementById('adminTargetWallet').value = '';
+        document.getElementById('adminTargetAlias').value = '';
+        await loadMembers();
+    }
+}
+
 // Preset Duration Button
 function setDurationPreset(days) {
     const startInput = document.getElementById('newPStartTime');
@@ -639,6 +1014,7 @@ async function createProposalAdmin() {
 // Manage Proposals Admin Table
 function loadAdminProposalsTable() {
     const tbody = document.getElementById('adminProposalsTable');
+    if (!tbody) return;
     tbody.innerHTML = '';
     currentProposalsData.forEach(p => {
         const tr = document.createElement('tr');
@@ -683,6 +1059,7 @@ async function deleteProposalAdmin(proposalId) {
 // Manage Admins
 function loadAdminWalletsList() {
     const list = document.getElementById('adminWalletsList');
+    if (!list) return;
     list.innerHTML = '';
     const admins = daoConfig.admin_wallets || [];
     admins.forEach(addr => {
@@ -713,9 +1090,10 @@ async function removeAdminWallet(targetAdminWallet) {
 async function loadAdminWhitelistTable() {
     const res = await sendAdminAction('get_whitelists');
     const tbody = document.getElementById('whitelistTable');
+    if (!tbody) return;
     tbody.innerHTML = '';
-    if (res && Array.isArray(res)) {
-        res.forEach(item => {
+    if (res && res.whitelists && Array.isArray(res.whitelists)) {
+        res.whitelists.forEach(item => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="p-2.5 font-mono text-purple-300">${item.wallet_address}</td>
@@ -748,11 +1126,12 @@ async function removeWhitelistVoter(targetWallet) {
 
 // Audit Logs
 async function loadAdminAuditLogs() {
-    const logs = await sendAdminAction('get_audit_logs');
+    const res = await sendAdminAction('get_audit_logs');
     const tbody = document.getElementById('auditLogTable');
+    if (!tbody) return;
     tbody.innerHTML = '';
-    if (logs && Array.isArray(logs)) {
-        logs.forEach(l => {
+    if (res && res.logs && Array.isArray(res.logs)) {
+        res.logs.forEach(l => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="p-2.5 text-gray-400">${new Date(l.timestamp).toLocaleString()}</td>
