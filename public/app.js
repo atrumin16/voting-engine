@@ -60,26 +60,28 @@ function toggleDarkLightMode() {
     const isLight = document.body.classList.contains('light-mode');
     if (isLight) {
         setThemeMode('dark');
-        showToast("Switched to Executive Dark Mode", "info");
     } else {
         setThemeMode('light');
-        showToast("Switched to Enterprise Light Mode", "info");
     }
 }
 
 function setThemeMode(mode) {
-    const icon = document.getElementById('themeToggleIcon');
+    const sunSvg = document.getElementById('themeToggleIconSun');
+    const moonSvg = document.getElementById('themeToggleIconMoon');
+
     if (mode === 'light') {
         document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
         document.documentElement.classList.remove('dark');
-        if (icon) icon.textContent = '☀️';
+        if (sunSvg) sunSvg.classList.remove('hidden');
+        if (moonSvg) moonSvg.classList.add('hidden');
         localStorage.setItem('attestto_theme_mode', 'light');
     } else {
         document.body.classList.remove('light-mode');
         document.body.classList.add('dark-mode');
         document.documentElement.classList.add('dark');
-        if (icon) icon.textContent = '🌙';
+        if (sunSvg) sunSvg.classList.add('hidden');
+        if (moonSvg) moonSvg.classList.remove('hidden');
         localStorage.setItem('attestto_theme_mode', 'dark');
     }
 }

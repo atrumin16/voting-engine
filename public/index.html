@@ -66,7 +66,7 @@
             box-shadow: 0 12px 32px -10px rgba(139, 92, 246, 0.25);
         }
 
-        /* Enterprise Light Theme */
+        /* Institutional Enterprise Light Theme */
         body.light-mode {
             background-color: #f8fafc;
             color: #0f172a;
@@ -95,17 +95,52 @@
             box-shadow: 0 8px 24px -4px rgba(124, 58, 237, 0.12);
             transform: translateY(-2px);
         }
+        body.light-mode h1, body.light-mode h2, body.light-mode h3, body.light-mode h4 {
+            color: #0f172a !important;
+        }
         body.light-mode .text-white { color: #0f172a !important; }
-        body.light-mode .text-gray-400 { color: #64748b !important; }
-        body.light-mode .text-gray-300 { color: #475569 !important; }
-        body.light-mode .bg-\[\#120d24\], body.light-mode .bg-\[\#0b0817\], body.light-mode .bg-\[\#0c0819\], body.light-mode .bg-\[\#0d091a\], body.light-mode .bg-\[\#0a0716\] {
+        body.light-mode .text-gray-400 { color: #475569 !important; }
+        body.light-mode .text-gray-300 { color: #334155 !important; }
+        body.light-mode .text-gray-200 { color: #1e293b !important; }
+        body.light-mode .bg-\[\#120d24\], body.light-mode .bg-\[\#0b0817\], body.light-mode .bg-\[\#0c0819\], body.light-mode .bg-\[\#0d091a\], body.light-mode .bg-\[\#0a0716\], body.light-mode .bg-\[\#1a142e\] {
             background-color: #f1f5f9 !important;
             border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        body.light-mode .bg-gradient-to-r.from-\[\#170e2e\] {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+        body.light-mode table thead {
+            background-color: #f1f5f9 !important;
+            color: #475569 !important;
+            border-bottom: 1px solid #cbd5e1 !important;
+        }
+        body.light-mode table tbody td {
+            color: #1e293b !important;
+            border-color: #f1f5f9 !important;
         }
         body.light-mode input, body.light-mode select, body.light-mode textarea {
             background-color: #ffffff !important;
             border-color: #cbd5e1 !important;
             color: #0f172a !important;
+        }
+        body.light-mode #voteModal .glass-panel {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #0f172a !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        }
+        body.light-mode #modalDesc {
+            background-color: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            color: #1e293b !important;
+        }
+        body.light-mode .tab-btn {
+            color: #475569;
+        }
+        body.light-mode .tab-btn:hover {
+            color: #0f172a;
         }
 
         .btn-glow { 
@@ -180,12 +215,19 @@
             </button>
         </div>
 
-        <!-- Theme Toggle (Moon / Sun) & Social Icons & Wallet Connection -->
+        <!-- Theme Toggle (Black & White Monochrome SVG Sun / Moon) & Social Icons & Wallet Connection -->
         <div class="flex items-center gap-3">
             <div class="hidden sm:flex items-center gap-1.5">
-                <!-- Dark / Light Theme Toggle Button -->
-                <button id="themeToggleBtn" onclick="toggleDarkLightMode()" title="Toggle Dark/Light Mode" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center text-sm">
-                    <span id="themeToggleIcon">🌙</span>
+                <!-- Monochrome SVG Dark / Light Theme Toggle Button -->
+                <button id="themeToggleBtn" onclick="toggleDarkLightMode()" title="Toggle Theme (Light / Dark)" class="icon-btn p-2 rounded-xl text-gray-400 hover:text-white flex items-center justify-center">
+                    <!-- Monochrome Sun SVG -->
+                    <svg id="themeToggleIconSun" class="w-4 h-4 fill-current hidden" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clip-rule="evenodd"/>
+                    </svg>
+                    <!-- Monochrome Moon SVG -->
+                    <svg id="themeToggleIconMoon" class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                    </svg>
                 </button>
 
                 <!-- X (Twitter) Logo -->
