@@ -70,19 +70,13 @@ export async function onRequestPost(context) {
 
             for (const [type, value] of Object.entries(configs)) {
                 const strValue = String(value);
-                const existing = await env.DB.prepare(
-                    "SELECT id FROM admin_config WHERE type = ?"
-                ).bind(type).first();
+                await env.DB.prepare(
+                    "DELETE FROM admin_config WHERE type = ?"
+                ).bind(type).run();
 
-                if (existing) {
-                    await env.DB.prepare(
-                        "UPDATE admin_config SET value = ?, is_active = 1 WHERE type = ?"
-                    ).bind(strValue, type).run();
-                } else {
-                    await env.DB.prepare(
-                        "INSERT INTO admin_config (type, value, is_active) VALUES (?, ?, 1)"
-                    ).bind(type, strValue).run();
-                }
+                await env.DB.prepare(
+                    "INSERT INTO admin_config (type, value, is_active) VALUES (?, ?, 1)"
+                ).bind(type, strValue).run();
             }
 
             await logAudit('update_config', configs);
