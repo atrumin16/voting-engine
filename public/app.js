@@ -683,23 +683,56 @@ function applyFilters() {
     loadProposals();
 }
 
+// Proposal View Mode Manager (Grid, Expanded Large Cards, List)
+let proposalViewMode = localStorage.getItem('attestto_proposal_view_mode') || 'grid';
+
+function setProposalViewMode(mode) {
+    proposalViewMode = mode;
+    localStorage.setItem('attestto_proposal_view_mode', mode);
+
+    const btnGrid = document.getElementById('viewModeGrid');
+    const btnExpanded = document.getElementById('viewModeExpanded');
+    const btnList = document.getElementById('viewModeList');
+
+    [btnGrid, btnExpanded, btnList].forEach(b => {
+        if (b) {
+            b.className = 'p-1.5 rounded-lg text-gray-400 hover:text-white text-xs font-bold transition-colors';
+        }
+    });
+
+    if (mode === 'grid' && btnGrid) btnGrid.className = 'p-1.5 rounded-lg text-purple-300 bg-purple-500/20 text-xs font-bold transition-colors';
+    if (mode === 'expanded' && btnExpanded) btnExpanded.className = 'p-1.5 rounded-lg text-purple-300 bg-purple-500/20 text-xs font-bold transition-colors';
+    if (mode === 'list' && btnList) btnList.className = 'p-1.5 rounded-lg text-purple-300 bg-purple-500/20 text-xs font-bold transition-colors';
+
+    if (currentProposalsData) {
+        renderProposalsGrid(currentProposalsData);
+    }
+}
+
 function renderProposalsGrid(proposals) {
     const grid = document.getElementById('proposalsGrid');
     if (!grid) return;
     grid.innerHTML = '';
 
+    // Adjust grid container layout according to proposalViewMode
+    if (proposalViewMode === 'list') {
+        grid.className = 'flex flex-col space-y-3';
+    } else if (proposalViewMode === 'expanded') {
+        grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-6';
+    } else {
+        grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+    }
+
+    const statusBadges = {
+        active: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+        passed: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+        rejected: 'bg-red-500/20 text-red-400 border-red-500/30',
+        executed: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+        cancelled: 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+    };
+
     proposals.forEach(p => {
         const card = document.createElement('div');
-        card.className = 'glass-card p-6 rounded-3xl flex flex-col justify-between space-y-5 relative group';
-
-        const statusBadges = {
-            active: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-            passed: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-            rejected: 'bg-red-500/20 text-red-400 border-red-500/30',
-            executed: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-            cancelled: 'bg-gray-500/20 text-gray-400 border-gray-500/30'
-        };
-
         const now = new Date();
         const endTime = new Date(p.end_time);
         const timeLeftMs = endTime - now;
@@ -707,19 +740,19 @@ function renderProposalsGrid(proposals) {
         if (timeLeftMs > 0) {
             const hours = Math.floor(timeLeftMs / (1000 * 60 * 60));
             const days = Math.floor(hours / 24);
-            timeString = days > 0 ? `${days}d ${hours % 24}h remaining` : `${hours}h remaining`;
+            timeString = days > 0 ? `${days}d ${hours % 24}h left` : `${hours}h left`;
         }
 
         let adminActionButtons = '';
         if (isUserAdmin) {
             adminActionButtons = `
-                <div class="pt-3 border-t border-[#251c3a] flex flex-wrap items-center justify-between gap-2">
+                <div class="pt-2 border-t border-[#251c3a] flex items-center justify-between gap-2 text-xs">
                     <div class="flex items-center gap-1">
                         <select onchange="updateProposalStatusAdmin(${p.id}, this.value)" class="bg-[#0c0819] border border-amber-500/40 text-[10px] font-bold text-amber-300 rounded-lg px-2 py-1">
-                            <option value="active" ${p.status === 'active' ? 'selected' : ''}>Set Active</option>
-                            <option value="passed" ${p.status === 'passed' ? 'selected' : ''}>Set Passed</option>
-                            <option value="rejected" ${p.status === 'rejected' ? 'selected' : ''}>Set Rejected</option>
-                            <option value="executed" ${p.status === 'executed' ? 'selected' : ''}>Set Executed</option>
+                            <option value="active" ${p.status === 'active' ? 'selected' : ''}>Active</option>
+                            <option value="passed" ${p.status === 'passed' ? 'selected' : ''}>Passed</option>
+                            <option value="rejected" ${p.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                            <option value="executed" ${p.status === 'executed' ? 'selected' : ''}>Executed</option>
                             <option value="cancelled" ${p.status === 'cancelled' ? 'selected' : ''}>Cancel</option>
                         </select>
                         <button onclick="togglePinProposalAdmin(${p.id}, ${p.is_pinned ? 0 : 1})" title="${p.is_pinned ? 'Unpin' : 'Pin'}" class="p-1 text-amber-400 hover:bg-amber-500/20 rounded-lg text-xs">
@@ -733,60 +766,187 @@ function renderProposalsGrid(proposals) {
             `;
         }
 
-        card.innerHTML = `
-            <div class="space-y-3">
-                <div class="flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-2">
-                        <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                            ${p.category || 'Governance'}
-                        </span>
-                        ${p.is_pinned ? '<span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">📌 PINNED</span>' : ''}
-                    </div>
-                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${statusBadges[p.status] || statusBadges.active}">
+        if (proposalViewMode === 'list') {
+            // LIST VIEW ROW
+            card.className = 'glass-panel p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-[#251c3a] hover:border-purple-500/40 transition-all';
+            card.innerHTML = `
+                <div class="flex items-center gap-3 flex-grow cursor-pointer" onclick="openProposalDetailModal(${p.id})">
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full border ${statusBadges[p.status] || statusBadges.active} whitespace-nowrap">
                         ${p.status.toUpperCase()}
                     </span>
-                </div>
-
-                <h3 class="font-display text-xl font-bold text-white group-hover:text-purple-300 transition-colors leading-snug">
-                    ${escapeHtml(p.title)}
-                </h3>
-                
-                <p class="text-gray-400 text-xs line-clamp-3 leading-relaxed">
-                    ${escapeHtml(p.description)}
-                </p>
-            </div>
-
-            <div class="space-y-3 pt-2">
-                <!-- Tally Bars -->
-                <div class="space-y-1.5">
-                    <div class="flex justify-between text-[11px] font-semibold text-gray-400">
-                        <span>Approval (${p.yes_pct}%)</span>
-                        <span>${p.total_power} Power (${p.total_votes} votes)</span>
-                    </div>
-                    <div class="w-full bg-[#08070f] rounded-full h-2 flex overflow-hidden">
-                        <div class="bg-emerald-500 h-full transition-all" style="width: ${p.yes_pct}%"></div>
-                        <div class="bg-red-500 h-full transition-all" style="width: ${p.no_pct}%"></div>
-                        <div class="bg-cyan-500 h-full transition-all" style="width: ${p.abstain_pct}%"></div>
+                    <div class="space-y-0.5">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-display font-bold text-white hover:text-purple-300 transition-colors text-sm md:text-base">
+                                ${escapeHtml(p.title)}
+                            </h3>
+                            ${p.is_pinned ? '<span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">📌</span>' : ''}
+                        </div>
+                        <p class="text-gray-400 text-xs line-clamp-1">${escapeHtml(p.description)}</p>
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between text-[11px] text-gray-400">
-                    <span class="flex items-center gap-1">
-                        ⏱️ ${timeString}
-                    </span>
-                    <span>${p.quorum_met ? '✅ Quorum Met' : `⚠️ Quorum: ${p.total_power}/${p.quorum_required_power}`}</span>
+                <div class="flex items-center gap-4 text-xs whitespace-nowrap">
+                    <div class="w-28 space-y-1">
+                        <div class="flex justify-between text-[10px] text-gray-400 font-semibold">
+                            <span>Yes: ${p.yes_pct}%</span>
+                            <span>${p.total_power} VP</span>
+                        </div>
+                        <div class="w-full bg-[#08070f] rounded-full h-1.5 flex overflow-hidden">
+                            <div class="bg-emerald-500 h-full" style="width: ${p.yes_pct}%"></div>
+                            <div class="bg-red-500 h-full" style="width: ${p.no_pct}%"></div>
+                            <div class="bg-cyan-500 h-full" style="width: ${p.abstain_pct}%"></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="openProposalDetailModal(${p.id})" class="px-4 py-2 rounded-xl font-bold text-xs bg-purple-600/20 hover:bg-purple-600 border border-purple-500/30 text-purple-300 hover:text-white transition-all shadow-sm">
+                        Full View 🔍
+                    </button>
+                </div>
+            `;
+        } else {
+            // GRID & EXPANDED CARD VIEW
+            card.className = `glass-card p-6 rounded-3xl flex flex-col justify-between space-y-5 relative group ${proposalViewMode === 'expanded' ? 'border-purple-500/40 bg-gradient-to-b from-[#130d29] to-[#0a0717]' : ''}`;
+            card.innerHTML = `
+                <div class="space-y-3 cursor-pointer" onclick="openProposalDetailModal(${p.id})">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                                ${p.category || 'Governance'}
+                            </span>
+                            ${p.is_pinned ? '<span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">📌 PINNED</span>' : ''}
+                        </div>
+                        <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${statusBadges[p.status] || statusBadges.active}">
+                            ${p.status.toUpperCase()}
+                        </span>
+                    </div>
+
+                    <h3 class="font-display text-xl font-bold text-white group-hover:text-purple-300 transition-colors leading-snug">
+                        ${escapeHtml(p.title)}
+                    </h3>
+                    
+                    <p class="text-gray-400 text-xs ${proposalViewMode === 'expanded' ? 'line-clamp-6' : 'line-clamp-3'} leading-relaxed">
+                        ${escapeHtml(p.description)}
+                    </p>
                 </div>
 
-                <button onclick="openVoteModal(${p.id})" class="w-full py-2.5 rounded-xl font-bold text-xs bg-[#1a142e] hover:bg-purple-600 border border-purple-500/30 text-white transition-all shadow-md">
-                    ${p.status === 'active' ? '⚡ Cast Vote / View' : '🔍 View Details'}
-                </button>
+                <div class="space-y-3 pt-2">
+                    <!-- Tally Bars -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-[11px] font-semibold text-gray-400">
+                            <span>Approval (${p.yes_pct}%)</span>
+                            <span>${p.total_power} Power (${p.total_votes} votes)</span>
+                        </div>
+                        <div class="w-full bg-[#08070f] rounded-full h-2 flex overflow-hidden">
+                            <div class="bg-emerald-500 h-full transition-all" style="width: ${p.yes_pct}%"></div>
+                            <div class="bg-red-500 h-full transition-all" style="width: ${p.no_pct}%"></div>
+                            <div class="bg-cyan-500 h-full transition-all" style="width: ${p.abstain_pct}%"></div>
+                        </div>
+                    </div>
 
-                ${adminActionButtons}
-            </div>
-        `;
+                    <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <span class="flex items-center gap-1">
+                            ⏱️ ${timeString}
+                        </span>
+                        <span>${p.quorum_met ? '✅ Quorum Met' : `⚠️ Quorum: ${p.total_power}/${p.quorum_required_power}`}</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="openVoteModal(${p.id})" class="py-2.5 rounded-xl font-bold text-xs bg-[#1a142e] hover:bg-purple-600 border border-purple-500/30 text-white transition-all shadow-md">
+                            ${p.status === 'active' ? '⚡ Vote' : '📊 Tally'}
+                        </button>
+                        <button onclick="openProposalDetailModal(${p.id})" class="py-2.5 rounded-xl font-bold text-xs bg-purple-500/15 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 transition-all">
+                            Full Details 🔍
+                        </button>
+                    </div>
+
+                    ${adminActionButtons}
+                </div>
+            `;
+        }
 
         grid.appendChild(card);
     });
+}
+
+// FULL PROPOSAL DETAIL PAGE MODAL HANDLERS
+async function openProposalDetailModal(proposalId) {
+    currentProposalId = proposalId;
+    try {
+        const res = await fetch(`/api/proposals?id=${proposalId}`);
+        const p = await res.json();
+        if (!p) return showToast("Proposal details not found", "error");
+
+        document.getElementById('detailCategory').textContent = p.category || 'Governance';
+        document.getElementById('detailStatus').textContent = p.status.toUpperCase();
+        document.getElementById('detailId').textContent = `PIP-${p.id}`;
+        document.getElementById('detailTitle').textContent = p.title;
+        document.getElementById('detailDescription').textContent = p.description;
+        document.getElementById('detailAuthor').textContent = p.created_by ? `${p.created_by.substring(0, 6)}...${p.created_by.substring(p.created_by.length - 4)}` : 'DAO Member';
+        document.getElementById('detailCreated').textContent = new Date(p.start_time).toLocaleString();
+        document.getElementById('detailEnds').textContent = new Date(p.end_time).toLocaleString();
+
+        document.getElementById('detailYesPct').textContent = `${p.yes_pct}%`;
+        document.getElementById('detailYesPower').textContent = p.yes_power || 0;
+        document.getElementById('detailNoPct').textContent = `${p.no_pct}%`;
+        document.getElementById('detailNoPower').textContent = p.no_power || 0;
+        document.getElementById('detailAbstainPct').textContent = `${p.abstain_pct}%`;
+        document.getElementById('detailAbstainPower').textContent = p.abstain_power || 0;
+
+        document.getElementById('detailBarYes').style.width = `${p.yes_pct}%`;
+        document.getElementById('detailBarNo').style.width = `${p.no_pct}%`;
+        document.getElementById('detailBarAbstain').style.width = `${p.abstain_pct}%`;
+
+        // Render full voting audit ledger table of all members who voted
+        const votersTable = document.getElementById('detailVotersTable');
+        const votersCount = document.getElementById('detailVoteCount');
+        votersTable.innerHTML = '';
+
+        const votes = p.votes || [];
+        if (votersCount) votersCount.textContent = `${votes.length} Members Voted`;
+
+        if (votes.length === 0) {
+            votersTable.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">No member votes recorded yet for this proposal.</td></tr>`;
+        } else {
+            votes.forEach(v => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-[#1c1533] hover:bg-[#120a24]/50';
+                
+                const choiceBadges = {
+                    yes: '<span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 font-bold rounded-lg border border-emerald-500/30">YES 👍</span>',
+                    no: '<span class="px-2 py-0.5 bg-red-500/20 text-red-400 font-bold rounded-lg border border-red-500/30">NO 👎</span>',
+                    abstain: '<span class="px-2 py-0.5 bg-cyan-500/20 text-cyan-400 font-bold rounded-lg border border-cyan-500/30">ABSTAIN ✋</span>'
+                };
+
+                const voterName = v.voter_alias ? `@${v.voter_alias}` : `${v.voter_address.substring(0, 6)}...${v.voter_address.substring(v.voter_address.length - 4)}`;
+
+                tr.innerHTML = `
+                    <td class="p-3 font-semibold text-purple-300">${escapeHtml(voterName)}</td>
+                    <td class="p-3">${choiceBadges[v.choice] || v.choice}</td>
+                    <td class="p-3 font-mono font-bold text-white">${v.weight || 1} VP</td>
+                    <td class="p-3 text-gray-300 max-w-xs truncate">${escapeHtml(v.reason || 'No comment')}</td>
+                    <td class="p-3 text-right text-gray-400 font-mono">${new Date(v.timestamp).toLocaleTimeString()}</td>
+                `;
+                votersTable.appendChild(tr);
+            });
+        }
+
+        document.getElementById('proposalDetailModal').classList.remove('hidden');
+        document.getElementById('proposalDetailModal').classList.add('flex');
+    } catch (err) {
+        console.error("Open proposal detail error:", err);
+        showToast("Failed to load proposal details.", "error");
+    }
+}
+
+function closeProposalDetailModal() {
+    document.getElementById('proposalDetailModal').classList.add('hidden');
+    document.getElementById('proposalDetailModal').classList.remove('flex');
+}
+
+async function submitDetailVote(choice) {
+    closeProposalDetailModal();
+    openVoteModal(currentProposalId);
+    await submitVote(choice);
 }
 
 function escapeHtml(str) {

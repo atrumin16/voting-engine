@@ -298,6 +298,13 @@
                         <option value="Community">Community</option>
                     </select>
 
+                    <!-- Proposal View Mode Selector (Grid, Large Cards, List) -->
+                    <div class="flex items-center bg-[#0d091a] p-1 rounded-xl border border-[#251c3a]">
+                        <button onclick="setProposalViewMode('grid')" id="viewModeGrid" title="Grid View (3-Column)" class="p-1.5 rounded-lg text-purple-300 bg-purple-500/20 text-xs font-bold transition-colors">🔲 Grid</button>
+                        <button onclick="setProposalViewMode('expanded')" id="viewModeExpanded" title="Expanded Large Cards" class="p-1.5 rounded-lg text-gray-400 hover:text-white text-xs font-bold transition-colors">⬛ Large</button>
+                        <button onclick="setProposalViewMode('list')" id="viewModeList" title="List View" class="p-1.5 rounded-lg text-gray-400 hover:text-white text-xs font-bold transition-colors">☰ List</button>
+                    </div>
+
                     <button onclick="loadProposals()" title="Refresh Proposals" class="p-2 bg-[#0d091a] border border-[#251c3a] hover:border-purple-500 text-gray-300 hover:text-white rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
@@ -1052,6 +1059,85 @@
             <div class="space-y-2 pt-2">
                 <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Recent Voter Casts</h4>
                 <div id="modalVotersList" class="max-h-40 overflow-y-auto custom-scrollbar bg-[#0c0819] rounded-xl border border-[#251c3a] p-3 text-xs space-y-2 divide-y divide-[#1c1533]"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FULL PROPOSAL DETAIL PAGE MODAL -->
+    <div id="proposalDetailModal" class="fixed inset-0 bg-black/85 hidden items-center justify-center z-50 backdrop-blur-md p-4 overflow-y-auto custom-scrollbar">
+        <div class="glass-panel p-6 md:p-10 rounded-3xl max-w-4xl w-full relative space-y-6 border border-purple-500/30 shadow-2xl my-8">
+            <button onclick="closeProposalDetailModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white p-2.5 rounded-xl bg-[#0b0817] hover:bg-purple-500/20 transition-colors">&times;</button>
+            
+            <div class="space-y-3">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span id="detailCategory" class="px-3 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-bold rounded-full"></span>
+                    <span id="detailStatus" class="px-3 py-1 text-xs font-bold rounded-full border"></span>
+                    <span id="detailId" class="text-xs text-gray-500 font-mono"></span>
+                </div>
+                <h1 id="detailTitle" class="font-display text-2xl md:text-4xl font-extrabold text-white leading-tight"></h1>
+                <div class="flex flex-wrap items-center gap-4 text-xs text-gray-400 pt-1 border-b border-[#251c3a] pb-4">
+                    <div>Proposer: <span id="detailAuthor" class="font-mono text-purple-300 font-semibold"></span></div>
+                    <div>Created: <span id="detailCreated" class="font-semibold text-gray-300"></span></div>
+                    <div>Voting Ends: <span id="detailEnds" class="font-semibold text-gray-300"></span></div>
+                </div>
+            </div>
+
+            <!-- Detailed Description Body -->
+            <div class="space-y-2">
+                <h3 class="text-xs font-bold text-purple-400 uppercase tracking-wider">Proposal Specification & Rationale</h3>
+                <div id="detailDescription" class="bg-[#0b0817] p-5 rounded-2xl border border-[#251c3a] text-sm text-gray-200 leading-relaxed max-h-72 overflow-y-auto custom-scrollbar whitespace-pre-wrap"></div>
+            </div>
+
+            <!-- Tally Breakdown Bar & Results -->
+            <div class="space-y-3 bg-[#0b0817] p-5 rounded-2xl border border-[#251c3a]">
+                <div class="flex justify-between text-xs font-bold mb-1">
+                    <span class="text-emerald-400">YES: <span id="detailYesPct">0%</span> (<span id="detailYesPower">0</span> votes)</span>
+                    <span class="text-red-400">NO: <span id="detailNoPct">0%</span> (<span id="detailNoPower">0</span> votes)</span>
+                    <span class="text-cyan-400">ABSTAIN: <span id="detailAbstainPct">0%</span> (<span id="detailAbstainPower">0</span> votes)</span>
+                </div>
+                <div class="w-full bg-[#16102b] rounded-full h-3.5 flex overflow-hidden p-0.5">
+                    <div id="detailBarYes" class="bg-emerald-500 h-full rounded-l-full transition-all" style="width: 0%"></div>
+                    <div id="detailBarNo" class="bg-red-500 h-full transition-all" style="width: 0%"></div>
+                    <div id="detailBarAbstain" class="bg-cyan-500 h-full rounded-r-full transition-all" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Complete Member Voting Ledger Table -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+                        <span>👥</span> Member Voting Audit Ledger
+                    </h3>
+                    <span id="detailVoteCount" class="text-xs text-purple-400 font-mono font-bold bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/30">0 Members Voted</span>
+                </div>
+
+                <div class="overflow-x-auto bg-[#0b0817] rounded-2xl border border-[#251c3a] max-h-56 overflow-y-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-[#120c24] text-gray-400 uppercase font-semibold border-b border-[#251c3a] sticky top-0">
+                            <tr>
+                                <th class="p-3">Member / Alias</th>
+                                <th class="p-3">Choice</th>
+                                <th class="p-3">Weight</th>
+                                <th class="p-3">Comment / Rationale</th>
+                                <th class="p-3 text-right">Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailVotersTable" class="divide-y divide-[#1c1533]"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Action Vote Buttons -->
+            <div id="detailVoteActions" class="grid grid-cols-3 gap-3 pt-2">
+                <button onclick="submitDetailVote('yes')" class="py-3 rounded-xl border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all font-extrabold text-xs md:text-sm shadow-lg shadow-emerald-500/10">
+                    VOTE YES 👍
+                </button>
+                <button onclick="submitDetailVote('no')" class="py-3 rounded-xl border border-red-500/50 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all font-extrabold text-xs md:text-sm shadow-lg shadow-red-500/10">
+                    VOTE NO 👎
+                </button>
+                <button onclick="submitDetailVote('abstain')" class="py-3 rounded-xl border border-cyan-500/50 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all font-extrabold text-xs md:text-sm shadow-lg shadow-cyan-500/10">
+                    ABSTAIN ✋
+                </button>
             </div>
         </div>
     </div>
