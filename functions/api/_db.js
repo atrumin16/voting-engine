@@ -82,6 +82,18 @@ export async function initDb(env) {
             env.DB.prepare("INSERT OR IGNORE INTO admin_config (type, value) VALUES ('maintenance_mode', 'false')"),
             env.DB.prepare("INSERT OR REPLACE INTO admin_config (type, value) VALUES ('link_twitter', 'https://x.com/attesttoID')")
         ]);
+
+        // Seed default institutional proposals if empty
+        const propCheck = await env.DB.prepare("SELECT COUNT(*) as count FROM proposals").first();
+        if (propCheck && propCheck.count === 0) {
+            const futureDate = new Date(Date.now() + 14 * 86400000).toISOString();
+            await env.DB.prepare(`
+                INSERT INTO proposals (title, description, category, status, start_time, end_time, created_by, is_pinned)
+                VALUES 
+                ('PIP-1: Establish DAO Institutional Treasury Reserve Fund', 'Authorize the creation of an institutional multi-signature treasury reserve account secured by Squads v4 protocol to manage protocol capital and operational grants.', 'Treasury', 'active', CURRENT_TIMESTAMP, ?, '8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV', 1),
+                ('PIP-2: Integrate Automated AML & Sanction List Risk Screening', 'Implement real-time automated wallet screening against OFAC and EU sanctions databases for all governance voting and treasury interactions.', 'Governance', 'active', CURRENT_TIMESTAMP, ?, '8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV', 0)
+            `).bind(futureDate, futureDate).run();
+        }
     } catch (err) {
         console.error("DB Init Warning:", err.message);
     }

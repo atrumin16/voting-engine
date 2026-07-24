@@ -644,8 +644,8 @@ function switchTab(tabName) {
 // Load Proposals from API
 async function loadProposals() {
     const loading = document.getElementById('proposalsLoading');
-    const grid = document.getElementById('proposalsGrid');
     const empty = document.getElementById('emptyState');
+    const grid = document.getElementById('proposalsGrid');
 
     if (loading) loading.classList.remove('hidden');
     if (grid) grid.innerHTML = '';
@@ -662,11 +662,19 @@ async function loadProposals() {
         if (search) queryParams.append('search', search);
 
         const res = await fetch(`/api/proposals?${queryParams.toString()}`);
-        currentProposalsData = await res.json();
+        const data = await res.json();
 
         if (loading) loading.classList.add('hidden');
 
-        if (!currentProposalsData || currentProposalsData.length === 0) {
+        if (!Array.isArray(data)) {
+            currentProposalsData = [];
+            if (empty) empty.classList.remove('hidden');
+            return;
+        }
+
+        currentProposalsData = data;
+
+        if (currentProposalsData.length === 0) {
             if (empty) empty.classList.remove('hidden');
             return;
         }
@@ -675,7 +683,7 @@ async function loadProposals() {
     } catch (err) {
         console.error("Proposals fetch error:", err);
         if (loading) loading.classList.add('hidden');
-        showToast("Error loading proposals", "error");
+        if (empty) empty.classList.remove('hidden');
     }
 }
 
