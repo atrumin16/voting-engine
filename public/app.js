@@ -713,7 +713,7 @@ function switchTab(tabName) {
             if (viewEl) viewEl.classList.remove('hidden');
             if (btnEl) {
                 if (t === 'admin') {
-                    btnEl.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-amber-300 bg-amber-500/20 border border-amber-500/40 shadow-md';
+                    btnEl.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-purple-300 bg-purple-500/20 border border-purple-500/40 shadow-md';
                 } else {
                     btnEl.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-purple-600 text-white shadow-md';
                 }
@@ -722,7 +722,7 @@ function switchTab(tabName) {
             if (viewEl) viewEl.classList.add('hidden');
             if (btnEl) {
                 if (t === 'admin') {
-                    btnEl.className = 'tab-btn hidden px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-amber-400 hover:text-amber-300 bg-amber-500/10 border border-amber-500/30';
+                    btnEl.className = 'tab-btn hidden px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-purple-400 hover:text-purple-300 bg-purple-500/15 border border-purple-500/30';
                 } else {
                     btnEl.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all text-gray-400 hover:text-white';
                 }
@@ -854,14 +854,14 @@ function renderProposalsGrid(proposals) {
             adminActionButtons = `
                 <div class="pt-2 border-t border-[#251c3a] flex items-center justify-between gap-2 text-xs">
                     <div class="flex items-center gap-1">
-                        <select onchange="updateProposalStatusAdmin(${p.id}, this.value)" class="bg-[#0c0819] border border-amber-500/40 text-[10px] font-bold text-amber-300 rounded-lg px-2 py-1">
+                        <select onchange="updateProposalStatusAdmin(${p.id}, this.value)" class="bg-[#0c0819] border border-purple-500/40 text-[10px] font-bold text-purple-300 rounded-lg px-2 py-1">
                             <option value="active" ${p.status === 'active' ? 'selected' : ''}>Active</option>
                             <option value="passed" ${p.status === 'passed' ? 'selected' : ''}>Passed</option>
                             <option value="rejected" ${p.status === 'rejected' ? 'selected' : ''}>Rejected</option>
                             <option value="executed" ${p.status === 'executed' ? 'selected' : ''}>Executed</option>
                             <option value="cancelled" ${p.status === 'cancelled' ? 'selected' : ''}>Cancel</option>
                         </select>
-                        <button onclick="togglePinProposalAdmin(${p.id}, ${p.is_pinned ? 0 : 1})" title="${p.is_pinned ? 'Unpin' : 'Pin'}" class="p-1 text-amber-400 hover:bg-amber-500/20 rounded-lg text-xs">
+                        <button onclick="togglePinProposalAdmin(${p.id}, ${p.is_pinned ? 0 : 1})" title="${p.is_pinned ? 'Unpin' : 'Pin'}" class="p-1 text-purple-400 hover:bg-purple-500/20 rounded-lg text-xs">
                             ${p.is_pinned ? '📌' : '📍'}
                         </button>
                     </div>
@@ -885,7 +885,7 @@ function renderProposalsGrid(proposals) {
                             <h3 class="font-display font-bold text-white hover:text-purple-300 transition-colors text-sm md:text-base">
                                 ${escapeHtml(p.title)}
                             </h3>
-                            ${p.is_pinned ? '<span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">📌</span>' : ''}
+                            ${p.is_pinned ? '<span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">📌</span>' : ''}
                         </div>
                         <p class="text-gray-400 text-xs line-clamp-1">${escapeHtml(p.description)}</p>
                     </div>
@@ -919,7 +919,7 @@ function renderProposalsGrid(proposals) {
                             <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
                                 ${p.category || 'Governance'}
                             </span>
-                            ${p.is_pinned ? '<span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">📌 PINNED</span>' : ''}
+                            ${p.is_pinned ? '<span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">📌 PINNED</span>' : ''}
                         </div>
                         <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${statusBadges[p.status] || statusBadges.active}">
                             ${p.status.toUpperCase()}
@@ -1261,7 +1261,7 @@ function renderMembersList() {
         card.className = 'glass-card p-6 rounded-3xl space-y-4 relative flex flex-col justify-between';
 
         const roleBadges = {
-            'Core DAO Admin': 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+            'Core DAO Admin': 'bg-purple-500/20 text-purple-300 border-purple-500/40',
             'Whitelisted Voter': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
             'Active Voter': 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30'
         };
@@ -1305,7 +1305,7 @@ function renderMembersList() {
                 </div>
                 <div class="bg-[#0b0817] p-2 rounded-xl border border-[#1f1730]">
                     <div class="text-gray-400 text-[10px]">Power Score</div>
-                    <div class="font-bold text-amber-300 text-xs mt-0.5">${m.power_score}</div>
+                    <div class="font-bold text-purple-300 text-xs mt-0.5">${m.power_score}</div>
                 </div>
             </div>
         `;
@@ -1404,7 +1404,7 @@ async function loadTreasury() {
                     'Grant': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
                     'Deposit': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
                     'Transfer': 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
-                    'Yield': 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                    'Yield': 'bg-purple-500/20 text-purple-300 border-purple-500/30'
                 };
 
                 const shortHash = `${tx.tx_hash.substring(0, 6)}...${tx.tx_hash.substring(tx.tx_hash.length - 4)}`;
@@ -1418,7 +1418,7 @@ async function loadTreasury() {
                     </td>
                     <td class="p-3 text-gray-200">${escapeHtml(tx.description)}</td>
                     <td class="p-3 font-mono text-gray-300">${escapeHtml(tx.recipient)}</td>
-                    <td class="p-3 font-bold text-amber-300">${tx.amount}</td>
+                    <td class="p-3 font-bold text-purple-300">${tx.amount}</td>
                     <td class="p-3 text-right font-bold text-white">$${(tx.usd_value || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 `;
                 txTable.appendChild(tr);
@@ -1457,7 +1457,7 @@ function switchAdminSubTab(subTabName) {
         const btn = document.getElementById(`subTab${st.charAt(0).toUpperCase() + st.slice(1)}`);
         if (st === subTabName) {
             if (panel) panel.classList.remove('hidden');
-            if (btn) btn.className = 'admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40';
+            if (btn) btn.className = 'admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/40';
         } else {
             if (panel) panel.classList.add('hidden');
             if (btn) btn.className = 'admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white';
@@ -1993,7 +1993,7 @@ function loadAdminProposalsTable() {
             <td class="p-3 font-bold text-white">${escapeHtml(p.title)}</td>
             <td class="p-3 text-gray-300">${p.category}</td>
             <td class="p-3">
-                <select onchange="updateProposalStatusAdmin(${p.id}, this.value)" class="bg-[#0b0817] border border-[#251c3a] text-xs text-amber-300 rounded p-1">
+                <select onchange="updateProposalStatusAdmin(${p.id}, this.value)" class="bg-[#0b0817] border border-[#251c3a] text-xs text-purple-300 rounded p-1">
                     <option value="active" ${p.status === 'active' ? 'selected' : ''}>Active</option>
                     <option value="passed" ${p.status === 'passed' ? 'selected' : ''}>Passed</option>
                     <option value="rejected" ${p.status === 'rejected' ? 'selected' : ''}>Rejected</option>
@@ -2036,7 +2036,7 @@ function loadAdminWalletsList() {
         const item = document.createElement('div');
         item.className = 'flex items-center justify-between p-3 bg-[#0b0817] rounded-xl border border-[#251c3a] text-xs font-mono';
         item.innerHTML = `
-            <span class="text-amber-300 font-bold">${addr} ${addr === '8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV' ? '(Primary Founder)' : ''}</span>
+            <span class="text-purple-300 font-bold">${addr} ${addr === '8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV' ? '(Primary Founder)' : ''}</span>
             ${addr !== '8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV' ? `<button onclick="removeAdminWallet('${addr}')" class="text-red-400 hover:text-red-300 font-sans font-bold">Remove</button>` : '<span class="text-gray-500 font-sans">Owner</span>'}
         `;
         list.appendChild(item);
@@ -2068,7 +2068,7 @@ async function loadAdminWhitelistTable() {
             tr.innerHTML = `
                 <td class="p-2.5 font-mono text-purple-300">${item.wallet_address}</td>
                 <td class="p-2.5 text-gray-300 font-semibold">${item.tier}</td>
-                <td class="p-2.5 text-amber-300 font-bold">${item.multiplier}x</td>
+                <td class="p-2.5 text-purple-300 font-bold">${item.multiplier}x</td>
                 <td class="p-2.5 text-right">
                     <button onclick="removeWhitelistVoter('${item.wallet_address}')" class="text-red-400 hover:text-red-300 font-bold">Remove</button>
                 </td>
@@ -2105,7 +2105,7 @@ async function loadAdminAuditLogs() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="p-2.5 text-gray-400">${new Date(l.timestamp).toLocaleString()}</td>
-                <td class="p-2.5 text-amber-300">${l.admin_wallet.substring(0, 6)}...${l.admin_wallet.substring(l.admin_wallet.length - 4)}</td>
+                <td class="p-2.5 text-purple-300">${l.admin_wallet.substring(0, 6)}...${l.admin_wallet.substring(l.admin_wallet.length - 4)}</td>
                 <td class="p-2.5 font-bold text-purple-300">${l.action}</td>
                 <td class="p-2.5 text-gray-400 max-w-xs truncate">${escapeHtml(l.details)}</td>
             `;

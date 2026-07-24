@@ -262,7 +262,7 @@
             <div id="walletInfoContainer" class="hidden flex items-center gap-2">
                 <div id="walletAddress" class="font-mono text-xs md:text-sm text-purple-300 bg-[#1a142e] px-3.5 py-1.5 rounded-xl border border-purple-500/30 flex items-center gap-2 shadow-inner">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span id="userAliasDisplay" class="font-bold text-amber-300 hidden mr-1"></span>
+                    <span id="userAliasDisplay" class="font-bold text-purple-300 hidden mr-1"></span>
                     <span id="walletAddressText"></span>
                 </div>
                 <button onclick="disconnectWallet()" title="Disconnect Wallet" class="p-2 text-gray-400 hover:text-red-400 bg-[#1a142e] hover:bg-red-500/10 rounded-xl border border-[#251c3a] hover:border-red-500/30 transition-colors">
@@ -394,7 +394,7 @@
                 </div>
                 <div class="glass-panel p-5 rounded-2xl border border-[#251c3a]">
                     <div class="text-gray-400 text-xs font-medium mb-1">Council Core</div>
-                    <div id="statCouncilMembers" class="font-display text-2xl md:text-3xl font-black text-amber-400">-</div>
+                    <div id="statCouncilMembers" class="font-display text-2xl md:text-3xl font-black text-purple-400">-</div>
                 </div>
                 <div class="glass-panel p-5 rounded-2xl border border-[#251c3a]">
                     <div class="text-gray-400 text-xs font-medium mb-1">VIP Whitelisted</div>
@@ -466,12 +466,12 @@
                         <button onclick="openDepositModal()" class="btn-glow px-4 py-2 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-lg">
                             <span>⚡</span><span>Deposit SOL (1-Click)</span>
                         </button>
-                        <button id="btnOpenWithdrawModal" onclick="openWithdrawModal()" class="hidden px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-lg">
+                        <button id="btnOpenWithdrawModal" onclick="openWithdrawModal()" class="hidden px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-lg">
                             <span>💸</span><span>Withdraw (Admin)</span>
                         </button>
                         <div class="bg-[#0b0817] px-3.5 py-2 rounded-2xl border border-[#251c3a] text-xs">
                             <span class="text-gray-400">Vault Protocol:</span>
-                            <span id="treasuryProtocol" class="font-bold text-amber-300 ml-1">Squads v4 Multisig</span>
+                            <span id="treasuryProtocol" class="font-bold text-purple-300 ml-1">Squads v4 Multisig</span>
                         </div>
                         <div class="bg-[#0b0817] px-3.5 py-2 rounded-2xl border border-[#251c3a] text-xs">
                             <span class="text-gray-400">Threshold:</span>
@@ -525,7 +525,7 @@
                         <p class="text-gray-400 text-[11px] leading-relaxed">Institutional supporters can deposit SOL directly to the Squads v4 multisig vault address in 1-click via Phantom.</p>
                     </div>
                     <div class="bg-[#0b0817] p-3 rounded-xl border border-[#1f1730]">
-                        <div class="font-bold text-amber-300 mb-1 flex items-center gap-1.5">
+                        <div class="font-bold text-purple-300 mb-1 flex items-center gap-1.5">
                             <span>🛡️</span> Verified Multisig Governance
                         </div>
                         <p class="text-gray-400 text-[11px] leading-relaxed">All treasury outflows are cryptographically signed and audited by authorized council wallets before execution.</p>
@@ -533,16 +533,16 @@
             </div>
 
             <!-- EXCLUSIVE TOKEN RESERVE & GOVERNANCE ALLOCATION SECTION -->
-            <div id="treasuryTokenReserveCard" class="glass-panel p-6 rounded-3xl border border-amber-500/30 bg-gradient-to-br from-[#181106] via-[#1c1508] to-[#0d0a03] space-y-4 shadow-xl">
+            <div id="treasuryTokenReserveCard" class="glass-panel p-6 rounded-3xl border border-purple-500/30 bg-gradient-to-br from-[#130d28] via-[#0f0a20] to-[#0a0718] space-y-4 shadow-xl">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div class="flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-2xl border-2 border-amber-500/40 shadow-xl overflow-hidden flex-shrink-0">
+                        <div class="w-12 h-12 rounded-2xl border-2 border-purple-500/40 shadow-xl overflow-hidden flex-shrink-0">
                             <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="$ATTEST Token" class="w-full h-full object-cover">
                         </div>
                         <div>
                             <div class="flex items-center gap-2">
-                                <h3 class="font-display text-lg font-black text-amber-300">$ATTEST Protocol Token Reserve</h3>
-                                <span class="text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded-full">● GOVERNANCE RESERVE</span>
+                                <h3 class="font-display text-lg font-black text-purple-300">$ATTEST Protocol Token Reserve</h3>
+                                <span class="text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 px-2.5 py-0.5 rounded-full">● GOVERNANCE RESERVE</span>
                             </div>
                             <p class="text-gray-400 text-xs mt-0.5">Exclusive protocol treasury reserve & tokenomics supply distribution. Separated from liquid USD net worth.</p>
                         </div>
@@ -550,23 +550,23 @@
 
                     <div class="flex items-center gap-2">
                         <a href="https://solscan.io/token/91Zh1Nh5Leuktcn878HACDGtTnEwXXpTdDXEMp18rMbU" target="_blank"
-                           class="flex items-center gap-1.5 px-3.5 py-2 bg-[#1a1400] hover:bg-amber-500/20 border border-amber-500/30 rounded-xl text-amber-300 text-xs font-bold transition-all">
+                           class="flex items-center gap-1.5 px-3.5 py-2 bg-[#140e28] hover:bg-purple-500/20 border border-purple-500/30 rounded-xl text-purple-300 text-xs font-bold transition-all">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 6v2H5v11h11v-5h2v7H3V6h7zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.585 5H13V3h8z"/></svg>
                             Solscan Explorer
                         </a>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-amber-500/20 text-xs">
-                    <div class="bg-[#0d0900] p-4 rounded-2xl border border-amber-500/10 space-y-1">
-                        <div class="text-amber-300 font-black text-xl font-display">900,000 $ATTEST</div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-purple-500/20 text-xs">
+                    <div class="bg-[#0c0819] p-4 rounded-2xl border border-purple-500/20 space-y-1">
+                        <div class="text-purple-300 font-black text-xl font-display">900,000 $ATTEST</div>
                         <div class="text-gray-400 text-[11px] font-semibold">Treasury Vault Reserve (90%)</div>
                     </div>
-                    <div class="bg-[#0d0900] p-4 rounded-2xl border border-amber-500/10 space-y-1">
-                        <div class="text-amber-200 font-black text-xl font-display">100,000 $ATTEST</div>
+                    <div class="bg-[#0c0819] p-4 rounded-2xl border border-purple-500/20 space-y-1">
+                        <div class="text-purple-200 font-black text-xl font-display">100,000 $ATTEST</div>
                         <div class="text-gray-400 text-[11px] font-semibold">Founder & Core Team (10%)</div>
                     </div>
-                    <div class="bg-[#0d0900] p-4 rounded-2xl border border-amber-500/10 space-y-1">
+                    <div class="bg-[#0c0819] p-4 rounded-2xl border border-purple-500/20 space-y-1">
                         <div class="text-emerald-400 font-black text-xl font-display">1,000,000 $ATTEST</div>
                         <div class="text-gray-400 text-[11px] font-semibold">Total On-Chain Max Supply</div>
                     </div>
@@ -660,7 +660,7 @@
                     </div>
                     <div class="bg-[#08101f] p-3.5 rounded-2xl border border-blue-500/20 space-y-1">
                         <div class="text-gray-400 text-[11px]">Timelock Guard</div>
-                        <div class="font-bold text-amber-300">48-Hour Governance Delay</div>
+                        <div class="font-bold text-purple-300">48-Hour Governance Delay</div>
                         <div class="text-gray-400 text-[10px]">Mandatory Outflow Cool-Off</div>
                     </div>
                     <div class="bg-[#08101f] p-3.5 rounded-2xl border border-blue-500/20 space-y-1">
@@ -715,7 +715,7 @@
                     </div>
                     <div class="bg-[#0b0817] p-4 rounded-xl border border-[#1f1730]">
                         <div class="text-gray-400 text-xs">Active Admins</div>
-                        <div id="analyticsAdmins" class="font-semibold text-amber-300 text-base mt-1">1 Wallet</div>
+                        <div id="analyticsAdmins" class="font-semibold text-purple-300 text-base mt-1">1 Wallet</div>
                     </div>
                 </div>
             </div>
@@ -725,21 +725,21 @@
         <section id="viewAdmin" class="hidden space-y-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#251c3a]">
                 <div>
-                    <h2 class="font-display text-3xl font-extrabold text-amber-400 flex items-center gap-2">
+                    <h2 class="font-display text-3xl font-extrabold text-purple-400 flex items-center gap-2">
                         <span>👑</span> Admin Control Center
                     </h2>
                     <p class="text-gray-400 text-xs md:text-sm mt-1">
                         Configure DAO rules, customize logos, social channels, manage proposals, and record treasury operations.
                     </p>
                 </div>
-                <div class="text-xs text-amber-300/80 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-xl font-mono">
-                    Admin Wallet: <span id="adminWalletDisplay" class="font-bold text-amber-200"></span>
+                <div class="text-xs text-purple-300/80 bg-purple-500/15 border border-purple-500/30 px-3 py-1.5 rounded-xl font-mono">
+                    Admin Wallet: <span id="adminWalletDisplay" class="font-bold text-purple-200"></span>
                 </div>
             </div>
 
             <!-- Admin Sub-Navigation Tabs -->
             <div class="flex flex-wrap gap-2 border-b border-[#251c3a] pb-3">
-                <button onclick="switchAdminSubTab('general')" id="subTabGeneral" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                <button onclick="switchAdminSubTab('general')" id="subTabGeneral" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/40">
                     ⚙️ DAO Config & Branding
                 </button>
                 <button onclick="switchAdminSubTab('treasury')" id="subTabTreasury" class="admin-subtab px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-gray-400 hover:text-white">
@@ -776,51 +776,51 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">DAO Title</label>
-                            <input type="text" id="cfgDaoName" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="cfgDaoName" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Custom Logo URL</label>
-                            <input type="url" id="cfgDaoLogo" placeholder="https://..." class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <input type="url" id="cfgDaoLogo" placeholder="https://..." class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Default Quorum Required (% power)</label>
-                            <input type="number" id="cfgQuorum" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <input type="number" id="cfgQuorum" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">DAO Subtitle / Protocol Rationale</label>
-                        <textarea id="cfgDaoDesc" rows="2" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
+                        <textarea id="cfgDaoDesc" rows="2" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500"></textarea>
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">Global Announcement Banner (Leave empty to hide)</label>
-                        <input type="text" id="cfgBanner" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="e.g. Season 2 Governance Voting is now live!">
+                        <input type="text" id="cfgBanner" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500" placeholder="e.g. Season 2 Governance Voting is now live!">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">X (Twitter) URL</label>
-                            <input type="text" id="cfgTwitter" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="https://x.com/attesttoID">
+                            <input type="text" id="cfgTwitter" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500" placeholder="https://x.com/attesttoID">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">GitHub URL</label>
-                            <input type="text" id="cfgGithub" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="https://github.com/Attestto-com">
+                            <input type="text" id="cfgGithub" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500" placeholder="https://github.com/Attestto-com">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Documentation URL</label>
-                            <input type="text" id="cfgDocs" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="https://attestto.com">
+                            <input type="text" id="cfgDocs" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500" placeholder="https://attestto.com">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Discord / Community URL (Optional)</label>
-                            <input type="text" id="cfgDiscord" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="https://discord.gg/attestto">
+                            <input type="text" id="cfgDiscord" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500" placeholder="https://discord.gg/attestto">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Footer Copyright Text</label>
-                            <input type="text" id="cfgFooterText" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500" placeholder="© 2026 Attestto Governance. Powered by Cloudflare Pages & Solana.">
+                            <input type="text" id="cfgFooterText" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500" placeholder="© 2026 Attestto Governance. Powered by Cloudflare Pages & Solana.">
                         </div>
                     </div>
 
@@ -829,7 +829,7 @@
                             <input type="checkbox" id="cfgMaintenance" class="w-4 h-4 rounded border-red-500 text-red-600 focus:ring-red-500 bg-[#0b0817]">
                             <span>Pause DAO Voting (Emergency Maintenance Mode)</span>
                         </label>
-                        <button onclick="saveDaoConfig()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
+                        <button onclick="saveDaoConfig()" class="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
                             Save Configs & Branding (Sign)
                         </button>
                     </div>
@@ -845,11 +845,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Transaction Hash / ID</label>
-                            <input type="text" id="adminTxHash" placeholder="5K9x...sol" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="adminTxHash" placeholder="5K9x...sol" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Transaction Type</label>
-                            <select id="adminTxType" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                            <select id="adminTxType" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
                                 <option value="Grant">Grant Allocation</option>
                                 <option value="Deposit">Deposit / Treasury Fund</option>
                                 <option value="Transfer">Multisig Transfer</option>
@@ -860,25 +860,25 @@
 
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">Description / Rationale</label>
-                        <input type="text" id="adminTxDesc" placeholder="e.g. Developer Grant for Solana Security Audit" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                        <input type="text" id="adminTxDesc" placeholder="e.g. Developer Grant for Solana Security Audit" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Amount (e.g. 500 SOL or 1000 USDC)</label>
-                            <input type="text" id="adminTxAmount" placeholder="500 SOL" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="adminTxAmount" placeholder="500 SOL" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">USD Equivalent Value</label>
-                            <input type="number" id="adminTxUsd" placeholder="75000" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                            <input type="number" id="adminTxUsd" placeholder="75000" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Recipient Address or Alias</label>
-                            <input type="text" id="adminTxRecipient" placeholder="Wallet or Alias" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="adminTxRecipient" placeholder="Wallet or Alias" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
                         </div>
                     </div>
 
-                    <button onclick="addTreasuryTxAdmin()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
+                    <button onclick="addTreasuryTxAdmin()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
                         Record Treasury Transaction (Sign)
                     </button>
                 </div>
@@ -893,15 +893,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Target Wallet Address</label>
-                            <input type="text" id="adminTargetWallet" placeholder="Solana Wallet Base58" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="adminTargetWallet" placeholder="Solana Wallet Base58" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Custom Alias / Display Name</label>
-                            <input type="text" id="adminTargetAlias" placeholder="e.g. Alberto (Founder)" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="adminTargetAlias" placeholder="e.g. Alberto (Founder)" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
                         </div>
                     </div>
 
-                    <button onclick="setUserProfileAdmin()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
+                    <button onclick="setUserProfileAdmin()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
                         Set Member Alias (Sign)
                     </button>
                 </div>
@@ -914,13 +914,13 @@
                     
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">Proposal Title</label>
-                        <input type="text" id="newPTitle" placeholder="e.g. PIP-1: Allocate Treasury for Security Audit" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                        <input type="text" id="newPTitle" placeholder="e.g. PIP-1: Allocate Treasury for Security Audit" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Category</label>
-                            <select id="newPCategory" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <select id="newPCategory" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500">
                                 <option value="Governance">Governance</option>
                                 <option value="Treasury">Treasury</option>
                                 <option value="Technical">Technical</option>
@@ -929,41 +929,41 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Discussion URL (Optional)</label>
-                            <input type="url" id="newPDiscussion" placeholder="https://forum.attestto.com/t/pip-1" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <input type="url" id="newPDiscussion" placeholder="https://forum.attestto.com/t/pip-1" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">Proposal Description (Markdown Supported)</label>
-                        <textarea id="newPDesc" rows="6" placeholder="Describe the proposal objectives, technical specification, rationale, and consequences..." class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500 custom-scrollbar"></textarea>
+                        <textarea id="newPDesc" rows="6" placeholder="Describe the proposal objectives, technical specification, rationale, and consequences..." class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500 custom-scrollbar"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Start Time</label>
-                            <input type="datetime-local" id="newPStartTime" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <input type="datetime-local" id="newPStartTime" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">End Time</label>
-                            <input type="datetime-local" id="newPEndTime" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
+                            <input type="datetime-local" id="newPEndTime" class="w-full bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500">
                         </div>
                     </div>
 
                     <!-- Preset Time Duration Buttons -->
                     <div class="flex items-center gap-2 pt-1">
                         <span class="text-xs text-gray-400">Duration Shortcuts:</span>
-                        <button type="button" onclick="setDurationPreset(3)" class="px-2.5 py-1 bg-[#1a142e] border border-[#251c3a] hover:border-amber-500/50 text-xs rounded-lg text-amber-300">3 Days</button>
-                        <button type="button" onclick="setDurationPreset(7)" class="px-2.5 py-1 bg-[#1a142e] border border-[#251c3a] hover:border-amber-500/50 text-xs rounded-lg text-amber-300">7 Days</button>
-                        <button type="button" onclick="setDurationPreset(14)" class="px-2.5 py-1 bg-[#1a142e] border border-[#251c3a] hover:border-amber-500/50 text-xs rounded-lg text-amber-300">14 Days</button>
+                        <button type="button" onclick="setDurationPreset(3)" class="px-2.5 py-1 bg-[#1a142e] border border-[#251c3a] hover:border-purple-500/40/50 text-xs rounded-lg text-purple-300">3 Days</button>
+                        <button type="button" onclick="setDurationPreset(7)" class="px-2.5 py-1 bg-[#1a142e] border border-[#251c3a] hover:border-purple-500/40/50 text-xs rounded-lg text-purple-300">7 Days</button>
+                        <button type="button" onclick="setDurationPreset(14)" class="px-2.5 py-1 bg-[#1a142e] border border-[#251c3a] hover:border-purple-500/40/50 text-xs rounded-lg text-purple-300">14 Days</button>
                     </div>
 
                     <div class="pt-2 flex items-center justify-between">
-                        <label class="flex items-center gap-2 text-xs font-semibold text-amber-300 cursor-pointer">
-                            <input type="checkbox" id="newPPinned" class="w-4 h-4 rounded border-amber-500 text-amber-600 focus:ring-amber-500 bg-[#0b0817]">
+                        <label class="flex items-center gap-2 text-xs font-semibold text-purple-300 cursor-pointer">
+                            <input type="checkbox" id="newPPinned" class="w-4 h-4 rounded border-purple-500/40 text-amber-600 focus:ring-amber-500 bg-[#0b0817]">
                             <span>Pin to Top of Proposals List</span>
                         </label>
 
-                        <button onclick="createProposalAdmin()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
+                        <button onclick="createProposalAdmin()" class="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white hover:bg-amber-600 text-black font-bold rounded-xl text-sm transition-colors shadow-lg shadow-amber-500/20">
                             Sign & Publish Proposal
                         </button>
                     </div>
@@ -999,8 +999,8 @@
                     <p class="text-gray-400 text-xs">Authorized wallets can create proposals, update DAO parameters, and manage voter multipliers.</p>
 
                     <div class="flex gap-2">
-                        <input type="text" id="newAdminWalletInput" placeholder="Solana Wallet Address (Base58)" class="flex-grow bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500">
-                        <button onclick="addAdminWallet()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm">
+                        <input type="text" id="newAdminWalletInput" placeholder="Solana Wallet Address (Base58)" class="flex-grow bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-purple-500">
+                        <button onclick="addAdminWallet()" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white hover:bg-amber-600 text-black font-bold rounded-xl text-sm">
                             Add Admin (Sign)
                         </button>
                     </div>
@@ -1016,12 +1016,12 @@
                     <p class="text-gray-400 text-xs">Assign custom voting power weight multipliers (e.g. VIP 2.0x, Whale 5.0x) to key ecosystem wallets.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <input type="text" id="wlWallet" placeholder="Wallet Address" class="bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
-                        <input type="text" id="wlTier" placeholder="Tier Name (e.g. VIP)" class="bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
-                        <input type="number" step="0.1" id="wlMultiplier" placeholder="Multiplier (e.g. 2.5)" class="bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                        <input type="text" id="wlWallet" placeholder="Wallet Address" class="bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
+                        <input type="text" id="wlTier" placeholder="Tier Name (e.g. VIP)" class="bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
+                        <input type="number" step="0.1" id="wlMultiplier" placeholder="Multiplier (e.g. 2.5)" class="bg-[#0b0817] border border-[#251c3a] p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500">
                     </div>
 
-                    <button onclick="addWhitelistVoter()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl text-sm">
+                    <button onclick="addWhitelistVoter()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white hover:bg-amber-600 text-black font-bold rounded-xl text-sm">
                         Grant Whitelist Multiplier (Sign)
                     </button>
 
@@ -1044,15 +1044,15 @@
             <!-- ADMIN SUB-PANEL: TOKENOMICS & MONETIZATION SETUP -->
             <div id="adminPanelTokenomics" class="admin-panel hidden space-y-6 max-w-4xl">
             <!-- $ATTEST Token Live Status Card -->
-                <div class="glass-panel p-6 rounded-2xl space-y-5 border border-amber-500/40 bg-gradient-to-br from-[#181106] via-[#1c1508] to-[#0d0a03]">
+                <div class="glass-panel p-6 rounded-2xl space-y-5 border border-purple-500/40 bg-gradient-to-br from-[#130d28] via-[#0f0a20] to-[#0a0718]">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-2xl border-2 border-amber-500/40 shadow-xl shadow-amber-500/10 overflow-hidden flex-shrink-0">
+                            <div class="w-14 h-14 rounded-2xl border-2 border-purple-500/40 shadow-xl shadow-amber-500/10 overflow-hidden flex-shrink-0">
                                 <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="$ATTEST Token" class="w-full h-full object-cover">
                             </div>
                             <div>
                                 <div class="flex items-center gap-2">
-                                    <h3 class="font-display text-xl font-black text-amber-300">$ATTEST</h3>
+                                    <h3 class="font-display text-xl font-black text-purple-300">$ATTEST</h3>
                                     <span class="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">● LIVE ON SOLANA</span>
                                 </div>
                                 <p class="text-gray-400 text-xs mt-0.5">Attestto Governance Token · SPL · 9 Decimals · Supply: 1,000,000</p>
@@ -1061,7 +1061,7 @@
                         <!-- External Market Links -->
                         <div class="flex flex-wrap gap-2">
                             <a href="https://solscan.io/token/91Zh1Nh5Leuktcn878HACDGtTnEwXXpTdDXEMp18rMbU" target="_blank"
-                               class="flex items-center gap-1.5 px-4 py-2 bg-[#1a1400] hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-400/60 rounded-xl text-amber-300 text-xs font-bold transition-all">
+                               class="flex items-center gap-1.5 px-4 py-2 bg-[#140e28] hover:bg-purple-500/20 border border-purple-500/30 hover:border-amber-400/60 rounded-xl text-purple-300 text-xs font-bold transition-all">
                                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 6v2H5v11h11v-5h2v7H3V6h7zm11-3v8h-2V6.413l-7.293 7.294-1.414-1.414L17.585 5H13V3h8z"/></svg>
                                 Solscan Explorer
                             </a>
@@ -1074,28 +1074,28 @@
                     </div>
 
                     <!-- Mint Address -->
-                    <div class="bg-[#0d0900] border border-amber-500/20 rounded-xl p-3.5 flex items-center justify-between gap-3">
+                    <div class="bg-[#0c0819] border border-purple-500/20 rounded-xl p-3.5 flex items-center justify-between gap-3">
                         <div>
-                            <div class="text-[10px] uppercase tracking-widest text-amber-500/60 font-bold mb-0.5">Solana Mint Address</div>
-                            <div class="font-mono text-xs text-amber-200 break-all">91Zh1Nh5Leuktcn878HACDGtTnEwXXpTdDXEMp18rMbU</div>
+                            <div class="text-[10px] uppercase tracking-widest text-purple-400/60 font-bold mb-0.5">Solana Mint Address</div>
+                            <div class="font-mono text-xs text-purple-200 break-all">91Zh1Nh5Leuktcn878HACDGtTnEwXXpTdDXEMp18rMbU</div>
                         </div>
                         <button onclick="navigator.clipboard.writeText('91Zh1Nh5Leuktcn878HACDGtTnEwXXpTdDXEMp18rMbU').then(()=>showToast('Mint address copied!','success'))"
-                                class="p-2 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 transition-all flex-shrink-0" title="Copy mint address">
+                                class="p-2 rounded-lg bg-purple-500/15 hover:bg-purple-500/20 text-purple-400 transition-all flex-shrink-0" title="Copy mint address">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         </button>
                     </div>
 
                     <!-- Stats Row -->
                     <div class="grid grid-cols-3 gap-3 text-center">
-                        <div class="bg-[#0d0900] rounded-xl p-3 border border-amber-500/10">
-                            <div class="text-amber-300 font-black text-lg font-display">1,000,000</div>
+                        <div class="bg-[#0c0819] rounded-xl p-3 border border-purple-500/20">
+                            <div class="text-purple-300 font-black text-lg font-display">1,000,000</div>
                             <div class="text-gray-500 text-[10px] uppercase tracking-wider mt-0.5">Total Supply</div>
                         </div>
-                        <div class="bg-[#0d0900] rounded-xl p-3 border border-amber-500/10">
-                            <div class="text-amber-300 font-black text-lg font-display">9</div>
+                        <div class="bg-[#0c0819] rounded-xl p-3 border border-purple-500/20">
+                            <div class="text-purple-300 font-black text-lg font-display">9</div>
                             <div class="text-gray-500 text-[10px] uppercase tracking-wider mt-0.5">Decimals</div>
                         </div>
-                        <div class="bg-[#0d0900] rounded-xl p-3 border border-amber-500/10">
+                        <div class="bg-[#0c0819] rounded-xl p-3 border border-purple-500/20">
                             <div class="text-emerald-400 font-black text-lg font-display">✓</div>
                             <div class="text-gray-500 text-[10px] uppercase tracking-wider mt-0.5">Metaplex Metadata</div>
                         </div>
@@ -1137,17 +1137,17 @@
                         <!-- Mechanism 2: Council Membership Dues -->
                         <div class="bg-[#08140e] p-5 rounded-2xl border border-emerald-500/20 space-y-3">
                             <div class="flex items-center justify-between">
-                                <div class="font-bold text-amber-300 text-sm flex items-center gap-2">
+                                <div class="font-bold text-purple-300 text-sm flex items-center gap-2">
                                     <span>👑</span> VIP Council Badge Dues (SOL)
                                 </div>
-                                <span class="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-md">2.0x Weight</span>
+                                <span class="text-[10px] font-bold bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-md">2.0x Weight</span>
                             </div>
                             <p class="text-gray-400 text-xs leading-relaxed">
                                 Grants members verified Council Badges with 2.0x voting multiplier in exchange for annual treasury contributions.
                             </p>
                             <div class="flex items-center gap-2 pt-1">
-                                <input type="number" step="0.1" id="cfgCouncilFee" value="0.5" oninput="updateSolFeeLabels()" class="w-full bg-[#040a07] border border-amber-500/30 p-2.5 rounded-xl text-xs text-amber-200 font-bold focus:outline-none focus:border-amber-400">
-                                <span id="cfgCouncilFeeUsd" class="text-xs font-bold text-amber-400 whitespace-nowrap">SOL (~$75.00 USD)</span>
+                                <input type="number" step="0.1" id="cfgCouncilFee" value="0.5" oninput="updateSolFeeLabels()" class="w-full bg-[#040a07] border border-purple-500/30 p-2.5 rounded-xl text-xs text-purple-200 font-bold focus:outline-none focus:border-purple-400">
+                                <span id="cfgCouncilFeeUsd" class="text-xs font-bold text-purple-400 whitespace-nowrap">SOL (~$75.00 USD)</span>
                             </div>
                         </div>
                     </div>
@@ -1466,15 +1466,15 @@
 
     <!-- ADMIN TREASURY WITHDRAWAL MODAL -->
     <div id="withdrawModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-md p-4 overflow-y-auto custom-scrollbar">
-        <div class="glass-panel p-6 md:p-8 rounded-3xl max-w-lg w-full relative space-y-5 border border-amber-500/30 shadow-2xl my-8">
-            <button onclick="closeWithdrawModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white p-2 rounded-xl bg-[#0b0817] hover:bg-amber-500/20 transition-colors">&times;</button>
+        <div class="glass-panel p-6 md:p-8 rounded-3xl max-w-lg w-full relative space-y-5 border border-purple-500/30 shadow-2xl my-8">
+            <button onclick="closeWithdrawModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white p-2 rounded-xl bg-[#0b0817] hover:bg-purple-500/20 transition-colors">&times;</button>
             
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl">
+                <div class="w-10 h-10 rounded-2xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xl">
                     💸
                 </div>
                 <div>
-                    <h2 class="font-display text-xl font-extrabold text-amber-300">Authorize Treasury Withdrawal</h2>
+                    <h2 class="font-display text-xl font-extrabold text-purple-300">Authorize Treasury Withdrawal</h2>
                     <p class="text-gray-400 text-xs">Dispatch funds or grants from the Treasury Multisig Vault (Admin Only).</p>
                 </div>
             </div>
@@ -1482,26 +1482,26 @@
             <div class="space-y-4 pt-2">
                 <div>
                     <label class="block text-xs font-semibold text-gray-300 mb-1">Recipient Wallet Address or Alias</label>
-                    <input type="text" id="withdrawRecipientInput" placeholder="Solana Wallet Base58 or Alias" class="w-full bg-[#0c0819] border border-[#251c3a] focus:border-amber-500 p-2.5 rounded-xl text-xs text-white focus:outline-none font-mono">
+                    <input type="text" id="withdrawRecipientInput" placeholder="Solana Wallet Base58 or Alias" class="w-full bg-[#0c0819] border border-[#251c3a] focus:border-purple-500 p-2.5 rounded-xl text-xs text-white focus:outline-none font-mono">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">Amount (e.g. 10 SOL or 500 USDC)</label>
-                        <input type="text" id="withdrawAmountInput" placeholder="10 SOL" class="w-full bg-[#0c0819] border border-[#251c3a] focus:border-amber-500 p-2.5 rounded-xl text-xs text-white focus:outline-none">
+                        <input type="text" id="withdrawAmountInput" placeholder="10 SOL" class="w-full bg-[#0c0819] border border-[#251c3a] focus:border-purple-500 p-2.5 rounded-xl text-xs text-white focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-300 mb-1">USD Value</label>
-                        <input type="number" id="withdrawUsdInput" placeholder="1500" class="w-full bg-[#0c0819] border border-[#251c3a] focus:border-amber-500 p-2.5 rounded-xl text-xs text-white focus:outline-none">
+                        <input type="number" id="withdrawUsdInput" placeholder="1500" class="w-full bg-[#0c0819] border border-[#251c3a] focus:border-purple-500 p-2.5 rounded-xl text-xs text-white focus:outline-none">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-300 mb-1">Grant / Transfer Rationale</label>
-                    <input type="text" id="withdrawDescInput" placeholder="e.g. Security Audit Payment for PIP-2" class="w-full bg-[#0c0819] border border-[#251c3a] focus:border-amber-500 p-2.5 rounded-xl text-xs text-white focus:outline-none">
+                    <input type="text" id="withdrawDescInput" placeholder="e.g. Security Audit Payment for PIP-2" class="w-full bg-[#0c0819] border border-[#251c3a] focus:border-purple-500 p-2.5 rounded-xl text-xs text-white focus:outline-none">
                 </div>
 
-                <button onclick="executeAdminWithdrawal()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-black font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-amber-500/20">
+                <button onclick="executeAdminWithdrawal()" class="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white hover:bg-amber-600 text-black font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-amber-500/20">
                     Sign & Dispatch Treasury Withdrawal
                 </button>
             </div>
@@ -1550,7 +1550,7 @@
         </div>
     </footer>
 
-    <!-- Core Application Logic (Cache-busted v3.0.0) -->
-    <script src="app.js?v=3.0.0"></script>
+    <!-- Core Application Logic (Cache-busted v4.0.0) -->
+    <script src="app.js?v=4.0.0"></script>
 </body>
 </html>
