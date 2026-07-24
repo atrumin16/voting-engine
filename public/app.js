@@ -474,28 +474,7 @@ async function executeAdminWithdrawal() {
     }
 }
 
-// DAO Staking Vault Operations
-let userStakedSol = 0;
-function stakeSolVault() {
-    if (!userWallet) return showToast("Connect wallet to stake in the DAO vault.", "error");
-    const val = parseFloat(document.getElementById('stakeAmountInput').value || 0);
-    if (!val || val <= 0) return showToast("Enter amount of SOL to stake.", "error");
 
-    userStakedSol += val;
-    document.getElementById('userStakedBalance').textContent = `${userStakedSol.toFixed(2)} SOL`;
-    document.getElementById('userEarnedYield').textContent = `${(userStakedSol * 0.085 / 365).toFixed(4)} SOL`;
-    document.getElementById('stakeAmountInput').value = '';
-    showToast(`Staked ${val} SOL into 8.5% APY Revenue Vault!`, "success");
-}
-
-function unstakeSolVault() {
-    if (userStakedSol <= 0) return showToast("No staked balance found in vault.", "error");
-    const claimed = userStakedSol;
-    userStakedSol = 0;
-    document.getElementById('userStakedBalance').textContent = `0.00 SOL`;
-    document.getElementById('userEarnedYield').textContent = `0.0000 SOL`;
-    showToast(`Unstaked ${claimed.toFixed(2)} SOL and claimed accumulated protocol yield!`, "success");
-}
 
 // Navigation Tabs Switcher
 function switchTab(tabName) {

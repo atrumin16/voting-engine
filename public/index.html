@@ -464,46 +464,49 @@
                 <div id="treasuryAssetsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
-            <!-- DAO Monetization & Staking Revenue Vault Module -->
-            <div class="glass-panel p-6 rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-[#0a1b14] via-[#0d211a] to-[#07130e] space-y-4 shadow-xl">
+            <!-- Institutional DAO Monetization & Protocol Revenue Model -->
+            <div class="glass-panel p-6 rounded-3xl border border-purple-500/30 bg-gradient-to-r from-[#130d24] via-[#0f0a1c] to-[#0a0714] space-y-4 shadow-xl">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-2xl text-emerald-400 font-bold shadow-lg">
-                            💰
+                        <div class="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-2xl text-purple-300 font-bold shadow-lg">
+                            🏛️
                         </div>
                         <div>
                             <div class="flex items-center gap-2">
-                                <h3 class="font-display text-lg font-bold text-white">DAO Staking & Revenue Vault</h3>
-                                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">8.50% APY</span>
+                                <h3 class="font-display text-lg font-bold text-white">Institutional Treasury Revenue & Protocol Funding</h3>
+                                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">Verified Reserve</span>
                             </div>
-                            <p class="text-gray-400 text-xs mt-0.5">Stake SOL or USDC into the protocol vault. 0.5% protocol yield auto-routes to the DAO Treasury Vault.</p>
+                            <p class="text-gray-400 text-xs mt-0.5">Real-time on-chain revenue mechanisms: direct treasury grants, anti-spam proposal deposits, and ecosystem partner reserves.</p>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 w-full md:w-auto text-xs">
-                        <div class="bg-[#0b1712] p-2.5 rounded-xl border border-emerald-500/20">
-                            <div class="text-gray-400">Total Value Locked</div>
-                            <div class="font-bold text-white text-sm mt-0.5">$145,000.00 USD</div>
-                        </div>
-                        <div class="bg-[#0b1712] p-2.5 rounded-xl border border-emerald-500/20">
-                            <div class="text-gray-400">Your Staked Balance</div>
-                            <div id="userStakedBalance" class="font-bold text-emerald-400 text-sm mt-0.5">0.00 SOL</div>
-                        </div>
-                        <div class="bg-[#0b1712] p-2.5 rounded-xl border border-emerald-500/20 col-span-2 md:col-span-1">
-                            <div class="text-gray-400">Earned Yield</div>
-                            <div id="userEarnedYield" class="font-bold text-amber-300 text-sm mt-0.5">0.0000 SOL</div>
-                        </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto text-xs">
+                        <button onclick="openDepositModal()" class="btn-glow px-5 py-2.5 text-white font-extrabold rounded-xl flex items-center gap-2 shadow-lg w-full md:w-auto justify-center">
+                            <span>⚡</span>
+                            <span>Fund Treasury Reserve (On-Chain SOL)</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row items-center gap-3 pt-2 border-t border-emerald-500/20">
-                    <input type="number" step="0.1" id="stakeAmountInput" placeholder="Amount to Stake (e.g. 0.5 SOL)" class="w-full sm:w-64 bg-[#07130e] border border-emerald-500/30 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-400">
-                    <button onclick="stakeSolVault()" class="w-full sm:w-auto px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold text-xs rounded-xl transition-all shadow-lg shadow-emerald-500/20 whitespace-nowrap">
-                        🔒 Stake SOL to Vault
-                    </button>
-                    <button onclick="unstakeSolVault()" class="w-full sm:w-auto px-5 py-2.5 bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 font-bold text-xs rounded-xl transition-all whitespace-nowrap">
-                        🔓 Claim Yield & Unstake
-                    </button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-[#251c3a] text-xs">
+                    <div class="bg-[#0b0817] p-3 rounded-xl border border-[#1f1730]">
+                        <div class="font-bold text-purple-300 mb-1 flex items-center gap-1.5">
+                            <span>📜</span> Proposal Anti-Spam Deposit
+                        </div>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">Proposals require a 0.05 SOL deposit to prevent spam. Passed proposals refund the deposit; failed proposals credit the DAO Treasury.</p>
+                    </div>
+                    <div class="bg-[#0b0817] p-3 rounded-xl border border-[#1f1730]">
+                        <div class="font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
+                            <span>🏦</span> Direct On-Chain Grants
+                        </div>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">Institutional supporters can deposit SOL directly to the Squads v4 multisig vault address in 1-click via Phantom.</p>
+                    </div>
+                    <div class="bg-[#0b0817] p-3 rounded-xl border border-[#1f1730]">
+                        <div class="font-bold text-amber-300 mb-1 flex items-center gap-1.5">
+                            <span>🛡️</span> Verified Multisig Governance
+                        </div>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">All treasury outflows are cryptographically signed and audited by authorized council wallets before execution.</p>
+                    </div>
                 </div>
             </div>
 
