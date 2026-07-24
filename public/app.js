@@ -92,20 +92,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     const savedMode = localStorage.getItem('attestto_theme_mode') || 'dark';
     setThemeMode(savedMode);
 
-    await fetchDaoConfig();
     await loadProposals();
     await loadMembers();
     await loadTreasury();
     await loadAnalytics();
 
-    // Auto-check if Phantom/Solana wallet is connected
-    if (window.solana && window.solana.isPhantom && window.solana.isConnected) {
+    // Wait up to 2s for Phantom to inject itself into the page
+    const waitForPhantom = (ms = 2000) => new Promise(resolve => {
+        const start = Date.now();
+        const check = () => {
+            const provider = window.phantom?.solana || window.solana;
+            if (provider && provider.isPhantom) return resolve(provider);
+            if (Date.now() - start > ms) return resolve(null);
+            setTimeout(check, 100);
+        };
+        check();
+    });
+
+    const provider = await waitForPhantom();
+    if (provider && provider.isConnected && provider.publicKey) {
         try {
-            userWallet = window.solana.publicKey.toString();
+            userWallet = provider.publicKey.toString();
             await updateWalletUI();
-            await fetchDaoConfig(); // Re-fetch with wallet so admin check works
         } catch (e) {}
     }
+
+    // Now fetch config with wallet (if connected) so admin check is correct
+    await fetchDaoConfig();
 
     // Check hash URL for direct section access
     const hash = window.location.hash.replace('#', '');
