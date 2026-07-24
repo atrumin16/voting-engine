@@ -1346,7 +1346,7 @@ async function loadAnalytics() {
 
 // ADMIN CONSOLE ACTIONS
 function switchAdminSubTab(subTabName) {
-    const subTabs = ['general', 'treasury', 'profiles', 'create', 'proposals', 'admins', 'whitelist', 'audit'];
+    const subTabs = ['general', 'treasury', 'profiles', 'create', 'proposals', 'admins', 'whitelist', 'tokenomics', 'audit'];
     subTabs.forEach(st => {
         const panel = document.getElementById(`adminPanel${st.charAt(0).toUpperCase() + st.slice(1)}`);
         const btn = document.getElementById(`subTab${st.charAt(0).toUpperCase() + st.slice(1)}`);
