@@ -1,0 +1,9 @@
+name = "attestto-governance"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "attestto-db"
+database_id = "854fa5c8-67c3-4880-9408-d444a021c28d"

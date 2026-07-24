@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attestto Governance</title>
+    <!-- Favicon limpio -->
+    <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/108633374?s=200&v=4">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #08070b; color: #f3f4f6; font-family: 'Inter', sans-serif; }
+        .glass-card { background-color: #14101f; border: 1px solid #2e2347; }
+        .btn-primary { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <nav class="border-b border-[#2e2347] bg-[#0d0b14] py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <!-- Logo sin bordes ni sombras extrañas -->
+            <img src="https://avatars.githubusercontent.com/u/108633374?s=200&v=4" alt="Attestto" class="w-8 h-8 rounded-md">
+            <div class="text-xl font-bold text-white tracking-wide">ATTESTTO<span class="text-[#a855f7] text-sm ml-1">DAO</span></div>
+        </div>
+        <button id="connectBtn" class="btn-primary text-white px-6 py-2 rounded-lg font-medium text-sm">Connect Phantom</button>
+        <div id="walletInfo" class="hidden text-[#d8b4fe] font-mono text-sm bg-[#1d172e] px-4 py-2 rounded border border-[#3d2b5e]"></div>
+    </nav>
+    
+    <main class="flex-grow container mx-auto px-4 py-12">
+        <h1 class="text-4xl font-bold mb-2 text-center">Governance Proposals</h1>
+        <p class="text-gray-400 text-center mb-12 max-w-2xl mx-auto">Vote on the future of Attestto using your off-chain reputation.</p>
+        
+        <div id="proposalsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        
+        <div id="emptyState" class="hidden text-center py-20 border border-dashed border-[#2e2347] rounded-2xl mt-8">
+            <h3 class="text-xl font-bold text-white mb-2">No Active Proposals</h3>
+            <p class="text-gray-500">The governance cycle is currently quiet.</p>
+        </div>
+    </main>
+
+    <div id="voteModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm">
+        <div class="glass-card p-8 rounded-xl max-w-md w-full relative">
+            <button id="closeModal" class="absolute top-4 right-4 text-gray-400 hover:text-white">&times;</button>
+            <h2 id="modalTitle" class="text-2xl font-bold mb-4 text-[#a855f7]">Cast Vote</h2>
+            <p id="modalDesc" class="text-gray-300 mb-6 text-sm"></p>
+            <div class="space-y-4">
+                <button onclick="submitVote('yes')" class="w-full py-3 rounded-lg border border-[#8b5cf6] text-[#8b5cf6] hover:bg-[#8b5cf6] hover:text-white transition-colors font-bold">YES</button>
+                <button onclick="submitVote('no')" class="w-full py-3 rounded-lg border border-gray-600 text-gray-400 hover:border-red-500 hover:text-red-500 transition-colors font-bold">NO</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

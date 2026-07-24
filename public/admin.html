@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attestto Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#08070b] text-white p-10">
+    <h1 class="text-3xl font-bold text-[#a855f7] mb-10">Admin Console</h1>
+    <button id="authBtn" class="bg-[#8b5cf6] px-4 py-2 rounded mb-8">Authenticate Admin</button>
+    
+    <div id="panel" class="hidden space-y-6 max-w-2xl">
+        <div class="bg-[#14101f] p-6 rounded border border-[#2e2347]">
+            <h2 class="font-bold mb-4">Create Proposal</h2>
+            <input id="pTitle" class="w-full bg-black p-2 rounded mb-2 border border-[#3d2b5e]" placeholder="Title">
+            <textarea id="pDesc" class="w-full bg-black p-2 rounded mb-2 border border-[#3d2b5e]" placeholder="Description"></textarea>
+            <button onclick="sendAction('create_proposal')" class="w-full bg-[#2e2347] py-2 rounded text-[#c084fc]">Sign & Create</button>
+        </div>
+    </div>
+
+    <script>
+        let wallet = null;
+        document.getElementById('authBtn').onclick = async () => {
+            const resp = await window.solana.connect();
+            wallet = resp.publicKey.toString();
+            document.getElementById('panel').classList.remove('hidden');
+        };
+
+        async function sendAction(action) {
+            const ts = Date.now();
+            const msg = `Attestto Admin Action: ${action} | Ts: ${ts}`;
+            const { signature } = await window.solana.signMessage(new TextEncoder().encode(msg), "utf8");
+            
+            // Nota: En producción usa la función toBase58 del app.js o una librería
+            const sigB64 = btoa(String.fromCharCode(...signature)); 
+
+            const body = { action, wallet, timestamp: ts, signature: sigB64 };
+            if(action === 'create_proposal') {
+                body.title = document.getElementById('pTitle').value;
+                body.description = document.getElementById('pDesc').value;
+                body.startTime = new Date().toISOString();
+                body.endTime = new Date(Date.now() + 86400000).toISOString();
+            }
+
+            const res = await fetch('/api/admin', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
+            });
+            alert((await res.json()).message || "Done");
+        }
+    </script>
+</body>
+</html>

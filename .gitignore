@@ -1,0 +1,16 @@
+﻿# Documentación interna y Legal
+*.md
+*.pdf
+ATTESTTO-CONTEXT.md
+ATTESTTO_GLOSSARY_STANDARDS.md
+ATTESTTO_NOTEBOOK_LM.md
+ATTESTTO_PUBLIC_RESEARCH.md
+Estructura-Legal-Attestto.pdf
+
+# Carpetas sensibles
+documento_firmado/
+
+# Entorno Node.js
+node_modules/
+.wrangler/
+.env
