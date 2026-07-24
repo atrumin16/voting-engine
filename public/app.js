@@ -113,12 +113,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (provider && provider.isConnected && provider.publicKey) {
         try {
             userWallet = provider.publicKey.toString();
-            await updateWalletUI();
-        } catch (e) {}
+            await updateWalletUI(); // internally calls fetchDaoConfig with wallet → admin check
+        } catch (e) {
+            await fetchDaoConfig(); // fallback without wallet
+        }
+    } else {
+        await fetchDaoConfig(); // no wallet connected, fetch public config
     }
-
-    // Now fetch config with wallet (if connected) so admin check is correct
-    await fetchDaoConfig();
 
     // Check hash URL for direct section access
     const hash = window.location.hash.replace('#', '');
@@ -292,6 +293,9 @@ async function updateWalletUI() {
             badgeEl.classList.remove('hidden');
         }
     }
+
+    // Always re-fetch DAO config with wallet so admin panel is shown if applicable
+    await fetchDaoConfig();
 }
 
 async function fetchUserProfile(wallet) {
