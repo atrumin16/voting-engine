@@ -43,7 +43,7 @@ async function main() {
         const payer = Keypair.fromSecretKey(secretKey);
         console.log(`\n✅ Connected Wallet: ${payer.publicKey.toBase58()}`);
 
-        const connection = new Connection("https://rpc.ankr.com/solana", "confirmed");
+        const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
 
         const balance = await connection.getBalance(payer.publicKey);
         console.log(`💰 Wallet Balance: ${(balance / 1e9).toFixed(4)} SOL`);
