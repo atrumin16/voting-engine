@@ -1655,6 +1655,89 @@ async function createTokenOnChainPhantom() {
     }
 }
 
+// Restore / Mint 1,000,000 $ATTEST Tokens directly to connected Mint Authority wallet
+async function restoreAttestTokensPhantom() {
+    const provider = getSolanaProvider();
+    if (!provider) {
+        return showToast("Phantom wallet not detected.", "error");
+    }
+
+    try {
+        if (!provider.publicKey) {
+            await provider.connect();
+        }
+        
+        const walletPubkey = provider.publicKey;
+        const sWeb3 = window.solanaWeb3;
+        const sToken = window.splToken;
+
+        if (!sWeb3 || !sToken) {
+            return showToast("Solana Web3 SDK loading... Please retry in a second.", "error");
+        }
+
+        const OFFICIAL_MINT = "91Zh1Nh5Leuktcn878HACDGtTnEwXXpTdDXEMp18rMbU";
+        const mintPubkey = new sWeb3.PublicKey(OFFICIAL_MINT);
+
+        showToast("Preparing $ATTEST token restoration transaction...", "info");
+
+        const connection = new sWeb3.Connection("https://api.mainnet-beta.solana.com", "confirmed");
+        const tokenProgramId = sToken.TOKEN_PROGRAM_ID || new sWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+
+        const transaction = new sWeb3.Transaction();
+
+        // Derive Associated Token Account for user's wallet
+        const ataPubkey = await sToken.getAssociatedTokenAddress(
+            mintPubkey,
+            walletPubkey,
+            false,
+            tokenProgramId
+        );
+
+        // Check if ATA already exists, if not create it
+        const ataAccountInfo = await connection.getAccountInfo(ataPubkey);
+        if (!ataAccountInfo) {
+            transaction.add(
+                sToken.createAssociatedTokenAccountInstruction(
+                    walletPubkey,
+                    ataPubkey,
+                    walletPubkey,
+                    mintPubkey,
+                    tokenProgramId
+                )
+            );
+        }
+
+        // Mint 1,000,000 $ATTEST tokens
+        const amountToMint = BigInt(1000000) * BigInt(10 ** 9);
+        transaction.add(
+            sToken.createMintToInstruction(
+                mintPubkey,
+                ataPubkey,
+                walletPubkey, // Mint Authority
+                amountToMint,
+                [],
+                tokenProgramId
+            )
+        );
+
+        transaction.feePayer = walletPubkey;
+        const { blockhash } = await connection.getLatestBlockhash('finalized');
+        transaction.recentBlockhash = blockhash;
+
+        showToast("Please approve the token minting transaction in Phantom...", "info");
+        const signedTx = await provider.signTransaction(transaction);
+        const txSig = await connection.sendRawTransaction(signedTx.serialize());
+        await connection.confirmTransaction(txSig, 'confirmed');
+
+        showToast(`🎉 SUCCESS! 1,000,000 $ATTEST Tokens restored to your wallet! Tx: ${txSig.substring(0, 8)}...`, "success");
+
+    } catch (err) {
+        console.error("Token restoration error:", err);
+        showToast("Token restoration error: " + (err.message || err), "error");
+    }
+}
+
+
 // Save DAO Settings & Custom Branding (Bulletproof & Reliable)
 async function saveDaoConfig() {
     const getVal = (id, fallback = '') => {
