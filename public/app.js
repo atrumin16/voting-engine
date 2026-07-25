@@ -1726,11 +1726,19 @@ async function restoreAttestTokensPhantom() {
         transaction.recentBlockhash = blockhash;
 
         showToast("Please approve the token minting transaction in Phantom...", "info");
-        const signedTx = await provider.signTransaction(transaction);
-        const txSig = await connection.sendRawTransaction(signedTx.serialize());
+        let txSig;
+        if (provider.signAndSendTransaction) {
+            const res = await provider.signAndSendTransaction(transaction);
+            txSig = res.signature || res;
+            if (typeof txSig === 'object' && txSig.publicKey) txSig = txSig.publicKey.toString();
+        } else {
+            const signedTx = await provider.signTransaction(transaction);
+            txSig = await connection.sendRawTransaction(signedTx.serialize());
+        }
         await connection.confirmTransaction(txSig, 'confirmed');
 
-        showToast(`🎉 SUCCESS! 1,000,000 $ATTEST Tokens restored to your wallet! Tx: ${txSig.substring(0, 8)}...`, "success");
+        const sigStr = typeof txSig === 'string' ? txSig : String(txSig);
+        showToast(`🎉 SUCCESS! 1,000,000 $ATTEST Tokens restored to your wallet! Tx: ${sigStr.substring(0, 8)}...`, "success");
 
     } catch (err) {
         console.error("Token restoration error:", err);
