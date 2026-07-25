@@ -9,7 +9,7 @@ function info($m) { Write-Host "  ℹ️  $m" -ForegroundColor Cyan }
 function warn($m) { Write-Host "  ⚠️  $m" -ForegroundColor Yellow }
 function err($m)  { Write-Host "  ❌ $m" -ForegroundColor Red; exit 1 }
 
-$ROOT = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$ROOT = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot))
 Set-Location $ROOT
 
 Write-Host ""

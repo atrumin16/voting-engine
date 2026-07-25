@@ -16,7 +16,7 @@ err()  { echo -e "${RED}❌ $*${NC}"; exit 1; }
 ask()  { echo -e "${BOLD}${BLUE}❓ $*${NC}"; }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
+ROOT_DIR="$(dirname "$(dirname "$(dirname "$SCRIPT_DIR")")")"
 cd "$ROOT_DIR"
 
 # ─────────────────────────────────────────────────────────────
@@ -192,7 +192,7 @@ printf "  ║  DB id     : %.8s...\n" "$DB_ID"
 echo "  ║  URL       : http://localhost:8788         ║"
 echo "  ║                                            ║"
 echo "  ║  To deploy to production later run:        ║"
-echo "  ║    bash scripts/$/deploy.sh                ║"
+echo "  ║    bash scripts/cli/linux/deploy.sh         ║"
 echo "  ╚════════════════════════════════════════════╝"
 echo -e "${NC}"
 

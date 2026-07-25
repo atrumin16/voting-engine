@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================
-#  voting-engine — scripts/$/deploy.sh
+#  voting-engine — scripts/cli/linux/deploy.sh
 # =============================================================
 set -euo pipefail
 
@@ -13,7 +13,7 @@ warn() { echo -e "${YELLOW}⚠️  $*${NC}"; }
 err()  { echo -e "${RED}❌ $*${NC}"; exit 1; }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
+ROOT_DIR="$(dirname "$(dirname "$(dirname "$SCRIPT_DIR")")")"
 cd "$ROOT_DIR"
 
 echo ""

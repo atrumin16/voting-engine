@@ -16,7 +16,7 @@ function ask($m)  { Write-Host "  ❓ $m" -ForegroundColor Blue }
 function step($m) { Write-Host "`n  ── $m" -ForegroundColor White }
 
 # ── Move to repo root ─────────────────────────────────────────
-$ROOT = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$ROOT = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot))
 Set-Location $ROOT
 
 # ── Banner ────────────────────────────────────────────────────
@@ -173,7 +173,7 @@ Write-Host "  ║  DB id     : $($DB_ID.Substring(0,8))..." -ForegroundColor Gre
 Write-Host "  ║  URL       : http://localhost:8788         ║" -ForegroundColor Green
 Write-Host "  ║                                            ║" -ForegroundColor Green
 Write-Host "  ║  To deploy to production later run:        ║" -ForegroundColor Green
-Write-Host "  ║    .\scripts\$\deploy.ps1                 ║" -ForegroundColor Green
+Write-Host "  ║    .\scripts\cli\windows\deploy.ps1        ║" -ForegroundColor Green
 Write-Host "  ╚════════════════════════════════════════════╝" -ForegroundColor Green
 Write-Host ""
 
