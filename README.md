@@ -4,46 +4,48 @@ On-chain voting and proposal management engine — Cloudflare Pages + D1 + Solan
 
 ---
 
-## Setup local (first time)
+## ⚡ Quick start (one command)
 
-The script installs everything it needs and asks you a few questions:
-
-**Linux / Mac**
+**Linux / Mac** — open Terminal:
 ```bash
-bash scripts/setup.sh
+git clone https://github.com/atrumin16/voting-engine.git && cd voting-engine && bash scripts/setup.sh
 ```
 
-**Windows (PowerShell)**
+**Windows** — open PowerShell as Administrator:
 ```powershell
-.\scripts\setup.ps1
+git clone https://github.com/atrumin16/voting-engine.git; cd voting-engine; powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 ```
 
-It will:
-1. Install Node.js if missing
-2. Install Wrangler CLI if missing
-3. Install project dependencies (`npm install`)
-4. Open browser to log into Cloudflare
-5. Ask for a D1 database name (default: `attestto-db`)
-6. Create the database and auto-fill `wrangler.toml`
-7. Ask for your admin Solana wallet public key
-8. Apply the database schema locally
-9. Start the dev server at **http://localhost:8788**
+The setup script will handle **everything** automatically:
+
+| Step | What it does |
+|------|-------------|
+| 1 | Installs Node.js if missing (v18 LTS) |
+| 2 | Installs Wrangler CLI if missing |
+| 3 | Installs project dependencies |
+| 4 | Opens browser to log into Cloudflare |
+| 5 | Creates the D1 database and updates config |
+| 6 | Sets your Solana admin wallet |
+| 7 | Applies the database schema |
+| ✅ | Starts the dev server at **http://localhost:8788** |
+
+> You only need a free [Cloudflare account](https://dash.cloudflare.com/sign-up) and [Phantom](https://phantom.app) (or any Solana wallet).
 
 ---
 
-## Deploy to production
+## 🚀 Deploy to production
 
 **Linux / Mac**
 ```bash
 bash scripts/deploy.sh
 ```
 
-**Windows (PowerShell)**
+**Windows**
 ```powershell
-.\scripts\deploy.ps1
+powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1
 ```
 
-It will ask for confirmation, apply the schema to the remote D1, and deploy to Cloudflare Pages.
+Asks for confirmation before touching anything in production.
 
 ---
 
