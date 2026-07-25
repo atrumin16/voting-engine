@@ -1668,12 +1668,34 @@ async function restoreAttestTokensPhantom() {
         }
         
         const walletPubkey = provider.publicKey;
-        const sWeb3 = window.solanaWeb3;
-        const sToken = window.splToken;
+        let sWeb3 = window.solanaWeb3 || window.SolanaWeb3;
+        let sToken = window.splToken || window.SPLToken;
 
-        if (!sWeb3 || !sToken) {
-            return showToast("Solana Web3 SDK loading... Please retry in a second.", "error");
+        if (!sWeb3) {
+            await new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = "https://unpkg.com/@solana/web3.js@1.95.8/lib/index.iife.min.js";
+                s.onload = () => resolve();
+                s.onerror = reject;
+                document.head.appendChild(s);
+            }).catch(()=>{});
+            sWeb3 = window.solanaWeb3 || window.SolanaWeb3;
         }
+
+        if (!sToken) {
+            await new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = "https://unpkg.com/@solana/spl-token@0.4.8/lib/index.iife.min.js";
+                s.onload = () => resolve();
+                s.onerror = reject;
+                document.head.appendChild(s);
+            }).catch(()=>{});
+            sToken = window.splToken || window.SPLToken;
+        }
+
+        if (!sWeb3) return showToast("Could not load Solana Web3 library. Please check your internet connection.", "error");
+        if (!sToken) return showToast("Could not load Solana SPL Token library. Please check your internet connection.", "error");
+
 
         const OFFICIAL_MINT = "91Zh1Nh5Leuktcn878HACDGtTnEwXXpTdDXEMp18rMbU";
         const mintPubkey = new sWeb3.PublicKey(OFFICIAL_MINT);
