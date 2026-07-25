@@ -1,6 +1,6 @@
 # voting-engine
 
-> On-chain voting, reputation governance, and treasury management engine built on Solana + Cloudflare.
+> Open source toolkit to launch your own fully custom DAO on Solana — paying only the minimum network fees.
 
 ![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-F38020?style=flat&logo=cloudflare&logoColor=white)
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare_D1-F38020?style=flat&logo=cloudflare&logoColor=white)
@@ -11,11 +11,31 @@
 
 ---
 
+## 💸 Why voting-engine vs Realms?
+
+| | **voting-engine** | **Realms.today** |
+|---|---|---|
+| Cost to launch DAO + token | **~0.01 SOL** | ~4 SOL |
+| Hosting | Cloudflare free tier | Platform-dependent |
+| Customizable branding | ✅ Full control | ❌ Fixed UI |
+| Custom voting weights | ✅ Per-member multipliers | Limited |
+| Open source | ✅ MIT — own your code | ❌ Closed platform |
+| Self-hostable | ✅ Deploy anywhere | ❌ |
+| Treasury multisig | ✅ Squads v4 | ✅ |
+| Admin audit log | ✅ Cryptographic | ❌ |
+
+> The **~0.01 SOL** covers the SPL token creation rent (~0.002 SOL) and the token metadata account (~0.008 SOL).  
+> Everything else — hosting, database, API — runs on Cloudflare's free tier with **zero ongoing cost**.
+
+---
+
 ## What is this?
 
-**voting-engine** is a full-stack decentralized governance platform that lets any organization run institutional-grade on-chain voting through their browser — no smart contract deployment required beyond a Solana wallet.
+**voting-engine** is an open source, self-hostable governance platform that lets any organization or community launch a fully custom DAO on Solana in minutes — with its own token, weighted voting, treasury, and admin panel — for as little as **~0.01 SOL** in network fees.
 
-Members connect their Phantom wallet, sign votes cryptographically, and the platform records everything in a Cloudflare D1 edge database with full audit trails.
+No recurring platform fees. No locked-in vendor. You own the code, the data, and the infrastructure.
+
+Members connect their Phantom wallet, sign votes cryptographically, and the platform records everything in a Cloudflare D1 edge database with full audit trails. Hosting runs entirely on Cloudflare's **free tier**.
 
 ---
 
