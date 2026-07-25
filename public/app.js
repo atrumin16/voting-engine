@@ -1668,11 +1668,16 @@ async function restoreAttestTokensPhantom() {
         }
         
         const walletPubkey = provider.publicKey;
-        const sWeb3 = window.solanaWeb3;
-        const sToken = window.splToken;
+        let sWeb3 = window.solanaWeb3;
+        let sToken = window.splToken;
 
         if (!sWeb3 || !sToken) {
-            return showToast("Solana SDK initializing... Please retry in a second.", "error");
+            sWeb3 = window.solanaWeb3 || window.SolanaWeb3;
+            sToken = window.splToken || window.SPLToken;
+        }
+
+        if (!sWeb3 || !sToken) {
+            return showToast("Solana SDK initializing... Please wait a moment and click again.", "error");
         }
 
 
