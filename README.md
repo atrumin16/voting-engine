@@ -2,6 +2,13 @@
 
 > On-chain voting, reputation governance, and treasury management engine built on Solana + Cloudflare.
 
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-F38020?style=flat&logo=cloudflare&logoColor=white)
+![Cloudflare D1](https://img.shields.io/badge/Cloudflare_D1-F38020?style=flat&logo=cloudflare&logoColor=white)
+![Solana](https://img.shields.io/badge/Solana-9945FF?style=flat&logo=solana&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat&logo=nodedotjs&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES2022-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![License](https://img.shields.io/badge/License-MIT-blue?style=flat)
+
 ---
 
 ## What is this?
@@ -9,6 +16,33 @@
 **voting-engine** is a full-stack decentralized governance platform that lets any organization run institutional-grade on-chain voting through their browser — no smart contract deployment required beyond a Solana wallet.
 
 Members connect their Phantom wallet, sign votes cryptographically, and the platform records everything in a Cloudflare D1 edge database with full audit trails.
+
+---
+
+## Architecture
+
+```mermaid
+graph TD
+    A[👤 User / Phantom Wallet] -->|ed25519 signature| B[Cloudflare Pages Frontend]
+    B -->|REST API| C[Cloudflare Pages Functions]
+    C -->|SQL queries| D[(Cloudflare D1\nSQLite at the edge)]
+    C -->|RPC calls| E[Solana Mainnet]
+    E -->|SOL balance\nSPL token data| C
+    C -->|verify signature| F[ed25519 Auth]
+    F --> C
+
+    subgraph Backend
+        C
+        D
+        F
+    end
+
+    subgraph Solana
+        E
+        G[Squads v4 Multisig\nTreasury Vault]
+        E --- G
+    end
+```
 
 ---
 
@@ -67,15 +101,15 @@ Members connect their Phantom wallet, sign votes cryptographically, and the plat
 
 ---
 
-## Database schema (5 tables)
+## Database schema
 
-| Table | Purpose |
-|-------|---------|
-| `proposals` | Governance proposals with status, timing, category |
-| `votes` | Signed votes with choice, power and reason |
-| `admin_config` | DAO settings: name, quorum, token config, links |
-| `whitelist_voters` | Member whitelist with tiers and multipliers |
-| `admin_audit_logs` | Cryptographic log of every admin action |
+```
+proposals          → governance proposals (status, category, timing)
+votes              → signed votes (wallet, choice, power, reason)
+admin_config       → DAO settings (name, quorum, token, links)
+whitelist_voters   → member whitelist (tiers, multipliers)
+admin_audit_logs   → cryptographic log of every admin action
+```
 
 ---
 
@@ -108,4 +142,4 @@ Members connect their Phantom wallet, sign votes cryptographically, and the plat
 
 ## Deployment
 
-See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for full setup instructions.
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for full setup and deploy instructions.
