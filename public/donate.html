@@ -11,486 +11,572 @@
   <script src="https://unpkg.com/@solana/spl-token@0.4.8/lib/index.iife.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg:        #07060f;
-      --card:      #110d20;
-      --border:    #231a38;
-      --purple:    #8b5cf6;
-      --purple2:   #6d28d9;
-      --purple-lo: rgba(139,92,246,.15);
-      --text:      #f3f4f6;
-      --muted:     #9ca3af;
-      --green:     #10b981;
-      --sol:       #9945FF;
-      --usdc:      #2775CA;
+      --bg:#07060f; --card:#110d20; --border:#231a38;
+      --purple:#8b5cf6; --purple2:#6d28d9; --purple-lo:rgba(139,92,246,.15);
+      --text:#f3f4f6; --muted:#9ca3af; --green:#10b981;
+      --sol:#9945FF; --usdc:#2775CA; --red:#ef4444;
     }
-
     body {
-      min-height: 100vh;
-      background: var(--bg);
+      min-height:100vh; background:var(--bg);
       background-image:
-        radial-gradient(ellipse at 10% 0%,   rgba(139,92,246,.18) 0, transparent 55%),
-        radial-gradient(ellipse at 90% 100%, rgba(41,112,255,.10)  0, transparent 55%);
-      font-family: 'Inter', sans-serif;
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
+        radial-gradient(ellipse at 10% 0%,   rgba(139,92,246,.18) 0,transparent 55%),
+        radial-gradient(ellipse at 90% 100%, rgba(41,112,255,.10) 0,transparent 55%);
+      font-family:'Inter',sans-serif; color:var(--text);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:2rem 1rem;
     }
-
-    /* ── Card ── */
     .card {
-      width: 100%;
-      max-width: 480px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 2.5rem 2rem;
-      box-shadow: 0 32px 80px -16px rgba(0,0,0,.6), 0 0 0 1px rgba(139,92,246,.08);
+      width:100%; max-width:480px; background:var(--card);
+      border:1px solid var(--border); border-radius:28px; padding:2.5rem 2rem;
+      box-shadow:0 32px 80px -16px rgba(0,0,0,.6),0 0 0 1px rgba(139,92,246,.08);
     }
-
-    /* ── Header ── */
     .logo-ring {
-      width: 72px; height: 72px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem;
-      margin: 0 auto 1.25rem;
-      box-shadow: 0 8px 32px rgba(139,92,246,.4);
+      width:72px;height:72px;border-radius:20px;
+      background:linear-gradient(135deg,#8b5cf6,#6d28d9);
+      display:flex;align-items:center;justify-content:center;font-size:2rem;
+      margin:0 auto 1.25rem;box-shadow:0 8px 32px rgba(139,92,246,.4);
     }
     h1 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.7rem; font-weight: 800;
-      text-align: center;
-      background: linear-gradient(135deg, #fff 30%, #c4b5fd);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: .5rem;
+      font-family:'Outfit',sans-serif;font-size:1.7rem;font-weight:800;text-align:center;
+      background:linear-gradient(135deg,#fff 30%,#c4b5fd);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem;
     }
-    .subtitle {
-      text-align: center; color: var(--muted);
-      font-size: .875rem; line-height: 1.6;
-      margin-bottom: 2rem;
-    }
-    .subtitle a { color: var(--purple); text-decoration: none; }
+    .subtitle { text-align:center;color:var(--muted);font-size:.875rem;line-height:1.6;margin-bottom:1.5rem; }
+    .subtitle a { color:var(--purple);text-decoration:none; }
 
-    /* ── Token selector ── */
-    .token-tabs {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: .5rem; margin-bottom: 1.5rem;
+    /* ── RPC status bar ── */
+    .rpc-bar {
+      display:flex;align-items:center;gap:.5rem;justify-content:center;
+      font-size:.72rem;color:var(--muted);margin-bottom:1.5rem;
     }
+    .rpc-dot { width:6px;height:6px;border-radius:50%;background:#374151;flex-shrink:0; }
+    .rpc-dot.ok  { background:var(--green);box-shadow:0 0 5px var(--green); }
+    .rpc-dot.err { background:var(--red); }
+
+    /* ── Token tabs ── */
+    .token-tabs { display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.5rem; }
     .token-tab {
-      padding: .75rem; border-radius: 14px;
-      border: 2px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-family: 'Inter', sans-serif;
-      font-size: .9rem; font-weight: 600;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: .5rem;
-      transition: all .2s;
+      padding:.75rem;border-radius:14px;border:2px solid var(--border);
+      background:transparent;color:var(--muted);font-family:'Inter',sans-serif;
+      font-size:.9rem;font-weight:600;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .2s;
     }
-    .token-tab.active-sol  { border-color: var(--sol);  background: rgba(153,69,255,.12); color: #c084fc; }
-    .token-tab.active-usdc { border-color: var(--usdc); background: rgba(39,117,202,.12); color: #60a5fa; }
-    .token-tab:hover:not(.active-sol):not(.active-usdc) { border-color: #3f3058; color: var(--text); }
-
-    .token-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .dot-sol  { background: var(--sol); }
-    .dot-usdc { background: var(--usdc); }
+    .token-tab .bal { font-size:.7rem;font-weight:500;opacity:.7; }
+    .token-tab.active-sol  { border-color:var(--sol); background:rgba(153,69,255,.12);color:#c084fc; }
+    .token-tab.active-usdc { border-color:var(--usdc);background:rgba(39,117,202,.12); color:#60a5fa; }
+    .token-tab:hover:not(.active-sol):not(.active-usdc) { border-color:#3f3058;color:var(--text); }
+    .token-dot { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
+    .dot-sol  { background:var(--sol); }
+    .dot-usdc { background:var(--usdc); }
 
     /* ── Presets ── */
-    .label { font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .6rem; }
-    .presets {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: .5rem; margin-bottom: 1rem;
-    }
+    .label { font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.6rem; }
+    .presets { display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem; }
     .preset-btn {
-      padding: .6rem .25rem; border-radius: 12px;
-      border: 1.5px solid var(--border);
-      background: transparent;
-      color: var(--text); font-family: 'Inter', sans-serif;
-      font-size: .875rem; font-weight: 600;
-      cursor: pointer; transition: all .2s;
+      padding:.6rem .25rem;border-radius:12px;border:1.5px solid var(--border);
+      background:transparent;color:var(--text);font-family:'Inter',sans-serif;
+      font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s;
     }
-    .preset-btn:hover, .preset-btn.selected { border-color: var(--purple); background: var(--purple-lo); color: #c4b5fd; }
+    .preset-btn:hover,.preset-btn.selected { border-color:var(--purple);background:var(--purple-lo);color:#c4b5fd; }
 
-    /* ── Custom amount ── */
-    .input-wrap {
-      position: relative; margin-bottom: 1.5rem;
-    }
+    /* ── Input ── */
+    .input-wrap { position:relative;margin-bottom:1.25rem; }
     .currency-label {
-      position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
-      color: var(--muted); font-weight: 700; font-size: .9rem; pointer-events: none;
+      position:absolute;left:1rem;top:50%;transform:translateY(-50%);
+      color:var(--muted);font-weight:700;font-size:.9rem;pointer-events:none;
     }
     .amount-input {
-      width: 100%; padding: .85rem 1rem .85rem 2.8rem;
-      background: #0c0919; border: 1.5px solid var(--border);
-      border-radius: 14px; color: var(--text);
-      font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600;
-      outline: none; transition: border-color .2s;
+      width:100%;padding:.85rem 1rem .85rem 2.8rem;
+      background:#0c0919;border:1.5px solid var(--border);
+      border-radius:14px;color:var(--text);font-family:'Inter',sans-serif;
+      font-size:1rem;font-weight:600;outline:none;transition:border-color .2s;
     }
-    .amount-input:focus { border-color: var(--purple); }
-    .amount-input::placeholder { color: #4b4570; }
+    .amount-input:focus { border-color:var(--purple); }
+    .amount-input::placeholder { color:#4b4570; }
 
-    /* ── Message ── */
-    .msg-input {
-      width: 100%; padding: .75rem 1rem;
-      background: #0c0919; border: 1.5px solid var(--border);
-      border-radius: 14px; color: var(--text);
-      font-family: 'Inter', sans-serif; font-size: .875rem;
-      outline: none; resize: none; height: 80px;
-      transition: border-color .2s; margin-bottom: 1.5rem;
+    /* ── Insufficient warning ── */
+    .warn-box {
+      display:none;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);
+      border-radius:10px;padding:.6rem .9rem;font-size:.78rem;color:#fca5a5;
+      margin-bottom:1rem;
     }
-    .msg-input:focus { border-color: var(--purple); }
-    .msg-input::placeholder { color: #4b4570; }
 
-    /* ── Wallet status ── */
+    /* ── Wallet bar ── */
     .wallet-bar {
-      display: flex; align-items: center; gap: .6rem;
-      background: #0c0919; border: 1px solid var(--border);
-      border-radius: 12px; padding: .6rem .9rem;
-      font-size: .78rem; color: var(--muted);
-      margin-bottom: 1.25rem;
+      display:flex;align-items:center;gap:.6rem;
+      background:#0c0919;border:1px solid var(--border);
+      border-radius:12px;padding:.6rem .9rem;font-size:.78rem;color:var(--muted);
+      margin-bottom:1.25rem;
     }
-    .wallet-dot { width: 8px; height: 8px; border-radius: 50%; background: #374151; flex-shrink: 0; }
-    .wallet-dot.connected { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    #walletAddr { font-family: monospace; color: var(--text); font-weight: 600; }
+    .wallet-dot { width:8px;height:8px;border-radius:50%;background:#374151;flex-shrink:0; }
+    .wallet-dot.connected { background:var(--green);box-shadow:0 0 6px var(--green); }
+    #walletAddr { font-family:monospace;color:var(--text);font-weight:600; }
 
     /* ── Buttons ── */
     .btn {
-      width: 100%; padding: 1rem;
-      border-radius: 16px; border: none;
-      font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 700;
-      cursor: pointer; transition: all .2s;
-      display: flex; align-items: center; justify-content: center; gap: .6rem;
+      width:100%;padding:1rem;border-radius:16px;border:none;
+      font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;justify-content:center;gap:.6rem;
     }
-    .btn-connect {
-      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-      color: #fff;
-      box-shadow: 0 4px 18px rgba(139,92,246,.4);
-    }
-    .btn-connect:hover { box-shadow: 0 6px 26px rgba(139,92,246,.6); transform: translateY(-1px); }
+    .btn-connect { background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;box-shadow:0 4px 18px rgba(139,92,246,.4); }
+    .btn-connect:hover { box-shadow:0 6px 26px rgba(139,92,246,.6);transform:translateY(-1px); }
+    .btn-donate { background:linear-gradient(135deg,#8b5cf6,#4f46e5);color:#fff;box-shadow:0 4px 18px rgba(139,92,246,.35); }
+    .btn-donate:hover:not(:disabled) { box-shadow:0 6px 26px rgba(139,92,246,.55);transform:translateY(-1px); }
+    .btn-donate:disabled { opacity:.45;cursor:not-allowed;transform:none; }
 
-    .btn-donate {
-      background: linear-gradient(135deg, #8b5cf6, #4f46e5);
-      color: #fff;
-      box-shadow: 0 4px 18px rgba(139,92,246,.35);
+    /* ── Progress steps ── */
+    .steps { display:none;flex-direction:column;gap:.5rem;margin-bottom:1rem; }
+    .step {
+      display:flex;align-items:center;gap:.75rem;
+      font-size:.82rem;color:var(--muted);padding:.5rem .75rem;
+      background:#0c0919;border-radius:10px;border:1px solid var(--border);
     }
-    .btn-donate:hover:not(:disabled) { box-shadow: 0 6px 26px rgba(139,92,246,.55); transform: translateY(-1px); }
-    .btn-donate:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .step.active { color:var(--text);border-color:var(--purple); }
+    .step.done   { color:var(--green);border-color:rgba(16,185,129,.3); }
+    .step.fail   { color:#fca5a5;border-color:rgba(239,68,68,.3); }
+    .step-icon   { font-size:1rem;flex-shrink:0; }
 
     /* ── Toast ── */
     #toast {
-      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: #1a1330; border: 1px solid var(--border);
-      border-radius: 14px; padding: .85rem 1.4rem;
-      font-size: .875rem; font-weight: 500;
-      transition: transform .3s ease, opacity .3s ease;
-      opacity: 0; z-index: 999; max-width: 360px; text-align: center;
+      position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);
+      background:#1a1330;border:1px solid var(--border);border-radius:14px;
+      padding:.85rem 1.4rem;font-size:.875rem;font-weight:500;
+      transition:transform .3s ease,opacity .3s ease;opacity:0;z-index:999;
+      max-width:360px;text-align:center;
     }
-    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    #toast.success { border-color: var(--green); color: #6ee7b7; }
-    #toast.error   { border-color: #ef4444; color: #fca5a5; }
-    #toast.info    { border-color: var(--purple); color: #c4b5fd; }
+    #toast.show { transform:translateX(-50%) translateY(0);opacity:1; }
+    #toast.success { border-color:var(--green);color:#6ee7b7; }
+    #toast.error   { border-color:var(--red);color:#fca5a5; }
+    #toast.info    { border-color:var(--purple);color:#c4b5fd; }
 
-    /* ── Footer ── */
-    .footer {
-      margin-top: 2rem; text-align: center;
-      color: var(--muted); font-size: .78rem; line-height: 1.7;
-    }
-    .footer a { color: var(--purple); text-decoration: none; }
+    /* ── Success ── */
+    .success-box { display:none;flex-direction:column;align-items:center;text-align:center;gap:1rem;padding:1rem 0; }
+    .success-icon { font-size:3.5rem; }
+    .success-box h2 { font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:800;color:var(--green); }
+    .tx-link { font-size:.78rem;color:var(--purple);word-break:break-all;text-decoration:none; }
+    .tx-link:hover { text-decoration:underline; }
+    .btn-back { margin-top:.5rem;background:var(--purple-lo);color:#c4b5fd;border:1px solid var(--purple); }
+    .btn-back:hover { background:rgba(139,92,246,.25); }
+
+    .footer { margin-top:2rem;text-align:center;color:var(--muted);font-size:.78rem;line-height:1.7; }
+    .footer a { color:var(--purple);text-decoration:none; }
     .pill {
-      display: inline-flex; align-items: center; gap: .4rem;
-      background: #0f0c1c; border: 1px solid var(--border);
-      border-radius: 999px; padding: .3rem .8rem;
-      font-size: .72rem; font-weight: 600; color: var(--muted);
-      margin-top: .6rem;
+      display:inline-flex;align-items:center;gap:.4rem;
+      background:#0f0c1c;border:1px solid var(--border);border-radius:999px;
+      padding:.3rem .8rem;font-size:.72rem;font-weight:600;color:var(--muted);margin-top:.6rem;
     }
-    .pill .dot-g { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
-
-    /* ── Success state ── */
-    .success-box {
-      display: none; flex-direction: column; align-items: center;
-      text-align: center; gap: 1rem; padding: 1rem 0;
-    }
-    .success-icon { font-size: 3.5rem; }
-    .success-box h2 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--green); }
-    .tx-link {
-      font-size: .78rem; color: var(--purple);
-      word-break: break-all; text-decoration: none;
-    }
-    .tx-link:hover { text-decoration: underline; }
-    .btn-back { margin-top: .5rem; background: var(--purple-lo); color: #c4b5fd; border: 1px solid var(--purple); }
-    .btn-back:hover { background: rgba(139,92,246,.25); }
+    .dot-g { width:6px;height:6px;border-radius:50%;background:var(--green); }
   </style>
 </head>
 <body>
 
-  <div class="card" id="mainCard">
+<div class="card" id="mainCard">
+  <div class="logo-ring">🗳️</div>
+  <h1>Support voting-engine</h1>
+  <p class="subtitle">
+    Help keep this <a href="https://github.com/atrumin16/voting-engine" target="_blank">open source project</a> running.<br>
+    Donations go directly on-chain — no middlemen, instant settlement.
+  </p>
 
-    <!-- Header -->
-    <div class="logo-ring">🗳️</div>
-    <h1>Support voting-engine</h1>
-    <p class="subtitle">
-      Help keep this <a href="https://github.com/atrumin16/voting-engine" target="_blank">open source project</a> running.<br>
-      Donations go directly on-chain — no middlemen, instant settlement.
-    </p>
+  <!-- RPC status -->
+  <div class="rpc-bar">
+    <span class="rpc-dot" id="rpcDot"></span>
+    <span id="rpcLabel">Connecting to Solana…</span>
+  </div>
 
-    <!-- Token selector -->
-    <div class="token-tabs">
-      <button class="token-tab active-sol" id="tabSOL" onclick="selectToken('SOL')">
-        <span class="token-dot dot-sol"></span> SOL
-      </button>
-      <button class="token-tab" id="tabUSDC" onclick="selectToken('USDC')">
-        <span class="token-dot dot-usdc"></span> USDC
-      </button>
-    </div>
-
-    <!-- Preset amounts -->
-    <div class="label">Amount</div>
-    <div class="presets" id="presets"></div>
-
-    <!-- Custom amount -->
-    <div class="input-wrap">
-      <span class="currency-label" id="currencyLabel">◎</span>
-      <input class="amount-input" id="amountInput" type="number" min="0.001" step="0.001" placeholder="Custom amount">
-    </div>
-
-    <!-- Optional message -->
-    <div class="label">Message (optional)</div>
-    <textarea class="msg-input" id="msgInput" placeholder="Leave a note for the project..." maxlength="200"></textarea>
-
-    <!-- Wallet bar -->
-    <div class="wallet-bar">
-      <span class="wallet-dot" id="walletDot"></span>
-      <span id="walletAddr">No wallet connected</span>
-    </div>
-
-    <!-- Buttons -->
-    <button class="btn btn-connect" id="connectBtn" onclick="connectWallet()">
-      🔐 Connect Phantom
+  <!-- Token selector -->
+  <div class="token-tabs">
+    <button class="token-tab active-sol" id="tabSOL" onclick="selectToken('SOL')">
+      <span class="token-dot dot-sol"></span> SOL
+      <span class="bal" id="balSOL"></span>
     </button>
-    <button class="btn btn-donate" id="donateBtn" onclick="sendDonation()" disabled style="display:none;margin-top:.75rem">
-      ❤️ Donate <span id="donateBtnLabel"></span>
+    <button class="token-tab" id="tabUSDC" onclick="selectToken('USDC')">
+      <span class="token-dot dot-usdc"></span> USDC
+      <span class="bal" id="balUSDC"></span>
     </button>
   </div>
 
-  <!-- Success state -->
-  <div class="card success-box" id="successCard">
-    <div class="success-icon">🎉</div>
-    <h2>Thank you!</h2>
-    <p style="color:var(--muted);font-size:.9rem">Your donation was sent on-chain successfully.</p>
-    <a id="txLink" class="tx-link" href="#" target="_blank">View transaction on Solscan →</a>
-    <button class="btn btn-back" onclick="resetUI()">← Make another donation</button>
+  <!-- Presets -->
+  <div class="label">Amount</div>
+  <div class="presets" id="presets"></div>
+
+  <!-- Custom amount -->
+  <div class="input-wrap">
+    <span class="currency-label" id="currencyLabel">◎</span>
+    <input class="amount-input" id="amountInput" type="number" min="0.001" step="0.001" placeholder="Custom amount">
   </div>
 
-  <!-- Footer -->
-  <div class="footer">
-    <div>Built with ❤️ · <a href="https://github.com/atrumin16/voting-engine" target="_blank">voting-engine on GitHub</a></div>
-    <div class="pill"><span class="dot-g"></span> Solana Mainnet · Phantom Wallet</div>
+  <!-- Insufficient funds warning -->
+  <div class="warn-box" id="warnBox"></div>
+
+  <!-- Wallet bar -->
+  <div class="wallet-bar">
+    <span class="wallet-dot" id="walletDot"></span>
+    <span id="walletAddr">No wallet connected</span>
   </div>
 
-  <!-- Toast -->
-  <div id="toast"></div>
+  <!-- Progress steps (shown during tx) -->
+  <div class="steps" id="stepsBox">
+    <div class="step" id="step1"><span class="step-icon">⏳</span> Building transaction…</div>
+    <div class="step" id="step2"><span class="step-icon">✍️</span> Waiting for Phantom approval…</div>
+    <div class="step" id="step3"><span class="step-icon">📡</span> Broadcasting to Solana…</div>
+    <div class="step" id="step4"><span class="step-icon">✅</span> Confirming on-chain…</div>
+  </div>
+
+  <!-- Buttons -->
+  <button class="btn btn-connect" id="connectBtn" onclick="connectWallet()">🔐 Connect Phantom</button>
+  <button class="btn btn-donate" id="donateBtn" onclick="sendDonation()" disabled style="display:none;margin-top:.75rem">
+    ❤️ Donate <span id="donateBtnLabel"></span>
+  </button>
+</div>
+
+<!-- Success -->
+<div class="card success-box" id="successCard">
+  <div class="success-icon">🎉</div>
+  <h2>Thank you!</h2>
+  <p style="color:var(--muted);font-size:.9rem">Your donation was confirmed on-chain.</p>
+  <a id="txLink" class="tx-link" href="#" target="_blank">View on Solscan →</a>
+  <button class="btn btn-back" onclick="resetUI()">← Make another donation</button>
+</div>
+
+<div class="footer">
+  <div>Built with ❤️ · <a href="https://github.com/atrumin16/voting-engine" target="_blank">voting-engine on GitHub</a></div>
+  <div class="pill"><span class="dot-g"></span> Solana Mainnet · Phantom Wallet</div>
+</div>
+
+<div id="toast"></div>
 
 <script>
-  // ── Config ──────────────────────────────────────────────────
-  const RECIPIENT   = '8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV';
-  const USDC_MINT   = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
-  const RPC         = 'https://rpc.ankr.com/solana';
+// ── Config ──────────────────────────────────────────────────────
+const RECIPIENT = '8NHPU8LZ2bKVuhXZ1oWy6Djum8nkhqMFAJMejrwTofhV';
+const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+const TX_FEE_BUFFER = 0.002; // SOL reserved for fees
 
-  const PRESETS = {
-    SOL:  [0.1, 0.5, 1, 5],
-    USDC: [1,   5,  10, 50]
-  };
+// Multiple RPC fallbacks — tried in order until one works
+const RPCS = [
+  'https://api.mainnet-beta.solana.com',
+  'https://rpc.ankr.com/solana',
+  'https://solana-mainnet.g.alchemy.com/v2/demo',
+];
 
-  // ── State ────────────────────────────────────────────────────
-  let token    = 'SOL';
-  let provider = null;
-  let wallet   = null;
-  let selected = null;
+const PRESETS = { SOL: [0.1, 0.5, 1, 5], USDC: [1, 5, 10, 50] };
 
-  // ── Token selector ───────────────────────────────────────────
-  function selectToken(t) {
-    token = t;
-    document.getElementById('tabSOL').className  = 'token-tab' + (t === 'SOL'  ? ' active-sol'  : '');
-    document.getElementById('tabUSDC').className = 'token-tab' + (t === 'USDC' ? ' active-usdc' : '');
-    document.getElementById('currencyLabel').textContent = t === 'SOL' ? '◎' : '$';
-    selected = null;
-    renderPresets();
-    updateDonateBtn();
-  }
+// ── State ────────────────────────────────────────────────────────
+let token    = 'SOL';
+let provider = null;
+let wallet   = null;
+let selected = null;
+let connection = null;
+let balSOL   = 0;
+let balUSDC  = 0;
 
-  function renderPresets() {
-    const wrap = document.getElementById('presets');
-    wrap.innerHTML = '';
-    PRESETS[token].forEach(v => {
-      const b = document.createElement('button');
-      b.className = 'preset-btn' + (selected === v ? ' selected' : '');
-      b.textContent = token === 'SOL' ? `◎${v}` : `$${v}`;
-      b.onclick = () => pickPreset(v, b);
-      wrap.appendChild(b);
-    });
-  }
-
-  function pickPreset(v, btn) {
-    selected = v;
-    document.getElementById('amountInput').value = v;
-    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    updateDonateBtn();
-  }
-
-  document.getElementById('amountInput').addEventListener('input', () => {
-    selected = null;
-    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
-    updateDonateBtn();
-  });
-
-  function getAmount() {
-    return parseFloat(document.getElementById('amountInput').value) || 0;
-  }
-
-  function updateDonateBtn() {
-    const amt = getAmount();
-    const lbl = document.getElementById('donateBtnLabel');
-    if (amt > 0) lbl.textContent = token === 'SOL' ? `◎ ${amt} SOL` : `$ ${amt} USDC`;
-    else lbl.textContent = '';
-    document.getElementById('donateBtn').disabled = !(wallet && amt > 0);
-  }
-
-  // ── Wallet ───────────────────────────────────────────────────
-  async function connectWallet() {
-    if (!window.solana || !window.solana.isPhantom) {
-      toast('Phantom wallet not detected. Install it from phantom.app', 'error'); return;
-    }
+// ── RPC with fallback ────────────────────────────────────────────
+async function getConnection() {
+  for (const url of RPCS) {
     try {
-      const resp = await window.solana.connect();
-      provider = window.solana;
-      wallet   = resp.publicKey;
-      const addr = wallet.toBase58();
-      document.getElementById('walletDot').classList.add('connected');
-      document.getElementById('walletAddr').textContent = addr.slice(0,6) + '...' + addr.slice(-4);
-      document.getElementById('connectBtn').style.display = 'none';
-      document.getElementById('donateBtn').style.display  = 'flex';
-      updateDonateBtn();
-      toast('Wallet connected ✓', 'success');
-    } catch(e) {
-      toast('Connection rejected', 'error');
-    }
+      const conn = new solanaWeb3.Connection(url, 'confirmed');
+      await conn.getLatestBlockhash('finalized'); // health check
+      setRpcStatus(true, url.replace('https://', '').split('/')[0]);
+      return conn;
+    } catch { /* try next */ }
   }
+  setRpcStatus(false, 'All RPCs unreachable');
+  throw new Error('Cannot connect to Solana. Check your internet connection.');
+}
 
-  // ── Send SOL ─────────────────────────────────────────────────
-  async function sendSOL(connection, amount) {
-    const lamports = Math.round(amount * 1e9);
-    const tx = new solanaWeb3.Transaction().add(
-      solanaWeb3.SystemProgram.transfer({
-        fromPubkey: wallet,
-        toPubkey:   new solanaWeb3.PublicKey(RECIPIENT),
-        lamports
-      })
-    );
-    const { blockhash } = await connection.getLatestBlockhash('finalized');
-    tx.recentBlockhash = blockhash;
-    tx.feePayer = wallet;
-    const signed = await provider.signTransaction(tx);
-    return await connection.sendRawTransaction(signed.serialize());
-  }
+function setRpcStatus(ok, label) {
+  document.getElementById('rpcDot').className = 'rpc-dot ' + (ok ? 'ok' : 'err');
+  document.getElementById('rpcLabel').textContent = ok ? `Connected · ${label}` : label;
+}
 
-  // ── Send USDC ────────────────────────────────────────────────
-  async function sendUSDC(connection, amount) {
-    const sToken = window.splToken;
-    const mintPk = new solanaWeb3.PublicKey(USDC_MINT);
-    const recvPk = new solanaWeb3.PublicKey(RECIPIENT);
-    const uiAmt  = amount * 1e6; // USDC has 6 decimals
-
-    // Derive ATAs
-    const fromATA = await sToken.getAssociatedTokenAddress(mintPk, wallet);
-    const toATA   = await sToken.getAssociatedTokenAddress(mintPk, recvPk);
-
-    const tx = new solanaWeb3.Transaction();
-
-    // Create recipient ATA if needed
-    const toAcct = await connection.getAccountInfo(toATA);
-    if (!toAcct) {
-      tx.add(sToken.createAssociatedTokenAccountInstruction(wallet, toATA, recvPk, mintPk));
-    }
-
-    tx.add(sToken.createTransferInstruction(fromATA, toATA, wallet, BigInt(Math.round(uiAmt))));
-
-    const { blockhash } = await connection.getLatestBlockhash('finalized');
-    tx.recentBlockhash = blockhash;
-    tx.feePayer = wallet;
-    const signed = await provider.signTransaction(tx);
-    return await connection.sendRawTransaction(signed.serialize());
-  }
-
-  // ── Main donate ──────────────────────────────────────────────
-  async function sendDonation() {
-    const amount = getAmount();
-    if (!wallet || amount <= 0) return;
-
-    const btn = document.getElementById('donateBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ Sending…';
-    toast('Please approve the transaction in Phantom…', 'info');
-
-    try {
-      const connection = new solanaWeb3.Connection(RPC, 'confirmed');
-      let sig;
-      if (token === 'SOL') sig = await sendSOL(connection, amount);
-      else                  sig = await sendUSDC(connection, amount);
-
-      // Show success
-      document.getElementById('mainCard').style.display    = 'none';
-      document.getElementById('successCard').style.display = 'flex';
-      const txUrl = `https://solscan.io/tx/${sig}`;
-      const link = document.getElementById('txLink');
-      link.href = txUrl;
-      link.textContent = `${sig.slice(0,12)}...${sig.slice(-6)} · View on Solscan →`;
-      toast('Transaction confirmed! 🎉', 'success');
-    } catch(e) {
-      console.error(e);
-      const msg = e.message?.includes('rejected') ? 'Transaction cancelled.' : 'Transaction failed: ' + (e.message || e);
-      toast(msg, 'error');
-      btn.disabled = false;
-      updateDonateBtn();
-    }
-  }
-
-  function resetUI() {
-    document.getElementById('successCard').style.display = 'none';
-    document.getElementById('mainCard').style.display    = 'block';
-    document.getElementById('amountInput').value = '';
-    selected = null;
-    renderPresets();
-    updateDonateBtn();
-    const btn = document.getElementById('donateBtn');
-    btn.disabled = !(wallet && getAmount() > 0);
-  }
-
-  // ── Toast ────────────────────────────────────────────────────
-  let toastTimer;
-  function toast(msg, type = 'info') {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.className = `show ${type}`;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { el.className = type; }, 4000);
-  }
-
-  // ── Init ─────────────────────────────────────────────────────
+// ── Token selector ───────────────────────────────────────────────
+function selectToken(t) {
+  token = t;
+  document.getElementById('tabSOL').className  = 'token-tab' + (t === 'SOL'  ? ' active-sol'  : '');
+  document.getElementById('tabUSDC').className = 'token-tab' + (t === 'USDC' ? ' active-usdc' : '');
+  document.getElementById('currencyLabel').textContent = t === 'SOL' ? '◎' : '$';
+  selected = null;
   renderPresets();
+  checkFunds();
+  updateDonateBtn();
+}
 
-  // Auto-connect if Phantom already approved
-  window.addEventListener('load', async () => {
-    if (window.solana?.isPhantom && window.solana.isConnected) {
-      try { await connectWallet(); } catch(_) {}
-    }
+function renderPresets() {
+  const wrap = document.getElementById('presets');
+  wrap.innerHTML = '';
+  PRESETS[token].forEach(v => {
+    const b = document.createElement('button');
+    b.className = 'preset-btn' + (selected === v ? ' selected' : '');
+    b.textContent = token === 'SOL' ? `◎${v}` : `$${v}`;
+    b.onclick = () => pickPreset(v, b);
+    wrap.appendChild(b);
   });
+}
+
+function pickPreset(v, btn) {
+  selected = v;
+  document.getElementById('amountInput').value = v;
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  checkFunds();
+  updateDonateBtn();
+}
+
+document.getElementById('amountInput').addEventListener('input', () => {
+  selected = null;
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+  checkFunds();
+  updateDonateBtn();
+});
+
+function getAmount() { return parseFloat(document.getElementById('amountInput').value) || 0; }
+
+// ── Balance check ────────────────────────────────────────────────
+function checkFunds() {
+  const warn = document.getElementById('warnBox');
+  const amt  = getAmount();
+  if (!wallet || amt <= 0) { warn.style.display = 'none'; return; }
+
+  if (token === 'SOL') {
+    const needed = amt + TX_FEE_BUFFER;
+    if (balSOL < needed) {
+      warn.style.display = 'block';
+      warn.textContent = `⚠️ Insufficient SOL. You have ◎${balSOL.toFixed(4)} — need ◎${needed.toFixed(4)} (amount + fees).`;
+      return;
+    }
+  } else {
+    if (balUSDC < amt) {
+      warn.style.display = 'block';
+      warn.textContent = `⚠️ Insufficient USDC. You have $${balUSDC.toFixed(2)}.`;
+      return;
+    }
+    if (balSOL < TX_FEE_BUFFER) {
+      warn.style.display = 'block';
+      warn.textContent = `⚠️ Not enough SOL for fees. You need at least ◎${TX_FEE_BUFFER} SOL.`;
+      return;
+    }
+  }
+  warn.style.display = 'none';
+}
+
+function hasEnoughFunds() {
+  const amt = getAmount();
+  if (token === 'SOL')  return balSOL  >= amt + TX_FEE_BUFFER;
+  if (token === 'USDC') return balUSDC >= amt && balSOL >= TX_FEE_BUFFER;
+  return false;
+}
+
+function updateDonateBtn() {
+  const amt = getAmount();
+  const lbl = document.getElementById('donateBtnLabel');
+  if (amt > 0) lbl.textContent = token === 'SOL' ? `◎ ${amt} SOL` : `$ ${amt} USDC`;
+  else lbl.textContent = '';
+  const enabled = wallet && amt > 0 && (!wallet || hasEnoughFunds());
+  document.getElementById('donateBtn').disabled = !enabled;
+}
+
+// ── Wallet ────────────────────────────────────────────────────────
+async function connectWallet() {
+  if (!window.solana?.isPhantom) {
+    toast('Phantom not detected. Install it at phantom.app', 'error'); return;
+  }
+  try {
+    const resp = await window.solana.connect();
+    provider = window.solana;
+    wallet   = resp.publicKey;
+    const addr = wallet.toBase58();
+    document.getElementById('walletDot').classList.add('connected');
+    document.getElementById('walletAddr').textContent = addr.slice(0,6) + '…' + addr.slice(-4);
+    document.getElementById('connectBtn').style.display = 'none';
+    document.getElementById('donateBtn').style.display  = 'flex';
+    toast('Wallet connected ✓', 'success');
+    await fetchBalances();
+  } catch(e) {
+    toast(e.message?.includes('rejected') ? 'Connection rejected.' : 'Connection failed.', 'error');
+  }
+}
+
+async function fetchBalances() {
+  if (!wallet || !connection) return;
+  try {
+    // SOL balance
+    const lamports = await connection.getBalance(wallet);
+    balSOL = lamports / 1e9;
+    document.getElementById('balSOL').textContent = `◎${balSOL.toFixed(3)}`;
+
+    // USDC balance
+    try {
+      const sToken = window.splToken;
+      const mintPk = new solanaWeb3.PublicKey(USDC_MINT);
+      const ata    = await sToken.getAssociatedTokenAddress(mintPk, wallet);
+      const acct   = await connection.getTokenAccountBalance(ata);
+      balUSDC = parseFloat(acct.value.uiAmount || 0);
+    } catch { balUSDC = 0; }
+    document.getElementById('balUSDC').textContent = `$${balUSDC.toFixed(2)}`;
+
+    checkFunds();
+    updateDonateBtn();
+  } catch(e) { console.warn('Balance fetch failed:', e); }
+}
+
+// ── Step helpers ──────────────────────────────────────────────────
+function showSteps() { document.getElementById('stepsBox').style.display = 'flex'; }
+function hideSteps() { document.getElementById('stepsBox').style.display = 'none'; }
+function setStep(n, state) { // state: 'active'|'done'|'fail'
+  const el = document.getElementById('step' + n);
+  el.className = 'step ' + state;
+  const icons = { active:'⏳', done:'✅', fail:'❌' };
+  el.querySelector('.step-icon').textContent = icons[state] || '⏳';
+}
+function resetSteps() {
+  [1,2,3,4].forEach(n => {
+    const el = document.getElementById('step' + n);
+    el.className = 'step';
+    el.querySelector('.step-icon').textContent = ['⏳','✍️','📡','✅'][n-1];
+  });
+}
+
+// ── Send SOL ──────────────────────────────────────────────────────
+async function sendSOL(amount) {
+  setStep(1,'active');
+  const lamports = Math.round(amount * 1e9);
+  const tx = new solanaWeb3.Transaction().add(
+    solanaWeb3.SystemProgram.transfer({
+      fromPubkey: wallet,
+      toPubkey:   new solanaWeb3.PublicKey(RECIPIENT),
+      lamports
+    })
+  );
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
+  tx.recentBlockhash = blockhash;
+  tx.feePayer = wallet;
+  setStep(1,'done'); setStep(2,'active');
+  const signed = await provider.signTransaction(tx);
+  setStep(2,'done'); setStep(3,'active');
+  const sig = await connection.sendRawTransaction(signed.serialize(), { skipPreflight: false, maxRetries: 3 });
+  setStep(3,'done'); setStep(4,'active');
+  await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, 'confirmed');
+  setStep(4,'done');
+  return sig;
+}
+
+// ── Send USDC ─────────────────────────────────────────────────────
+async function sendUSDC(amount) {
+  setStep(1,'active');
+  const sToken = window.splToken;
+  const mintPk = new solanaWeb3.PublicKey(USDC_MINT);
+  const recvPk = new solanaWeb3.PublicKey(RECIPIENT);
+  const uiAmt  = Math.round(amount * 1e6); // 6 decimals
+
+  const fromATA = await sToken.getAssociatedTokenAddress(mintPk, wallet);
+  const toATA   = await sToken.getAssociatedTokenAddress(mintPk, recvPk);
+
+  // Check sender has token account
+  const fromAcct = await connection.getAccountInfo(fromATA);
+  if (!fromAcct) throw new Error('You have no USDC token account on this wallet.');
+
+  const tx = new solanaWeb3.Transaction();
+  const toAcct = await connection.getAccountInfo(toATA);
+  if (!toAcct) {
+    // Create recipient ATA (costs ~0.002 SOL, paid by sender)
+    tx.add(sToken.createAssociatedTokenAccountInstruction(wallet, toATA, recvPk, mintPk));
+  }
+  tx.add(sToken.createTransferInstruction(fromATA, toATA, wallet, BigInt(uiAmt)));
+
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
+  tx.recentBlockhash = blockhash;
+  tx.feePayer = wallet;
+  setStep(1,'done'); setStep(2,'active');
+  const signed = await provider.signTransaction(tx);
+  setStep(2,'done'); setStep(3,'active');
+  const sig = await connection.sendRawTransaction(signed.serialize(), { skipPreflight: false, maxRetries: 3 });
+  setStep(3,'done'); setStep(4,'active');
+  await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, 'confirmed');
+  setStep(4,'done');
+  return sig;
+}
+
+// ── Main donate ───────────────────────────────────────────────────
+async function sendDonation() {
+  const amount = getAmount();
+  if (!wallet || amount <= 0) return;
+  if (!hasEnoughFunds()) { toast('Insufficient funds.', 'error'); return; }
+
+  // Refresh connection in case it dropped
+  try { connection = await getConnection(); } catch(e) { toast(e.message, 'error'); return; }
+
+  const btn = document.getElementById('donateBtn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Sending…';
+  resetSteps();
+  showSteps();
+  toast(`Approve in Phantom to send ${token === 'SOL' ? '◎' + amount + ' SOL' : '$' + amount + ' USDC'}`, 'info');
+
+  try {
+    let sig;
+    if (token === 'SOL')  sig = await sendSOL(amount);
+    else                   sig = await sendUSDC(amount);
+
+    hideSteps();
+    document.getElementById('mainCard').style.display    = 'none';
+    document.getElementById('successCard').style.display = 'flex';
+    const link = document.getElementById('txLink');
+    link.href = `https://solscan.io/tx/${sig}`;
+    link.textContent = `${sig.slice(0,12)}…${sig.slice(-6)} · View on Solscan →`;
+    toast('Transaction confirmed! 🎉', 'success');
+  } catch(e) {
+    console.error(e);
+    [1,2,3,4].forEach(n => {
+      if (document.getElementById('step'+n).classList.contains('active')) setStep(n,'fail');
+    });
+    const msg = e.message?.includes('rejected') ? 'Transaction cancelled by user.'
+              : e.message?.includes('insufficient') ? 'Insufficient funds for this transaction.'
+              : e.message || 'Transaction failed. Please try again.';
+    toast(msg, 'error');
+    setTimeout(() => {
+      hideSteps();
+      btn.disabled = false;
+      btn.innerHTML = `❤️ Donate <span id="donateBtnLabel">${token === 'SOL' ? '◎ '+amount+' SOL' : '$ '+amount+' USDC'}</span>`;
+    }, 2500);
+  }
+}
+
+function resetUI() {
+  document.getElementById('successCard').style.display = 'none';
+  document.getElementById('mainCard').style.display    = 'block';
+  document.getElementById('amountInput').value = '';
+  selected = null;
+  renderPresets();
+  updateDonateBtn();
+}
+
+// ── Toast ─────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type = 'info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = type; }, 5000);
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+renderPresets();
+
+(async () => {
+  try {
+    connection = await getConnection();
+  } catch(e) {
+    setRpcStatus(false, 'No connection');
+  }
+
+  // Auto-reconnect Phantom if already approved
+  if (window.solana?.isPhantom && window.solana.isConnected) {
+    try { await connectWallet(); } catch(_) {}
+  }
+})();
 </script>
 </body>
 </html>
