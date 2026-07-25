@@ -1668,16 +1668,12 @@ async function restoreAttestTokensPhantom() {
         }
         
         const walletPubkey = provider.publicKey;
-        let sWeb3 = window.solanaWeb3;
-        let sToken = window.splToken;
+        const sWeb3 = window.solanaWeb3 || (typeof solanaWeb3 !== 'undefined' ? solanaWeb3 : null);
+        const sToken = window.splToken || (typeof splToken !== 'undefined' ? splToken : null);
 
         if (!sWeb3 || !sToken) {
-            sWeb3 = window.solanaWeb3 || window.SolanaWeb3;
-            sToken = window.splToken || window.SPLToken;
-        }
-
-        if (!sWeb3 || !sToken) {
-            return showToast("Solana SDK initializing... Please wait a moment and click again.", "error");
+            console.error("SDK resolution failed:", { sWeb3: !!sWeb3, sToken: !!sToken });
+            return showToast("Solana SDK not ready. Please refresh the page (Ctrl + F5).", "error");
         }
 
 
