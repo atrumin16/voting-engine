@@ -8,12 +8,12 @@ On-chain voting and proposal management engine — Cloudflare Pages + D1 + Solan
 
 **Linux / Mac** — open Terminal:
 ```bash
-git clone https://github.com/atrumin16/voting-engine.git && cd voting-engine && bash scripts/setup.sh
+git clone https://github.com/atrumin16/voting-engine.git && cd voting-engine && bash scripts/$/setup.sh
 ```
 
 **Windows** — open PowerShell as Administrator:
 ```powershell
-git clone https://github.com/atrumin16/voting-engine.git; cd voting-engine; powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
+git clone https://github.com/atrumin16/voting-engine.git; cd voting-engine; powershell -ExecutionPolicy Bypass -File scripts\$\setup.ps1
 ```
 
 The setup script will handle **everything** automatically:
@@ -37,12 +37,12 @@ The setup script will handle **everything** automatically:
 
 **Linux / Mac**
 ```bash
-bash scripts/deploy.sh
+bash scripts/$/deploy.sh
 ```
 
 **Windows**
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\deploy.ps1
+powershell -ExecutionPolicy Bypass -File scripts\$\deploy.ps1
 ```
 
 Asks for confirmation before touching anything in production.
@@ -52,9 +52,12 @@ Asks for confirmation before touching anything in production.
 ## Project structure
 
 ```
-├── public/          # Frontend (HTML, CSS, JS)
-├── functions/api/   # Cloudflare Pages Functions (API)
-├── scripts/         # Setup, deploy & token scripts
-├── schema.sql       # Database schema
-└── wrangler.toml    # Cloudflare config
+├── public/            # Frontend (HTML, CSS, JS)
+├── functions/api/     # Cloudflare Pages Functions (API)
+├── scripts/
+│   ├── $/             # Setup & deploy scripts (bash + PowerShell)
+│   ├── create_token.mjs
+│   └── create_metadata.mjs
+├── schema.sql         # Database schema
+└── wrangler.toml      # Cloudflare config
 ```
